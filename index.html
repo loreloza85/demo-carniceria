@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Demo carnicería · Pedidos</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Catálogo de la demo: lo genera hacer_demo.py con los precios del escandallo. */
+:root {
+  color-scheme: light;
+  --fondo: #FBF6EF; --tarjeta: #FFFFFF; --tinta: #2A2220; --tenue: #75685F; --borde: #EADFD2;
+  --granate: #7A1F2B; --granate-suave: #F4E3E1; --oro: #B8892E;
+  --f-titulo: "Fraunces", Georgia, serif; --f-texto: "Nunito", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root {
+  color-scheme: dark; --fondo: #1E1817; --tarjeta: #2A2321; --tinta: #F6EEE8; --tenue: #BBADA4; --borde: #3E3431;
+  --granate: #E07A86; --granate-suave: #43292B; --oro: #E0B761; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fondo); color: var(--tinta); font: 16px/1.5 var(--f-texto);
+  padding: env(safe-area-inset-top, 0px) max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); }
+.marco { max-width: 760px; margin: 0 auto; padding-block: 28px 140px; }
+header h1 { font: 700 clamp(30px, 7vw, 44px)/1.05 var(--f-titulo); margin: 0; color: var(--granate); }
+header p { margin: 6px 0 0; color: var(--tenue); }
+.aviso { margin-top: 14px; padding: 10px 14px; border-radius: 12px; background: var(--granate-suave); font-size: 14px; }
+nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2; background: var(--fondo); display: flex; gap: 8px;
+  overflow-x: auto; padding: 14px 0 10px; margin-top: 8px; }
+nav a { flex: none; text-decoration: none; color: var(--tinta); border: 1px solid var(--borde); background: var(--tarjeta);
+  padding: 6px 14px; border-radius: 99px; font-weight: 700; font-size: 14px; }
+h2 { font: 600 24px/1.2 var(--f-titulo); margin: 26px 0 10px; scroll-margin-top: 70px; }
+.lista { display: grid; gap: 10px; }
+.prod { display: grid; grid-template-columns: 88px 1fr auto; gap: 6px 14px; align-items: center; background: var(--tarjeta);
+  border: 1px solid var(--borde); border-radius: 16px; padding: 12px 14px; }
+.prod .foto { grid-row: 1 / span 2; width: 88px; height: 88px; border-radius: 12px; object-fit: cover; background: var(--granate-suave); }
+.prod .desc { grid-column: 2 / -1; }
+.prod .cant { grid-column: 1 / -1; }
+.prod.elegido { border-color: var(--granate); box-shadow: 0 0 0 1px var(--granate) inset; }
+.prod b { font-size: 17px; }
+.prod .desc { color: var(--tenue); font-size: 14px; }
+.precio { font-weight: 800; color: var(--granate); text-align: right; white-space: nowrap; }
+.precio small { color: var(--tenue); font-weight: 600; }
+.cant { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.cant button { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--borde); background: var(--fondo);
+  color: var(--tinta); font: 800 20px var(--f-texto); cursor: pointer; }
+.cant button:focus-visible, .pedir:focus-visible { outline: 3px solid var(--oro); outline-offset: 2px; }
+.cant .kg { min-width: 70px; text-align: center; font-weight: 800; }
+.cant .sub { margin-left: auto; color: var(--tenue); font-weight: 700; }
+.barra { position: fixed; left: 0; right: 0; bottom: 0; background: var(--tarjeta); border-top: 1px solid var(--borde);
+  padding: 12px max(16px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.barra .dentro { max-width: 760px; margin: 0 auto; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.total { font-weight: 800; font-size: 18px; }
+.total small { display: block; font-weight: 600; font-size: 12px; color: var(--tenue); }
+.pedir { margin-left: auto; border: 0; border-radius: 99px; padding: 12px 20px; background: #1F8F4E; color: #fff;
+  font: 800 16px var(--f-texto); cursor: pointer; }
+.pedir:disabled { opacity: .45; cursor: default; }
+dialog { border: 0; border-radius: 18px; padding: 20px; max-width: min(520px, calc(100vw - 32px)); background: var(--tarjeta); color: var(--tinta); }
+dialog::backdrop { background: rgb(0 0 0 / .45); }
+dialog label { display: grid; gap: 4px; font-weight: 700; margin-top: 12px; }
+dialog input, dialog select { font: 16px var(--f-texto); padding: 10px; border-radius: 10px; border: 1px solid var(--borde);
+  background: var(--fondo); color: var(--tinta); }
+.modo { border: 0; padding: 0; margin: 12px 0 0; display: flex; gap: 8px; flex-wrap: wrap; }
+.modo legend { font-weight: 700; padding: 0; margin-bottom: 4px; }
+.modo label { display: flex; gap: 6px; align-items: center; margin: 0; padding: 8px 12px; border: 1px solid var(--borde);
+  border-radius: 99px; font-weight: 700; cursor: pointer; }
+.modo label:has(input:checked) { border-color: var(--granate); background: var(--granate-suave); }
+.nota { margin: 8px 0 0; color: var(--tenue); font-size: 14px; }
+pre { white-space: pre-wrap; background: var(--fondo); border-radius: 12px; padding: 12px; font: 14px/1.45 var(--f-texto); }
+.botones { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; flex-wrap: wrap; }
+.sec { border: 1px solid var(--borde); background: transparent; color: var(--tinta); border-radius: 99px; padding: 10px 18px;
+  font: 700 15px var(--f-texto); cursor: pointer; }
+</style>
+</head>
+<body>
+<main class="marco">
+  <header>
+    <h1>Demo carnicería</h1>
+    <p>Elige lo que quieras y mándanos el pedido por WhatsApp. Te lo tenemos preparado para recoger.</p>
+    <div class="aviso">Precio aproximado: el final se ajusta al pesar. Pagas al recoger. · <span id="fecha">Precios del 22/10/2026</span>.</div>
+  </header>
+  <nav id="secciones" aria-label="Secciones"></nav>
+  <div id="catalogo"></div>
+</main>
+
+<div class="barra"><div class="dentro">
+  <div class="total" aria-live="polite"><span id="total">0,00 €</span><small id="resumen">Aún no has elegido nada</small></div>
+  <button class="pedir" id="pedir" disabled>Pedir por WhatsApp</button>
+</div></div>
+
+<dialog id="dialogo">
+  <form method="dialog" id="form">
+    <h2 style="margin-top:0">Tu pedido</h2>
+    <label>Tu nombre <input id="nombre" required autocomplete="given-name"></label>
+    <fieldset class="modo"><legend>¿Cómo lo quieres?</legend>
+      <label><input type="radio" name="modo" value="tienda" checked> Recoger en tienda</label>
+      <label><input type="radio" name="modo" value="reparto"> Reparto a domicilio</label>
+    </fieldset>
+    <label id="caja_direccion" hidden>Dirección de entrega <input id="direccion" autocomplete="street-address" placeholder="Calle, número, piso"></label>
+    <p id="nota_reparto" hidden class="nota"></p>
+    <label>Día <select id="dia"></select></label>
+    <label id="titulo_hora">Hora <select id="hora"></select></label>
+    <pre id="texto"></pre>
+    <p id="sin_numero" hidden style="color:var(--tenue);font-size:14px">Demo: aún no hay número de WhatsApp conectado. Este es el mensaje que llegaría.</p>
+    <div class="botones"><button class="sec" value="cancel" formnovalidate>Volver</button><button class="pedir" id="enviar" value="ok">Enviar por WhatsApp</button></div>
+  </form>
+</dialog>
+
+<script>
+(function () {
+  'use strict';
+  let DATOS = [{"cat": "Vacuno madurado", "nombre": "Solomillo", "pvp": 49.91, "desc": "La pieza más tierna. Madurado en cámara."}, {"cat": "Vacuno madurado", "nombre": "Chuletón (lomo alto)", "pvp": 31.94, "desc": "Con hueso, para la brasa. Madurado."}, {"cat": "Vacuno madurado", "nombre": "Entrecot (lomo bajo)", "pvp": 29.94, "desc": "Fileteado a tu gusto."}, {"cat": "Vacuno madurado", "nombre": "Cadera", "pvp": 19.96, "desc": "Filetes jugosos, a la plancha."}, {"cat": "Vacuno madurado", "nombre": "Babilla", "pvp": 15.97, "desc": "Filetes o para empanar."}, {"cat": "Vacuno madurado", "nombre": "Tapa", "pvp": 15.97, "desc": "Filetes finos y magros."}, {"cat": "Vacuno madurado", "nombre": "Redondo", "pvp": 16.97, "desc": "Entero para asar o en filetes."}, {"cat": "Vacuno madurado", "nombre": "Aguja", "pvp": 12.98, "desc": "Para guisos y estofados."}, {"cat": "Vacuno madurado", "nombre": "Falda", "pvp": 9.98, "desc": "Para cocido y caldos."}, {"cat": "Vacuno madurado", "nombre": "Morcillo (ossobuco)", "pvp": 10.98, "desc": "En rodajas, para guisar despacio."}, {"cat": "Vacuno madurado", "nombre": "Costilla", "pvp": 7.98, "desc": "Para el horno o la barbacoa."}, {"cat": "Vacuno madurado", "nombre": "Carne picada", "pvp": 8.98, "desc": "Picada al momento, sin añadidos."}, {"cat": "Cerdo", "nombre": "Secreto", "pvp": 16.96, "desc": "El corte más jugoso, a la brasa."}, {"cat": "Cerdo", "nombre": "Presa", "pvp": 15.9, "desc": "Entera o en filetes gruesos."}, {"cat": "Cerdo", "nombre": "Pluma", "pvp": 15.9, "desc": "Pequeña y tierna, a la plancha."}, {"cat": "Cerdo", "nombre": "Solomillo", "pvp": 15.9, "desc": "Entero, para el horno o en medallones."}, {"cat": "Cerdo", "nombre": "Lomo", "pvp": 9.54, "desc": "Cinta de lomo en filetes o entera."}, {"cat": "Cerdo", "nombre": "Costilla", "pvp": 6.36, "desc": "En tira o entera, para el horno."}, {"cat": "Cerdo", "nombre": "Panceta", "pvp": 5.83, "desc": "Fresca, en tiras o entera."}, {"cat": "Cerdo", "nombre": "Filetes de jamón", "pvp": 5.3, "desc": "Magros, para la plancha o empanar."}, {"cat": "Cerdo", "nombre": "Paleta", "pvp": 4.77, "desc": "Para asar o guisar."}, {"cat": "Cerdo", "nombre": "Carne picada", "pvp": 4.24, "desc": "Picada al momento."}, {"cat": "Pollo", "nombre": "Pechuga", "pvp": 8.66, "desc": "Entera o fileteada."}, {"cat": "Pollo", "nombre": "Muslos", "pvp": 4.81, "desc": "Contramuslo y muslo, con piel."}, {"cat": "Pollo", "nombre": "Alitas", "pvp": 4.81, "desc": "Para el horno o fritas."}];          // precios del día en que se generó (si no se puede leer la hoja)
+  const WHATSAPP = "15556590488";
+  const FOTOS = {
+ "Vacuno madurado|Solomillo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c6/Tenderloin_packages.jpg/1280px-Tenderloin_packages.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Vacuno madurado|Chuletón (lomo alto)": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Grillfleisch_Rindersteak_Ribeye_%2826152657274%29.jpg/1280px-Grillfleisch_Rindersteak_Ribeye_%2826152657274%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Vacuno madurado|Entrecot (lomo bajo)": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/%EB%8C%80%ED%86%B5%EB%A0%B9%EC%83%81%EC%97%90_%EB%B9%9B%EB%82%98%EB%8A%94_%ED%96%89%EC%A3%BC%ED%95%9C%EC%9A%B0.jpg/1280px-%EB%8C%80%ED%86%B5%EB%A0%B9%EC%83%81%EC%97%90_%EB%B9%9B%EB%82%98%EB%8A%94_%ED%96%89%EC%A3%BC%ED%95%9C%EC%9A%B0.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Vacuno madurado|Cadera": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/SZ_%E6%B7%B1%E5%9C%B3_Shenzhen_%E7%A6%8F%E7%94%B0_Futian_%E7%9A%87%E5%BA%AD%E5%BB%A3%E5%A0%B4_Wongtee_Plaza_shop_%E6%BC%A2%E9%99%BD%E5%BB%B7%E8%87%AA%E5%8A%A9%E7%83%A4%E8%82%89_Hayaco_Barbecue_Restaurant_raw_beef_n_pork_slices_September_2025_N13P_11.jpg/1280px-thumbnail.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Vacuno madurado|Babilla": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/SZ_%E6%B7%B1%E5%9C%B3_Shenzhen_%E7%A6%8F%E7%94%B0_Futian_%E7%9A%87%E5%BA%AD%E5%BB%A3%E5%A0%B4_Wongtee_Plaza_shop_%E6%BC%A2%E9%99%BD%E5%BB%B7%E8%87%AA%E5%8A%A9%E7%83%A4%E8%82%89_Hayaco_Barbecue_Restaurant_raw_beef_n_pork_slices_September_2025_N13P_03.jpg/1280px-thumbnail.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Vacuno madurado|Tapa": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4e/Raw_Beef_Short_Ribs_Slices.jpg/1280px-Raw_Beef_Short_Ribs_Slices.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Vacuno madurado|Redondo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/Impossible_Foods_plant_based_%22Ground_Beef%22.jpg/1280px-Impossible_Foods_plant_based_%22Ground_Beef%22.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Vacuno madurado|Aguja": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/SZ_%E6%B7%B1%E5%9C%B3_Shenzhen_%E7%A6%8F%E7%94%B0_Futian_%E7%9A%87%E5%BA%AD%E5%BB%A3%E5%A0%B4_Wongtee_Plaza_shop_%E6%BC%A2%E9%99%BD%E5%BB%B7%E8%87%AA%E5%8A%A9%E7%83%A4%E8%82%89_Hayaco_Barbecue_Restaurant_raw_beef_n_pork_slices_September_2025_N13P_14.jpg/1280px-thumbnail.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Vacuno madurado|Falda": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/SZ_%E6%B7%B1%E5%9C%B3_Shenzhen_%E7%A6%8F%E7%94%B0_Futian_%E7%9A%87%E5%BA%AD%E5%BB%A3%E5%A0%B4_Wongtee_Plaza_shop_%E6%BC%A2%E9%99%BD%E5%BB%B7%E8%87%AA%E5%8A%A9%E7%83%A4%E8%82%89_Hayaco_Barbecue_Restaurant_raw_beef_n_pork_slices_September_2025_N13P_02.jpg/1280px-thumbnail.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Vacuno madurado|Morcillo (ossobuco)": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/Beef_shank.jpg/1280px-Beef_shank.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Vacuno madurado|Costilla": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/%EB%8C%80%ED%86%B5%EB%A0%B9%EC%83%81%EC%97%90_%EB%B9%9B%EB%82%98%EB%8A%94_%ED%96%89%EC%A3%BC%ED%95%9C%EC%9A%B0.jpg/1280px-%EB%8C%80%ED%86%B5%EB%A0%B9%EC%83%81%EC%97%90_%EB%B9%9B%EB%82%98%EB%8A%94_%ED%96%89%EC%A3%BC%ED%95%9C%EC%9A%B0.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Vacuno madurado|Carne picada": "https://upload.wikimedia.org/wikipedia/commons/6/65/Hakket-oksekoed.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+ "Cerdo|Secreto": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/HK_food_ingredient_red_meat_frozen_pork_chop_raw_butt_steak_October_2021_SS2_011.jpg/1280px-HK_food_ingredient_red_meat_frozen_pork_chop_raw_butt_steak_October_2021_SS2_011.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Cerdo|Presa": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/PlumaIberica_Cruda-DSC06672.JPG/1280px-PlumaIberica_Cruda-DSC06672.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Cerdo|Pluma": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/HK_food_ingredient_red_meat_frozen_pork_chop_raw_butt_steak_October_2021_SS2_015.jpg/1280px-HK_food_ingredient_red_meat_frozen_pork_chop_raw_butt_steak_October_2021_SS2_015.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Cerdo|Solomillo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Pork_Tenderloin_on_cutting_board.jpg/1280px-Pork_Tenderloin_on_cutting_board.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Cerdo|Lomo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/72/HK_food_ingredient_red_meat_frozen_pork_chop_raw_butt_steak_October_2021_SS2_006.jpg/1280px-HK_food_ingredient_red_meat_frozen_pork_chop_raw_butt_steak_October_2021_SS2_006.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Cerdo|Costilla": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0d/Raw_pork_spareribs.jpg/1280px-Raw_pork_spareribs.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Cerdo|Panceta": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/Freshly_prepared_raw_pork_belly_with_red_onions_and_chili_peppers.jpg/1280px-Freshly_prepared_raw_pork_belly_with_red_onions_and_chili_peppers.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Cerdo|Filetes de jamón": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/HK_food_ingredient_red_meat_frozen_pork_chop_raw_butt_steak_October_2021_SS2_013.jpg/1280px-HK_food_ingredient_red_meat_frozen_pork_chop_raw_butt_steak_October_2021_SS2_013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Cerdo|Paleta": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/72/HK_food_ingredient_red_meat_frozen_pork_chop_raw_butt_steak_October_2021_SS2_006.jpg/1280px-HK_food_ingredient_red_meat_frozen_pork_chop_raw_butt_steak_October_2021_SS2_006.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Cerdo|Carne picada": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d1/Hackfleisch-1.jpg/1280px-Hackfleisch-1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Pollo|Pechuga": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/Raw_chicken_slices.jpg/1280px-Raw_chicken_slices.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+ "Pollo|Muslos": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Raw_chicken_thighs.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+ "Pollo|Alitas": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/Raw_chicken_wings.jpg/1280px-Raw_chicken_wings.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+};        // «Sección|Producto» → foto libre (Wikimedia Commons)
+  const CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ3iHajpD8oUmerPfccweBaZI8D-StkKxNemDSH-pnP8bjMBdrw2HRo03zq042H1w/pub?gid=678473188&single=true&output=csv";          // pestaña «Catálogo» publicada desde Google Sheets
+  const PASO = 0.25;
+  // Horario y reparto DE EJEMPLO: se cambian por los de la tienda cuando los den.
+  // Día de la semana (0 = domingo) → tramos de apertura; las recogidas van cada media hora y con 2 h de margen.
+  const HORARIO = { 1: [['9:00', '14:00'], ['17:00', '20:30']], 2: [['9:00', '14:00'], ['17:00', '20:30']],
+    3: [['9:00', '14:00'], ['17:00', '20:30']], 4: [['9:00', '14:00'], ['17:00', '20:30']],
+    5: [['9:00', '14:00'], ['17:00', '20:30']], 6: [['9:00', '14:00']] };
+  const REPARTO = { zona: 'Guadalajara capital', coste: 3, gratisDesde: 40,
+    franjas: [['10:00', '12:00'], ['12:00', '14:00'], ['17:30', '19:00'], ['19:00', '20:30']] };
+  const MARGEN_MIN = 120, DIAS_VISTA = 7;
+  const euros = n => n.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+  const kgTxt = k => (k < 1 ? (k * 1000) + ' g' : k.toLocaleString('es-ES') + ' kg');
+  const cant = new Map();
+  const nav = document.getElementById('secciones'), cat = document.getElementById('catalogo');
+
+  function pinta() {
+    nav.replaceChildren(); cat.replaceChildren(); cant.clear();
+    [...new Set(DATOS.map(d => d.cat))].forEach((c, i) => {
+      const a = document.createElement('a'); a.href = '#s' + i; a.textContent = c; nav.append(a);
+      const h = document.createElement('h2'); h.id = 's' + i; h.textContent = c;
+      const l = document.createElement('div'); l.className = 'lista';
+      DATOS.filter(d => d.cat === c).forEach(d => l.append(tarjeta(d)));
+      cat.append(h, l);
+    });
+    totales();
+  }
+
+  // CSV sencillo de Google Sheets: comillas dobles alrededor de los campos con comas
+  function leeCsv(t) {
+    const filas = []; let fila = [], campo = '', dentro = false;
+    for (let i = 0; i < t.length; i++) {
+      const ch = t[i];
+      if (dentro) { if (ch === '"' && t[i + 1] === '"') { campo += '"'; i++; } else if (ch === '"') dentro = false; else campo += ch; }
+      else if (ch === '"') dentro = true;
+      else if (ch === ',') { fila.push(campo); campo = ''; }
+      else if (ch === '\n') { fila.push(campo.replace(/\r$/, '')); filas.push(fila); fila = []; campo = ''; }
+      else campo += ch;
+    }
+    if (campo || fila.length) { fila.push(campo); filas.push(fila); }
+    return filas;
+  }
+  async function deLaHoja() {
+    if (!CSV) return;
+    try {
+      const r = await fetch(CSV + (CSV.includes('?') ? '&' : '?') + 't=' + Date.now());
+      if (!r.ok) return;
+      const nuevos = leeCsv(await r.text()).slice(1)
+        .filter(f => f.length >= 4 && /^s[ií]$/i.test((f[3] || '').trim()))
+        .map(f => ({ cat: f[0], nombre: f[1], pvp: parseFloat(String(f[2]).replace(/[^\d,.-]/g, '').replace(/\.(?=\d{3}\b)/g, '').replace(',', '.')), desc: f[4] || '' }))
+        .filter(d => d.nombre && d.pvp > 0);
+      if (nuevos.length) {
+        DATOS = nuevos;
+        document.getElementById('fecha').textContent = 'Precios al día';
+        pinta();
+      }
+    } catch (e) { /* sin conexión: se quedan los precios que trae la página */ }
+  }
+
+  function tarjeta(d) {
+    const id = d.cat + '|' + d.nombre;
+    const t = document.createElement('div'); t.className = 'prod';
+    t.innerHTML = '<img class="foto" alt="" loading="lazy"><b></b><div class="precio"></div><div class="desc"></div><div class="cant"><button type="button" aria-label="Menos">−</button><span class="kg">0 g</span><button type="button" aria-label="Más">+</button><span class="sub"></span></div>';
+    const foto = t.querySelector('.foto');
+    if (FOTOS[id]) { foto.src = FOTOS[id]; foto.alt = d.nombre; }
+    t.querySelector('b').textContent = d.nombre;
+    t.querySelector('.precio').innerHTML = euros(d.pvp) + ' <small>/kg</small>';
+    t.querySelector('.desc').textContent = d.desc;
+    const [menos, mas] = t.querySelectorAll('button');
+    const pinta = () => {
+      const k = cant.get(id) || 0;
+      t.querySelector('.kg').textContent = kgTxt(k);
+      t.querySelector('.sub').textContent = k ? '≈ ' + euros(k * d.pvp) : '';
+      t.classList.toggle('elegido', k > 0);
+      totales();
+    };
+    menos.onclick = () => { cant.set(id, Math.max(0, (cant.get(id) || 0) - PASO)); pinta(); };
+    mas.onclick = () => { cant.set(id, (cant.get(id) || 0) + PASO); pinta(); };
+    return t;
+  }
+
+  function elegidos() { return DATOS.map(d => ({ d, k: cant.get(d.cat + '|' + d.nombre) || 0 })).filter(x => x.k > 0); }
+  function totales() {
+    const e = elegidos(), total = e.reduce((s, x) => s + x.k * x.d.pvp, 0);
+    document.getElementById('total').textContent = euros(total);
+    document.getElementById('resumen').textContent = e.length ? e.length + (e.length > 1 ? ' productos · aproximado' : ' producto · aproximado') : 'Aún no has elegido nada';
+    document.getElementById('pedir').disabled = !e.length;
+  }
+  // Día y hora: solo se ofrecen huecos con la tienda abierta (o franjas de reparto) y con margen para prepararlo
+  const aMin = h => { const [a, b] = h.split(':').map(Number); return a * 60 + b; };
+  const aHora = m => Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0');
+  const modo = () => document.querySelector('input[name="modo"]:checked').value;
+  function huecos(fecha) {
+    const ahora = new Date(), hoy = fecha.toDateString() === ahora.toDateString();
+    const minimo = hoy ? ahora.getHours() * 60 + ahora.getMinutes() + MARGEN_MIN : 0;
+    const tramos = HORARIO[fecha.getDay()] || [];
+    if (modo() === 'reparto') {
+      return REPARTO.franjas.filter(([a, b]) => aMin(a) >= minimo && tramos.some(([x, y]) => aMin(a) >= aMin(x) && aMin(b) <= aMin(y)))
+        .map(([a, b]) => a + ' a ' + b);
+    }
+    const lista = [];
+    tramos.forEach(([a, b]) => { for (let m = aMin(a); m <= aMin(b) - 30; m += 30) if (m >= minimo) lista.push(aHora(m)); });
+    return lista;
+  }
+  function rellenaDias() {
+    const sel = document.getElementById('dia'), antes = sel.value;
+    sel.replaceChildren();
+    for (let n = 0; n < DIAS_VISTA; n++) {
+      const f = new Date(); f.setDate(f.getDate() + n);
+      if (!huecos(f).length) continue;
+      const nombre = (n === 0 ? 'Hoy, ' : n === 1 ? 'Mañana, ' : '') + f.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'numeric' });
+      sel.append(new Option(nombre, f.toDateString()));
+    }
+    if ([...sel.options].some(o => o.value === antes)) sel.value = antes;
+    rellenaHoras();
+  }
+  function rellenaHoras() {
+    const sel = document.getElementById('hora'), antes = sel.value, dia = document.getElementById('dia').value;
+    sel.replaceChildren();
+    if (dia) huecos(new Date(dia)).forEach(h => sel.append(new Option(h, h)));
+    if ([...sel.options].some(o => o.value === antes)) sel.value = antes;
+  }
+  function gastosEnvio(subtotal) { return modo() === 'reparto' && subtotal < REPARTO.gratisDesde ? REPARTO.coste : 0; }
+  function cambiaModo() {
+    const reparto = modo() === 'reparto';
+    document.getElementById('caja_direccion').hidden = !reparto;
+    document.getElementById('direccion').required = reparto;
+    const nota = document.getElementById('nota_reparto');
+    nota.hidden = !reparto;
+    nota.textContent = 'Reparto en ' + REPARTO.zona + ': ' + euros(REPARTO.coste) + ', gratis a partir de ' + euros(REPARTO.gratisDesde) + '. Pagas al recibirlo.';
+    document.getElementById('titulo_hora').firstChild.textContent = reparto ? 'Franja de entrega ' : 'Hora de recogida ';
+    rellenaDias();
+  }
+  function mensaje() {
+    const e = elegidos(), subtotal = e.reduce((s, x) => s + x.k * x.d.pvp, 0), envio = gastosEnvio(subtotal);
+    const nombre = document.getElementById('nombre').value.trim() || '(nombre)';
+    const diaTxt = document.getElementById('dia').selectedOptions[0]?.text.toLowerCase() || '(día)';
+    const hora = document.getElementById('hora').value || '(hora)';
+    const elDia = /^(hoy|mañana),/.test(diaTxt) ? diaTxt : 'el ' + diaTxt;
+    const cuando = modo() === 'reparto'
+      ? 'con reparto a domicilio ' + elDia + ', de ' + hora + '.\nDirección: ' + (document.getElementById('direccion').value.trim() || '(dirección)')
+      : 'para recoger en tienda ' + elDia + ', a las ' + hora + '.';
+    return 'Hola, soy ' + nombre + '. Quiero hacer un pedido ' + cuando + '\n\n'
+      + e.map(x => '• ' + kgTxt(x.k) + ' de ' + x.d.nombre + ' (' + x.d.cat.toLowerCase() + ') ≈ ' + euros(x.k * x.d.pvp)).join('\n')
+      + (modo() === 'reparto' ? '\n• Reparto: ' + (envio ? euros(envio) : 'gratis') : '')
+      + '\n\nTotal aproximado: ' + euros(subtotal + envio) + ' (el final, al pesar).';
+  }
+  pinta();
+  deLaHoja();
+  const dlg = document.getElementById('dialogo');
+  const actualiza = () => { document.getElementById('texto').textContent = mensaje(); };
+  document.querySelectorAll('input[name="modo"]').forEach(r => r.addEventListener('change', () => { cambiaModo(); actualiza(); }));
+  document.getElementById('dia').addEventListener('change', () => { rellenaHoras(); actualiza(); });
+  ['nombre', 'hora', 'direccion'].forEach(i => document.getElementById(i).addEventListener('input', actualiza));
+  document.getElementById('pedir').onclick = () => {
+    cambiaModo(); actualiza(); document.getElementById('sin_numero').hidden = !!WHATSAPP; dlg.showModal();
+  };
+  document.getElementById('form').addEventListener('submit', ev => {
+    if (ev.submitter && ev.submitter.value === 'ok' && WHATSAPP) {
+      window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(mensaje()), '_blank', 'noopener');
+    }
+  });
+})();
+</script>
+</body>
+</html>
