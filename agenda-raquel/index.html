@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agenda de Raquel</title>
+<meta name="theme-color" content="#7b2cbf">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icono-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Agenda">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Agenda de Raquel · una pantalla, tres pestañas (Hoy / Mes / Buscar), tarjetas grandes para tocar con el dedo */
+:root{
+  --fondo:#fbf6fb; --tarjeta:#ffffff; --tinta:#2a1f33; --tenue:#7b6f86; --linea:#eadff0;
+  --ciruela:#7b2cbf; --ciruela-suave:#efe3fb; --fresa:#e0409a; --fresa-suave:#fde4f1;
+  --menta:#2bb673; --menta-suave:#dff6ea; --miel:#f5a623; --miel-suave:#fff1d6;
+  --f-titulo:"Fredoka","Nunito",system-ui,sans-serif; --f-texto:"Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --fondo:#1b1522; --tarjeta:#27202f; --tinta:#f4edf8; --tenue:#b3a7bf; --linea:#3b3246;
+  --ciruela:#b57bff; --ciruela-suave:#352748; --fresa:#ff6cb8; --fresa-suave:#44283a;
+  --menta:#4fd391; --menta-suave:#1f3a2d; --miel:#ffbe4d; --miel-suave:#443720; color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --fondo:#1b1522; --tarjeta:#27202f; --tinta:#f4edf8; --tenue:#b3a7bf; --linea:#3b3246;
+  --ciruela:#b57bff; --ciruela-suave:#352748; --fresa:#ff6cb8; --fresa-suave:#44283a;
+  --menta:#4fd391; --menta-suave:#1f3a2d; --miel:#ffbe4d; --miel-suave:#443720; color-scheme:dark; }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--fondo);color:var(--tinta);font:17px/1.45 var(--f-texto)}
+body{min-height:100%;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+.cab{background:linear-gradient(135deg,var(--ciruela),var(--fresa));color:#fff;padding:calc(14px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 18px max(16px,env(safe-area-inset-left,0px))}
+.cab h1{font:600 26px/1.1 var(--f-titulo);margin:0}
+.cab p{margin:4px 0 0;opacity:.9;font-weight:600}
+.cab .fecha{text-transform:capitalize}
+main{max-width:860px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-right,0px)) 16px max(16px,env(safe-area-inset-left,0px))}
+.vista[hidden]{display:none}
+h2{font:600 20px/1.2 var(--f-titulo);margin:8px 0 10px;display:flex;align-items:center;gap:8px}
+h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 var(--f-texto);padding:5px 9px}
+.lista{display:grid;gap:10px}
+@media (min-width:640px){.lista{grid-template-columns:1fr 1fr}}
+.cita{display:grid;grid-template-columns:78px 1fr;gap:12px;background:var(--tarjeta);border:1px solid var(--linea);border-radius:18px;padding:12px 14px;align-items:center;min-width:0}
+.cita .hora{font:600 22px/1 var(--f-titulo);color:var(--ciruela);font-variant-numeric:tabular-nums}
+.cita .hora small{display:block;font:600 12px/1.3 var(--f-texto);color:var(--tenue);margin-top:4px}
+.cita .quien{font-weight:800;font-size:18px;min-width:0;overflow-wrap:anywhere}
+.cita .que{display:inline-block;margin-top:4px;padding:3px 10px;border-radius:999px;font-weight:700;font-size:14px}
+.cita .dia{font-size:13px;color:var(--tenue);font-weight:700;margin-top:4px;text-transform:capitalize}
+.t-corte{background:var(--ciruela-suave);color:var(--ciruela)} .t-color{background:var(--fresa-suave);color:var(--fresa)}
+.t-peinado{background:var(--miel-suave);color:#9a5d00} .t-otro{background:var(--menta-suave);color:#17784a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .t-peinado{color:var(--miel)} :root:not([data-theme="light"]) .t-otro{color:var(--menta)}}
+:root[data-theme="dark"] .t-peinado{color:var(--miel)} :root[data-theme="dark"] .t-otro{color:var(--menta)}
+.vacio{background:var(--tarjeta);border:1px dashed var(--linea);border-radius:18px;padding:22px;text-align:center;color:var(--tenue);font-weight:700}
+.vacio b{display:block;font:600 22px var(--f-titulo);color:var(--tinta);margin-bottom:4px}
+/* mes */
+.mes-cab{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0 10px}
+.mes-cab h2{margin:0;text-transform:capitalize}
+.btn{border:1px solid var(--linea);background:var(--tarjeta);color:var(--tinta);border-radius:12px;font:800 15px var(--f-texto);padding:8px 14px;cursor:pointer;min-width:44px;min-height:44px}
+.btn:focus-visible,.pest button:focus-visible,input:focus-visible{outline:3px solid var(--fresa);outline-offset:2px}
+.rejilla{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.rejilla .dn{text-align:center;font-weight:800;font-size:12px;color:var(--tenue);text-transform:uppercase;letter-spacing:.04em;padding:4px 0}
+.dia-c{aspect-ratio:1;max-width:100%;border-radius:14px;background:var(--tarjeta);border:1px solid var(--linea);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;font-weight:800;color:var(--tinta);padding:0}
+.dia-c.fuera{opacity:.35;cursor:default}
+.dia-c.hoy{border:2px solid var(--fresa)}
+.dia-c.sel{background:var(--ciruela);color:#fff;border-color:var(--ciruela)}
+.dia-c .pts{display:flex;gap:3px;height:6px}
+.dia-c .pts i{width:6px;height:6px;border-radius:50%;background:var(--fresa)}
+.dia-c.sel .pts i{background:#fff}
+.dia-c .cnt{font:700 11px/1 var(--f-texto);background:var(--fresa-suave);color:var(--fresa);border-radius:999px;padding:2px 6px}
+.dia-c.sel .cnt{background:rgba(255,255,255,.25);color:#fff}
+.dia-c.cerrado{background:transparent;border-style:dashed;color:var(--tenue);cursor:default}
+.detalle{margin-top:14px}
+/* buscar */
+.busca{display:flex;gap:8px;align-items:center;background:var(--tarjeta);border:2px solid var(--linea);border-radius:16px;padding:6px 10px 6px 14px;margin-bottom:12px}
+.busca:focus-within{border-color:var(--ciruela)}
+.busca svg{flex:none;color:var(--tenue)}
+.busca input{flex:1;min-width:0;border:0;background:transparent;color:var(--tinta);font:700 18px var(--f-texto);padding:10px 4px;outline:0}
+.busca .btn{border:0;background:var(--ciruela-suave);color:var(--ciruela)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.chip{border:0;border-radius:999px;padding:8px 14px;font:800 14px var(--f-texto);cursor:pointer;background:var(--tarjeta);color:var(--tinta);border:1px solid var(--linea);min-height:40px}
+.chip.on{background:var(--ciruela);color:#fff;border-color:var(--ciruela)}
+.ayuda{color:var(--tenue);font-weight:700;font-size:14px;margin:0 0 10px}
+/* pestañas abajo */
+.pest{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--tarjeta);border-top:1px solid var(--linea);padding:6px max(10px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px));z-index:5}
+.pest button{flex:1;border:0;background:transparent;color:var(--tenue);font:800 13px var(--f-texto);padding:6px 4px 4px;border-radius:14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:56px}
+.pest button svg{width:26px;height:26px}
+.pest button.on{color:var(--ciruela);background:var(--ciruela-suave)}
+.estado{font-size:13px;color:var(--tenue);font-weight:700;text-align:center;margin:14px 0 0}
+.estado.err{color:#b4231f}
+@media (prefers-reduced-motion:no-preference){.dia-c,.chip,.btn{transition:transform .08s} .dia-c:active,.chip:active,.btn:active{transform:scale(.96)}}
+</style>
+</head>
+<body>
+<header class="cab">
+  <h1>Agenda de Raquel</h1>
+  <p><span class="fecha" id="hoyTexto"></span> · <span id="resumenHoy">cargando…</span></p>
+</header>
+
+<main>
+  <section class="vista" id="v-hoy">
+    <h2>Hoy <span class="n" id="nHoy">0</span></h2>
+    <div class="lista" id="listaHoy"></div>
+    <h2 style="margin-top:22px">Mañana <span class="n" id="nManana">0</span></h2>
+    <div class="lista" id="listaManana"></div>
+  </section>
+
+  <section class="vista" id="v-mes" hidden>
+    <div class="mes-cab">
+      <button class="btn" id="mesAnt" aria-label="Mes anterior">‹</button>
+      <h2 id="mesTitulo"></h2>
+      <button class="btn" id="mesSig" aria-label="Mes siguiente">›</button>
+    </div>
+    <div class="rejilla" id="rejilla"></div>
+    <div class="detalle" id="detalleDia"></div>
+  </section>
+
+  <section class="vista" id="v-buscar" hidden>
+    <div class="busca">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Nombre, servicio o día… (ej. tinte Lola)" autocomplete="off" enterkeyhint="search">
+      <button class="btn" id="limpiar" type="button" hidden>Borrar</button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <p class="ayuda" id="ayudaBusca">Escribe arriba o toca un servicio.</p>
+    <div class="lista" id="listaBusca"></div>
+  </section>
+
+  <p class="estado" id="estado"></p>
+</main>
+
+<nav class="pest" aria-label="Secciones">
+  <button class="on" data-v="hoy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Hoy</button>
+  <button data-v="mes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Mes</button>
+  <button data-v="buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Buscar</button>
+</nav>
+
+<script>
+(function(){
+  'use strict';
+  const FUENTE = 'https://hook.eu1.make.com/dy04ycyacn2qj7uk191n4bvoswf75k73?tipo=agenda';
+  const DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const CERRADO = [0,1]; // domingo y lunes
+  let citas = [];
+  let mesVista = new Date(); mesVista.setDate(1);
+  let diaSel = hoyISO();
+
+  const $ = id => document.getElementById(id);
+  function hoyISO(){ const d=new Date(); return iso(d); }
+  function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function deISO(s){ const [a,m,d]=s.split('-').map(Number); return new Date(a,m-1,d); }
+  function sumaDias(s,n){ const d=deISO(s); d.setDate(d.getDate()+n); return iso(d); }
+  function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+  function fechaLarga(s){ const d=deISO(s); return DIAS[d.getDay()]+' '+d.getDate()+' de '+MESES[d.getMonth()]; }
+  function tipo(serv){ const s=serv.toLowerCase();
+    if(/mecha|color|tinte|balayage|raíz|raiz|kerat/.test(s)) return 't-color';
+    if(/corte/.test(s)) return 't-corte';
+    if(/peina|recog|ondas|marcado|lavar|trenza/.test(s)) return 't-peinado';
+    return 't-otro'; }
+
+  // «AAAA-MM-DD HH:MM-HH:MM Nombre · Servicio»
+  function parsear(texto){
+    const out=[]; const re=/^(\d{4}-\d{2}-\d{2})\s+(\d{1,2}:\d{2})-(\d{1,2}:\d{2})\s+(.+?)\s+·\s+(.+)$/;
+    texto.split(/\r?\n/).forEach(l=>{ const m=l.trim().match(re); if(m) out.push({fecha:m[1],ini:m[2].padStart(5,'0'),fin:m[3].padStart(5,'0'),nombre:m[4].trim(),servicio:m[5].trim()}); });
+    out.sort((a,b)=> (a.fecha+a.ini).localeCompare(b.fecha+b.ini)); return out;
+  }
+  function tarjeta(c, conDia){
+    const d=document.createElement('article'); d.className='cita';
+    d.innerHTML='<div class="hora">'+c.ini+'<small>hasta '+c.fin+'</small></div><div><div class="quien"></div><span class="que '+tipo(c.servicio)+'"></span>'+(conDia?'<div class="dia"></div>':'')+'</div>';
+    d.querySelector('.quien').textContent=c.nombre; d.querySelector('.que').textContent=cap(c.servicio);
+    if(conDia) d.querySelector('.dia').textContent=fechaLarga(c.fecha);
+    return d;
+  }
+  function pintarLista(cont, lista, conDia, vacioTitulo, vacioTexto){
+    cont.replaceChildren();
+    if(!lista.length){ const v=document.createElement('div'); v.className='vacio'; v.innerHTML='<b></b><span></span>'; v.querySelector('b').textContent=vacioTitulo; v.querySelector('span').textContent=vacioTexto; cont.append(v); return; }
+    lista.forEach(c=>cont.append(tarjeta(c,conDia)));
+  }
+  function pintarHoy(){
+    const h=hoyISO(), m=sumaDias(h,1);
+    const hoy=citas.filter(c=>c.fecha===h), man=citas.filter(c=>c.fecha===m);
+    $('nHoy').textContent=hoy.length; $('nManana').textContent=man.length;
+    pintarLista($('listaHoy'),hoy,false,'Hoy no hay citas','Alba sigue cogiendo el teléfono y el WhatsApp.');
+    pintarLista($('listaManana'),man,false,'Mañana, de momento, libre','Las citas que entren aparecen aquí solas.');
+    $('resumenHoy').textContent = hoy.length===0 ? 'sin citas' : hoy.length===1 ? '1 cita' : hoy.length+' citas';
+  }
+  function pintarMes(){
+    const a=mesVista.getFullYear(), m=mesVista.getMonth();
+    $('mesTitulo').textContent=MESES[m]+' '+a;
+    const r=$('rejilla'); r.replaceChildren();
+    ['L','M','X','J','V','S','D'].forEach(t=>{ const e=document.createElement('div'); e.className='dn'; e.textContent=t; r.append(e); });
+    const primero=new Date(a,m,1); let desp=(primero.getDay()+6)%7;
+    for(let i=0;i<desp;i++){ const e=document.createElement('div'); r.append(e); }
+    const nd=new Date(a,m+1,0).getDate(); const h=hoyISO();
+    for(let d=1;d<=nd;d++){
+      const f=iso(new Date(a,m,d)); const n=citas.filter(c=>c.fecha===f).length; const dow=new Date(a,m,d).getDay();
+      const b=document.createElement('button'); b.type='button'; b.className='dia-c'+(f===h?' hoy':'')+(f===diaSel?' sel':'')+(CERRADO.includes(dow)&&!n?' cerrado':'');
+      b.innerHTML='<span>'+d+'</span>'+(n?'<span class="cnt">'+n+'</span>':'<span class="pts"></span>');
+      b.addEventListener('click',()=>{ diaSel=f; pintarMes(); });
+      r.append(b);
+    }
+    const lista=citas.filter(c=>c.fecha===diaSel); const det=$('detalleDia'); det.replaceChildren();
+    const t=document.createElement('h2'); t.textContent=cap(fechaLarga(diaSel)); const nn=document.createElement('span'); nn.className='n'; nn.textContent=lista.length; t.append(nn); det.append(t);
+    const l=document.createElement('div'); l.className='lista'; det.append(l);
+    pintarLista(l,lista,false,'Nada ese día','Toca otro día del calendario.');
+  }
+  function servicios(){ const s=new Map(); citas.forEach(c=>{ const k=c.servicio.toLowerCase(); s.set(k,(s.get(k)||0)+1); }); return [...s.entries()].sort((x,y)=>y[1]-x[1]).slice(0,8).map(x=>x[0]); }
+  let chipOn='';
+  function pintarChips(){ const c=$('chips'); c.replaceChildren(); servicios().forEach(s=>{ const b=document.createElement('button'); b.type='button'; b.className='chip'+(chipOn===s?' on':''); b.textContent=cap(s); b.addEventListener('click',()=>{ chipOn=chipOn===s?'':s; $('q').value=chipOn; buscar(); }); c.append(b); }); }
+  function norm(s){ return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); }
+  function buscar(){
+    const q=norm($('q').value.trim()); $('limpiar').hidden=!q; if(!q.length){ chipOn=''; pintarChips(); $('ayudaBusca').textContent='Escribe arriba o toca un servicio.'; $('listaBusca').replaceChildren(); return; }
+    const pal=q.split(/\s+/);
+    const res=citas.filter(c=>{ const txt=norm(c.nombre+' '+c.servicio+' '+fechaLarga(c.fecha)+' '+c.fecha); return pal.every(p=>txt.includes(p)); });
+    const h=hoyISO(); const fut=res.filter(c=>c.fecha>=h), pas=res.filter(c=>c.fecha<h).reverse();
+    $('ayudaBusca').textContent = res.length ? (res.length===1?'1 cita':res.length+' citas')+(fut.length&&pas.length?' · primero las próximas, luego las pasadas':'') : '';
+    pintarChips(); pintarLista($('listaBusca'),fut.concat(pas),true,'No encuentro nada','Prueba con el nombre, el servicio o el día.');
+  }
+  $('q').addEventListener('input',buscar); $('limpiar').addEventListener('click',()=>{ $('q').value=''; buscar(); $('q').focus(); });
+  $('mesAnt').addEventListener('click',()=>{ mesVista.setMonth(mesVista.getMonth()-1); pintarMes(); });
+  $('mesSig').addEventListener('click',()=>{ mesVista.setMonth(mesVista.getMonth()+1); pintarMes(); });
+  document.querySelectorAll('.pest button').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.pest button').forEach(x=>x.classList.toggle('on',x===b));
+    ['hoy','mes','buscar'].forEach(v=>{ $('v-'+v).hidden = v!==b.dataset.v; });
+    if(b.dataset.v==='buscar') setTimeout(()=>$('q').focus(),50);
+    try{ localStorage.setItem('agenda_vista',b.dataset.v); }catch(e){}
+  }));
+  function pintarTodo(){ pintarHoy(); pintarMes(); pintarChips(); buscar(); }
+  async function cargar(silencioso){
+    if(!silencioso) $('estado').textContent='Cargando la agenda…';
+    try{
+      const r=await fetch(FUENTE,{cache:'no-store'}); if(!r.ok) throw new Error('HTTP '+r.status);
+      const t=await r.text(); if(/^Accepted$/.test(t.trim())) throw new Error('ocupada');
+      citas=parsear(t); try{ localStorage.setItem('agenda_cache',t); }catch(e){}
+      pintarTodo(); $('estado').className='estado'; $('estado').textContent='Actualizado a las '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})+' · se actualiza sola cada minuto';
+    }catch(e){
+      let cache=''; try{ cache=localStorage.getItem('agenda_cache')||''; }catch(x){}
+      if(cache){ citas=parsear(cache); pintarTodo(); }
+      $('estado').className='estado err'; $('estado').textContent = e.message==='ocupada' ? 'La agenda está ocupada un momento; vuelvo a intentarlo…' : 'No llego a la agenda ahora mismo. Comprueba la conexión; lo reintento solo.';
+      if(e.message==='ocupada') setTimeout(()=>cargar(true),4000);
+    }
+  }
+  $('hoyTexto').textContent=fechaLarga(hoyISO());
+  try{ const v=localStorage.getItem('agenda_vista'); if(v){ const b=document.querySelector('.pest button[data-v="'+v+'"]'); if(b) b.click(); } }catch(e){}
+  cargar(false); setInterval(()=>cargar(true),60000);
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) cargar(true); });
+})();
+</script>
+</body>
+</html>
