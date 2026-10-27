@@ -88,6 +88,16 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
 .pest button.on{color:var(--ciruela);background:var(--ciruela-suave)}
 .estado{font-size:13px;color:var(--tenue);font-weight:700;text-align:center;margin:14px 0 0}
 .estado.err{color:#b4231f}
+.anadir{margin:12px 0 4px}
+.btn.lleno{background:var(--ciruela);color:#fff;border-color:var(--ciruela);width:100%;font-size:17px;padding:12px}
+.form{background:var(--tarjeta);border:2px solid var(--ciruela);border-radius:18px;padding:14px;margin-top:10px;display:grid;gap:10px}
+.form label{display:grid;gap:4px;font-weight:800;font-size:14px;color:var(--tenue)}
+.form input,.form select{border:1px solid var(--linea);border-radius:12px;padding:12px;font:700 18px var(--f-texto);background:var(--fondo);color:var(--tinta);width:100%}
+.form .fila{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form .acciones{display:flex;gap:8px}
+.form .acciones .btn{flex:1}
+.form .msg{font-weight:800;font-size:14px;color:var(--tenue);margin:0}
+.form .msg.err{color:#b4231f}
 @media (prefers-reduced-motion:no-preference){.dia-c,.chip,.btn{transition:transform .08s} .dia-c:active,.chip:active,.btn:active{transform:scale(.96)}}
 </style>
 </head>
@@ -141,7 +151,7 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
   const FUENTE = 'https://hook.eu1.make.com/dy04ycyacn2qj7uk191n4bvoswf75k73?tipo=agenda';
   const DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
   const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-  const CERRADO = [0,1]; // domingo y lunes
+  const CERRADO = [0]; // solo el domingo
   let citas = [];
   let mesVista = new Date(); mesVista.setDate(1);
   let diaSel = hoyISO();
@@ -204,6 +214,45 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
     const t=document.createElement('h2'); t.textContent=cap(fechaLarga(diaSel)); const nn=document.createElement('span'); nn.className='n'; nn.textContent=lista.length; t.append(nn); det.append(t);
     const l=document.createElement('div'); l.className='lista'; det.append(l);
     pintarLista(l,lista,false,'Nada ese día','Toca otro día del calendario.');
+    const z=document.createElement('div'); z.className='anadir'; det.append(z);
+    const b=document.createElement('button'); b.type='button'; b.className='btn lleno'; b.textContent='＋ Apuntar una cita a mano'; z.append(b);
+    b.addEventListener('click',()=>{ b.hidden=true; z.append(formulario(diaSel, ()=>{ b.hidden=false; })); });
+  }
+  // Raquel apunta una cita a mano (clienta que viene al local o llama cuando Alba no está): va a la misma agenda que Alba
+  function formulario(fecha, cerrar){
+    const f=document.createElement('form'); f.className='form'; f.noValidate=true;
+    const horas=[]; for(let h=9;h<=20;h++){ for(const m of ['00','15','30','45']){ if(h===20&&m!=='00') continue; horas.push(String(h).padStart(2,'0')+':'+m); } }
+    f.innerHTML='<label>Nombre<input name="nombre" placeholder="Ej. Lola" autocomplete="off" required></label>'
+      +'<label>Servicio<input name="servicio" placeholder="Ej. corte, tinte, mechas…" autocomplete="off" required list="servs"><datalist id="servs"></datalist></label>'
+      +'<div class="fila"><label>Hora<select name="hora"></select></label><label>Dura<select name="dura"><option value="30">30 min</option><option value="45">45 min</option><option value="60" selected>1 hora</option><option value="90">1 h y media</option><option value="120">2 horas</option><option value="150">2 h y media</option><option value="180">3 horas</option></select></label></div>'
+      +'<p class="msg">Se apunta en '+cap(fechaLarga(fecha))+'.</p>'
+      +'<div class="acciones"><button type="button" class="btn" data-x>Cancelar</button><button type="submit" class="btn lleno">Apuntar</button></div>';
+    const sel=f.querySelector('[name=hora]'); horas.forEach(h=>{ const o=document.createElement('option'); o.value=h; o.textContent=h; if(h==='10:00') o.selected=true; sel.append(o); });
+    const dl=f.querySelector('#servs'); servicios().forEach(sv=>{ const o=document.createElement('option'); o.value=cap(sv); dl.append(o); });
+    const msg=f.querySelector('.msg');
+    f.querySelector('[data-x]').addEventListener('click',()=>{ f.remove(); cerrar(); });
+    f.addEventListener('submit',async ev=>{
+      ev.preventDefault();
+      const nombre=f.nombre.value.trim(), servicio=f.servicio.value.trim().toLowerCase();
+      if(!nombre||!servicio){ msg.className='msg err'; msg.textContent='Falta el nombre o el servicio.'; return; }
+      const ini=f.hora.value; const [hh,mm]=ini.split(':').map(Number); const t=hh*60+mm+Number(f.dura.value);
+      const fin=String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');
+      const choca=citas.filter(c=>c.fecha===fecha && c.ini<fin && ini<c.fin);
+      if(choca.length && !f.dataset.forzar){ msg.className='msg err'; msg.textContent='A esa hora ya está '+choca[0].nombre+' ('+choca[0].ini+'-'+choca[0].fin+'). Toca «Apuntar» otra vez si la quieres igual.'; f.dataset.forzar='1'; return; }
+      f.querySelectorAll('button').forEach(x=>x.disabled=true); msg.className='msg'; msg.textContent='Apuntando…';
+      try{
+        const u=new URL(FUENTE); u.searchParams.set('tipo','manual'); u.searchParams.set('nombre',nombre); u.searchParams.set('servicio',servicio); u.searchParams.set('fecha',fecha); u.searchParams.set('hora',ini+'-'+fin);
+        const r=await fetch(u,{cache:'no-store'}); const tx=(await r.text()).trim();
+        if(!r.ok || tx!=='ok') throw new Error(tx||('HTTP '+r.status));
+        citas.push({fecha,ini,fin,nombre,servicio}); citas.sort((a,b)=>(a.fecha+a.ini).localeCompare(b.fecha+b.ini));
+        pintarTodo(); setTimeout(()=>cargar(true),2500);
+      }catch(e){
+        f.querySelectorAll('button').forEach(x=>x.disabled=false); msg.className='msg err';
+        msg.textContent = e.message==='Accepted' ? 'La agenda estaba ocupada; prueba otra vez en unos segundos.' : 'No se ha podido apuntar. Comprueba la conexión y vuelve a intentarlo.';
+      }
+    });
+    setTimeout(()=>f.nombre.focus(),50);
+    return f;
   }
   function servicios(){ const s=new Map(); citas.forEach(c=>{ const k=c.servicio.toLowerCase(); s.set(k,(s.get(k)||0)+1); }); return [...s.entries()].sort((x,y)=>y[1]-x[1]).slice(0,8).map(x=>x[0]); }
   let chipOn='';
