@@ -95,6 +95,18 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
 .aviso .t{font-weight:800;font-size:17px}
 .aviso .t small{display:block;font-weight:700;color:var(--tenue);font-size:13px;margin-top:2px}
 .aviso .btn{background:var(--miel);border-color:var(--miel);color:#3a2600}
+.cita{grid-template-rows:auto auto}
+.cita .est{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.cita .est .btn{padding:8px 12px;font-size:14px;min-height:40px}
+.cita .est .ok{background:var(--menta-suave);border-color:var(--menta);color:#17784a}
+.cita .est .no{background:#fde4e4;border-color:#d9534f;color:#a12622}
+.cita .est .fin{background:var(--ciruela-suave);border-color:var(--ciruela);color:var(--ciruela)}
+.cita .est .sello{font-weight:800;font-size:14px;padding:8px 4px;flex:1}
+.cita.llegada{border:2px solid var(--menta);background:var(--menta-suave)}
+.cita.no_vino{border:2px solid #d9534f;background:#fde4e4}
+.cita.terminada{opacity:.55;border-style:dashed}
+.cita.terminada .hora{color:var(--tenue)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cita.no_vino{background:#44282a} :root:not([data-theme="light"]) .cita .est .no{background:#44282a;color:#ff8a86}}
 .anadir{margin:12px 0 4px}
 .btn.lleno{background:var(--ciruela);color:#fff;border-color:var(--ciruela);width:100%;font-size:17px;padding:12px}
 .form{background:var(--tarjeta);border:2px solid var(--ciruela);border-radius:18px;padding:14px;margin-top:10px;display:grid;gap:10px}
@@ -183,17 +195,43 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
     texto.split(/\r?\n/).forEach(l=>{ const m=l.trim().match(re); if(m) out.push({fecha:m[1],ini:m[2].padStart(5,'0'),fin:m[3].padStart(5,'0'),nombre:m[4].trim(),servicio:m[5].trim()}); });
     out.sort((a,b)=> (a.fecha+a.ini).localeCompare(b.fecha+b.ini)); return out;
   }
+  // Estado de cada cita (Raquel lo marca en la tablet): llegada (verde), no_vino (rojo), terminada (gris). Se guarda en el servidor.
+  const ESTADOS = FUENTE.replace('tipo=agenda','tipo=estados');
+  let estados = {};
+  const TXT={llegada:'Ha llegado',no_vino:'No ha venido',terminada:'Terminada ✓'};
+  function claveE(c){ return c.fecha+' '+c.ini+'|'+c.nombre; }
+  function parsearEstados(t){ const m={}; t.split(/\r?\n/).forEach(l=>{ const p=l.trim().split('|'); if(p.length>=3) m[p[0]+'|'+p[1]]=p[2]; }); return m; }
+  async function cargarEstados(){ try{ const r=await fetch(ESTADOS,{cache:'no-store'}); if(!r.ok) return; const t=await r.text(); if(/^Accepted$/.test(t.trim())) return; estados=parsearEstados(t); try{ localStorage.setItem('estados_cache',t); }catch(e){} pintarTodo(); }catch(e){} }
+  try{ estados=parsearEstados(localStorage.getItem('estados_cache')||''); }catch(e){}
+  async function marcar(c, est, boton){
+    const k=claveE(c); const antes=estados[k]; estados[k]=est; pintarTodo();
+    try{ const u=new URL(FUENTE); u.searchParams.set('tipo','estado'); u.searchParams.set('fecha',c.fecha); u.searchParams.set('ini',c.ini); u.searchParams.set('nombre',c.nombre); u.searchParams.set('estado',est);
+      const r=await fetch(u,{cache:'no-store'}); const tx=(await r.text()).trim(); if(!r.ok||tx!=='ok') throw new Error(tx); }
+    catch(e){ if(antes) estados[k]=antes; else delete estados[k]; pintarTodo(); $('estado').className='estado err'; $('estado').textContent='No se ha podido guardar el cambio; prueba otra vez.'; }
+  }
+  function botonesEstado(c){
+    const e=estados[claveE(c)]||'pendiente'; const z=document.createElement('div'); z.className='est';
+    const b=(txt,cls,est)=>{ const x=document.createElement('button'); x.type='button'; x.className='btn '+cls; x.textContent=txt; x.addEventListener('click',ev=>{ ev.stopPropagation(); marcar(c,est,x); }); return x; };
+    if(e==='pendiente'){ z.append(b('✓ Ha llegado','ok','llegada'), b('✗ No ha venido','no','no_vino')); }
+    else if(e==='llegada'){ const t=document.createElement('span'); t.className='sello'; t.textContent='🟢 Ha llegado'; z.append(t, b('Terminada','fin','terminada'), b('Deshacer','','pendiente')); }
+    else if(e==='no_vino'){ const t=document.createElement('span'); t.className='sello'; t.textContent='🔴 No ha venido'; z.append(t, b('Deshacer','','pendiente')); }
+    else { const t=document.createElement('span'); t.className='sello'; t.textContent='✓ Terminada'; z.append(t, b('Deshacer','','pendiente')); }
+    return z;
+  }
   function tarjeta(c, conDia){
     const d=document.createElement('article'); d.className='cita';
     d.innerHTML='<div class="hora">'+c.ini+'<small>hasta '+c.fin+'</small></div><div><div class="quien"></div><span class="que '+tipo(c.servicio)+'"></span>'+(conDia?'<div class="dia"></div>':'')+'</div>';
     d.querySelector('.quien').textContent=c.nombre; d.querySelector('.que').textContent=cap(c.servicio);
     if(conDia) d.querySelector('.dia').textContent=fechaLarga(c.fecha);
+    const e=estados[claveE(c)]; if(e && e!=='pendiente') d.classList.add(e);
+    d.append(botonesEstado(c));
     return d;
   }
   function pintarLista(cont, lista, conDia, vacioTitulo, vacioTexto){
     cont.replaceChildren();
     if(!lista.length){ const v=document.createElement('div'); v.className='vacio'; v.innerHTML='<b></b><span></span>'; v.querySelector('b').textContent=vacioTitulo; v.querySelector('span').textContent=vacioTexto; cont.append(v); return; }
-    lista.forEach(c=>cont.append(tarjeta(c,conDia)));
+    const orden=x=>(estados[claveE(x)]==='terminada'?1:0);
+    lista.slice().sort((a,b)=>orden(a)-orden(b)).forEach(c=>cont.append(tarjeta(c,conDia)));
   }
   function pintarHoy(){
     const h=hoyISO(), m=sumaDias(h,1);
@@ -339,7 +377,7 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
   document.addEventListener('click',()=>{ try{ new (window.AudioContext||window.webkitAudioContext)().resume(); }catch(e){} },{once:true});
   $('hoyTexto').textContent=fechaLarga(hoyISO());
   try{ const v=localStorage.getItem('agenda_vista'); if(v){ const b=document.querySelector('.pest button[data-v="'+v+'"]'); if(b) b.click(); } }catch(e){}
-  cargar(false); setInterval(()=>cargar(true),60000);
+  cargar(false); cargarEstados(); setInterval(()=>{ cargar(true); cargarEstados(); },60000);
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden) cargar(true); });
 })();
 </script>
