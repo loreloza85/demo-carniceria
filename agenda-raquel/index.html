@@ -88,6 +88,13 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
 .pest button.on{color:var(--ciruela);background:var(--ciruela-suave)}
 .estado{font-size:13px;color:var(--tenue);font-weight:700;text-align:center;margin:14px 0 0}
 .estado.err{color:#b4231f}
+.avisos{display:grid;gap:8px;margin:0 0 14px}
+.aviso{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:var(--miel-suave);border:2px solid var(--miel);border-radius:16px;padding:12px 14px}
+.aviso.nuevo{animation:late 1s ease-in-out 3}
+@keyframes late{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+.aviso .t{font-weight:800;font-size:17px}
+.aviso .t small{display:block;font-weight:700;color:var(--tenue);font-size:13px;margin-top:2px}
+.aviso .btn{background:var(--miel);border-color:var(--miel);color:#3a2600}
 .anadir{margin:12px 0 4px}
 .btn.lleno{background:var(--ciruela);color:#fff;border-color:var(--ciruela);width:100%;font-size:17px;padding:12px}
 .form{background:var(--tarjeta);border:2px solid var(--ciruela);border-radius:18px;padding:14px;margin-top:10px;display:grid;gap:10px}
@@ -108,6 +115,7 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
 </header>
 
 <main>
+  <div class="avisos" id="avisos"></div>
   <section class="vista" id="v-hoy">
     <h2>Hoy <span class="n" id="nHoy">0</span></h2>
     <div class="lista" id="listaHoy"></div>
@@ -290,6 +298,32 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
       if(e.message==='ocupada') setTimeout(()=>cargar(true),4000);
     }
   }
+  // Avisos de Alba (llamadas que no acaban en cita): franja amarilla arriba + sonido; «Visto» lo quita en esta tablet
+  const AVISOS = FUENTE.replace('tipo=agenda','tipo=avisos');
+  const MOTIVO={persona:'Quiere hablar con Raquel',cambio:'Quiere cambiar su cita',anular:'Quiere anular su cita',informacion:'Pide información',información:'Pide información',cita:'Cita por cerrar'};
+  let vistos=new Set(); try{ vistos=new Set(JSON.parse(localStorage.getItem('avisos_vistos')||'[]')); }catch(e){}
+  let sonados=new Set();
+  function sonar(){ try{ const a=new (window.AudioContext||window.webkitAudioContext)(); const t=a.currentTime;
+    [[880,0],[1175,.18],[880,.36]].forEach(([f,d])=>{ const o=a.createOscillator(), g=a.createGain(); o.type='sine'; o.frequency.value=f; g.gain.setValueAtTime(0.0001,t+d); g.gain.exponentialRampToValueAtTime(0.5,t+d+.02); g.gain.exponentialRampToValueAtTime(0.0001,t+d+.17); o.connect(g).connect(a.destination); o.start(t+d); o.stop(t+d+.2); }); }catch(e){} }
+  function pintarAvisos(texto){
+    const cont=$('avisos'); cont.replaceChildren(); let nuevos=false;
+    texto.split(/\r?\n/).map(l=>l.trim()).filter(Boolean).reverse().forEach(l=>{
+      const [cuando,nombre,tel,motivo,detalle,nota]=l.split('|'); const id=cuando+'|'+tel+'|'+motivo; if(vistos.has(id)) return;
+      const d=document.createElement('div'); d.className='aviso'+(sonados.has(id)?'':' nuevo');
+      const hora=(cuando||'').slice(11,16), fecha=(cuando||'').slice(0,10); const dia=fecha===hoyISO()?'hoy':fecha?fechaLarga(fecha):'';
+      d.innerHTML='<div class="t"><span class="m"></span><small></small></div><button type="button" class="btn">Visto</button>';
+      d.querySelector('.m').textContent='📞 '+(nombre||'Una clienta')+': '+(MOTIVO[(motivo||'').toLowerCase()]||motivo||'aviso');
+      d.querySelector('small').textContent=[dia&&hora?dia+' a las '+hora:'', tel?'tel. '+tel:'', (detalle||'').trim(), nota||''].filter(Boolean).join(' · ');
+      d.querySelector('button').addEventListener('click',()=>{ vistos.add(id); try{ localStorage.setItem('avisos_vistos',JSON.stringify([...vistos].slice(-200))); }catch(e){} d.remove(); });
+      if(!sonados.has(id)){ nuevos=true; sonados.add(id); }
+      cont.append(d);
+    });
+    if(nuevos && cont.dataset.listo) sonar();
+    cont.dataset.listo='1';
+  }
+  async function cargarAvisos(){ try{ const r=await fetch(AVISOS,{cache:'no-store'}); if(!r.ok) return; const t=await r.text(); if(/^Accepted$/.test(t.trim())) return; pintarAvisos(t); }catch(e){} }
+  cargarAvisos(); setInterval(cargarAvisos,60000);
+  document.addEventListener('click',()=>{ try{ new (window.AudioContext||window.webkitAudioContext)().resume(); }catch(e){} },{once:true});
   $('hoyTexto').textContent=fechaLarga(hoyISO());
   try{ const v=localStorage.getItem('agenda_vista'); if(v){ const b=document.querySelector('.pest button[data-v="'+v+'"]'); if(b) b.click(); } }catch(e){}
   cargar(false); setInterval(()=>cargar(true),60000);
