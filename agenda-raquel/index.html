@@ -323,6 +323,10 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
   }
   async function cargarAvisos(){ try{ const r=await fetch(AVISOS,{cache:'no-store'}); if(!r.ok) return; const t=await r.text(); if(/^Accepted$/.test(t.trim())) return; pintarAvisos(t); }catch(e){} }
   cargarAvisos(); setInterval(cargarAvisos,60000);
+  // Si se sube una versión nueva de la agenda, la tablet la recarga sola (cada 5 min, nunca con el formulario abierto)
+  let versionVista='';
+  async function comprobarVersion(){ try{ const r=await fetch(location.pathname+'?v='+Date.now(),{method:'HEAD',cache:'no-store'}); const lm=r.headers.get('last-modified')||''; if(!versionVista){ versionVista=lm; return; } if(lm && lm!==versionVista && !document.querySelector('form.form')) location.reload(); }catch(e){} }
+  comprobarVersion(); setInterval(comprobarVersion,300000);
   document.addEventListener('click',()=>{ try{ new (window.AudioContext||window.webkitAudioContext)().resume(); }catch(e){} },{once:true});
   $('hoyTexto').textContent=fechaLarga(hoyISO());
   try{ const v=localStorage.getItem('agenda_vista'); if(v){ const b=document.querySelector('.pest button[data-v="'+v+'"]'); if(b) b.click(); } }catch(e){}
