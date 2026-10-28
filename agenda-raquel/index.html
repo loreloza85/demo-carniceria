@@ -231,17 +231,26 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
     const f=document.createElement('form'); f.className='form'; f.noValidate=true;
     const horas=[]; for(let h=9;h<=20;h++){ for(const m of ['00','15','30','45']){ if(h===20&&m!=='00') continue; horas.push(String(h).padStart(2,'0')+':'+m); } }
     f.innerHTML='<label>Nombre<input name="nombre" placeholder="Ej. Lola" autocomplete="off" required></label>'
-      +'<label>Servicio<input name="servicio" placeholder="Ej. corte, tinte, mechas…" autocomplete="off" required list="servs"><datalist id="servs"></datalist></label>'
+      +'<label>Servicio<select name="servicio_sel"></select></label>'
+      +'<label hidden id="otroLab">¿Cuál?<input name="servicio" placeholder="Escribe el servicio" autocomplete="off"></label>'
       +'<div class="fila"><label>Hora<select name="hora"></select></label><label>Dura<select name="dura"><option value="30">30 min</option><option value="45">45 min</option><option value="60" selected>1 hora</option><option value="90">1 h y media</option><option value="120">2 horas</option><option value="150">2 h y media</option><option value="180">3 horas</option></select></label></div>'
       +'<p class="msg">Se apunta en '+cap(fechaLarga(fecha))+'.</p>'
       +'<div class="acciones"><button type="button" class="btn" data-x>Cancelar</button><button type="submit" class="btn lleno">Apuntar</button></div>';
     const sel=f.querySelector('[name=hora]'); horas.forEach(h=>{ const o=document.createElement('option'); o.value=h; o.textContent=h; if(h==='10:00') o.selected=true; sel.append(o); });
-    const dl=f.querySelector('#servs'); servicios().forEach(sv=>{ const o=document.createElement('option'); o.value=cap(sv); dl.append(o); });
+    // desplegable de servicios: los que ya hay apuntados (más usados primero) + los fijos + «Otro…»; los nuevos se recuerdan en esta tablet
+    const FIJOS=['corte','corte y peinado','tinte','mechas','peinado','recogido','tratamiento','lavar y marcar','corte infantil','corte hombre'];
+    let propios=[]; try{ propios=JSON.parse(localStorage.getItem('servicios_propios')||'[]'); }catch(e){}
+    const vistosS=new Set(); const lista=[];
+    [...servicios(), ...propios, ...FIJOS].forEach(sv=>{ const k=sv.toLowerCase().trim(); if(k && !vistosS.has(k)){ vistosS.add(k); lista.push(k); } });
+    const ss=f.querySelector('[name=servicio_sel]'); lista.forEach(sv=>{ const o=document.createElement('option'); o.value=sv; o.textContent=cap(sv); ss.append(o); });
+    const oo=document.createElement('option'); oo.value='__otro'; oo.textContent='Otro… (escribirlo)'; ss.append(oo);
+    const otroLab=f.querySelector('#otroLab'); ss.addEventListener('change',()=>{ otroLab.hidden = ss.value!=='__otro'; if(!otroLab.hidden) setTimeout(()=>f.servicio.focus(),50); });
     const msg=f.querySelector('.msg');
     f.querySelector('[data-x]').addEventListener('click',()=>{ f.remove(); cerrar(); });
     f.addEventListener('submit',async ev=>{
       ev.preventDefault();
-      const nombre=f.nombre.value.trim(), servicio=f.servicio.value.trim().toLowerCase();
+      const nombre=f.nombre.value.trim(); const servicio=(f.servicio_sel.value==='__otro'?f.servicio.value:f.servicio_sel.value).trim().toLowerCase();
+      if(f.servicio_sel.value==='__otro' && servicio){ try{ const pr=JSON.parse(localStorage.getItem('servicios_propios')||'[]'); if(!pr.includes(servicio)){ pr.push(servicio); localStorage.setItem('servicios_propios',JSON.stringify(pr.slice(-30))); } }catch(e){} }
       if(!nombre||!servicio){ msg.className='msg err'; msg.textContent='Falta el nombre o el servicio.'; return; }
       const ini=f.hora.value; const [hh,mm]=ini.split(':').map(Number); const t=hh*60+mm+Number(f.dura.value);
       const fin=String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');
