@@ -66,6 +66,15 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
 .estado.err{color:#b4231f}
 .sonido{position:fixed;right:14px;bottom:14px;border-radius:999px;padding:10px 16px;font-weight:800;background:var(--tinta);color:#fff;border:0;font-size:14px;z-index:4}
 /* formulario de comanda de mesa */
+.resumen{background:#fff;border-radius:20px;padding:18px;width:min(760px,100%);max-height:92vh;overflow:auto;display:grid;gap:12px}
+.resumen h3{font:600 26px var(--f-titulo);margin:0;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.tabs{display:flex;gap:8px}.tabs .btn.on{background:var(--tinta);color:#fff;border-color:var(--tinta)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.kpi{background:#fff7ea;border-radius:14px;padding:12px;text-align:center}.kpi b{display:block;font-size:34px;line-height:1.1}.kpi span{font-size:13px;font-weight:800;color:var(--tenue)}
+.resumen h4{margin:8px 0 2px;font-size:15px;color:var(--tenue);text-transform:uppercase;letter-spacing:.04em}
+.tabla{width:100%;border-collapse:collapse;font-size:16px}.tabla td{padding:7px 6px;border-bottom:1px solid #eee}.tabla td:last-child{text-align:right;font-weight:800;white-space:nowrap}
+.bar{height:10px;border-radius:5px;background:#f0b429;display:inline-block;vertical-align:middle;margin-right:6px}
+.mesnav{display:flex;gap:8px;align-items:center;justify-content:center;font-weight:800}
 .velo{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
 .velo[hidden]{display:none}
 .form{background:#fff;border-radius:20px;padding:18px;width:min(520px,100%);display:grid;gap:12px}
@@ -94,6 +103,7 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
     <span style="flex:1"></span>
     <button class="btn grande mesa" id="bMesa" type="button">＋ Comanda de mesa</button>
     <button class="btn grande atope" id="bTope" type="button">🔥 Cocina a tope</button>
+    <button class="btn grande" id="bResumen" type="button">📊 Resumen</button>
   </div>
   <div class="aviso-tope" id="avisoTope" hidden>🔥 Cocina a tope: Alba está dando 15 minutos más en todos los pedidos nuevos. Cuando se despeje, vuelve a tocar el botón.</div>
   <section class="col"><h2>Comandas de hoy, en orden <span class="n" id="nTodos">0</span></h2><div class="lista" id="lTodos"></div></section>
@@ -101,6 +111,12 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
   <p class="estado" id="estado">Cargando…</p>
 </main>
 <button class="sonido" id="sonido" type="button">🔔 Activar sonido</button>
+<div class="velo" id="veloRes" hidden>
+  <div class="resumen" id="panelRes">
+    <h3><span>📊 Resumen</span><span class="tabs"><button class="btn on" type="button" id="tabHoy">Hoy</button><button class="btn" type="button" id="tabMes">Mes</button><button class="btn" type="button" id="bCerrarRes">Cerrar</button></span></h3>
+    <div id="cuerpoRes">Cargando…</div>
+  </div>
+</div>
 <div class="velo" id="velo" hidden>
   <form class="form" id="fMesa" novalidate>
     <h3>Comanda de mesa</h3>
@@ -215,6 +231,44 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
       const r=await fetch(u,{cache:'no-store'}); if((await r.text()).trim()!=='ok') throw new Error(); $('velo').hidden=true; formAbierto=false; cargar(); }
     catch(e){ msg.textContent='No se pudo apuntar. Inténtalo otra vez.'; }
   });
+  // ---------- resumen de lo vendido (hoy / mes) ----------
+  function fecha(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function platos(que){ // «2 hamburguesas completas, 1 ración de croquetas» → [[2,'hamburguesas completas'],[1,'croquetas']]
+    const out=[]; que.split(/,| y /i).forEach(t=>{ t=t.trim().toLowerCase(); if(!t) return; let n=1; const m=t.match(/^(\d+)\s+(.*)$/); if(m){ n=+m[1]; t=m[2]; }
+      t=t.replace(/^(raci[oó]n|raciones|de|una?|unos?|unas?)\s+(de\s+)?/,'').trim(); if(t) out.push([n,t]); }); return out; }
+  function agregar(lista){ // estadísticas de una lista de comandas
+    const r={n:lista.length,recoger:0,domicilio:0,mesa:0,prog:0,platos:{},horas:{},unidades:0};
+    lista.forEach(p=>{ r[p.modo==='domicilio'?'domicilio':p.modo==='mesa'?'mesa':'recoger']++; if(p.prog) r.prog++; const h=p.hora.slice(0,2)+'h'; r.horas[h]=(r.horas[h]||0)+1;
+      platos(p.que).forEach(([n,t])=>{ r.platos[t]=(r.platos[t]||0)+n; r.unidades+=n; }); }); return r; }
+  function kpi(v,t){ return '<div class="kpi"><b>'+v+'</b><span>'+t+'</span></div>'; }
+  function esc(t){ return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+  function tablaTop(obj, max, orden){ let e=Object.entries(obj); e=orden==='clave'?e.sort((a,b)=>a[0].localeCompare(b[0])):e.sort((a,b)=>b[1]-a[1]); e=e.slice(0,max); if(!e.length) return '<p class="estado">Nada todavía.</p>'; const top=Math.max(...e.map(x=>x[1]));
+    return '<table class="tabla">'+e.map(([k,v])=>'<tr><td><span class="bar" style="width:'+Math.max(8,Math.round(140*v/top))+'px"></span>'+esc(k)+'</td><td>'+v+'</td></tr>').join('')+'</table>'; }
+  function pintarStats(r, extra){
+    let h='<div class="kpis">'+kpi(r.n,'comandas')+kpi(r.unidades,'platos / raciones')+kpi(r.recoger,'para recoger')+kpi(r.domicilio,'a domicilio')+kpi(r.mesa,'de mesa')+(r.prog?kpi(r.prog,'para una hora'):'')+'</div>';
+    h+='<h4>Lo más vendido</h4>'+tablaTop(r.platos,12); h+='<h4>Comandas por hora</h4>'+tablaTop(r.horas,24,'clave'); return (extra||'')+h; }
+  function resumenHoy(){ const r=agregar(pedidos); const est=p=>estados[clave(p)]||'pendiente'; const fin=pedidos.filter(p=>est(p)==='entregado').length; const d=new Date();
+    return pintarStats(r,'<p class="estado">'+DIAS[d.getDay()]+' '+d.getDate()+' de '+MESES[d.getMonth()]+' · '+fin+' entregadas de '+r.n+'</p>'); }
+  const cacheDias={}; let mesVisto=new Date();
+  async function dia(f){ const hoy=fecha(new Date()); if(f!==hoy && cacheDias[f]) return cacheDias[f]; const guard=localStorage.getItem('dia_'+f); if(f!==hoy && guard!==null){ cacheDias[f]=parsear(guard); return cacheDias[f]; }
+    try{ const u=url('dia_bar'); u.searchParams.set('fecha',f); const r=await fetch(u,{cache:'no-store'}); const t=r.ok?await r.text():''; if(/^Accepted/i.test(t.trim())) throw new Error('ocupado');
+      if(f<hoy) localStorage.setItem('dia_'+f,t); const l=parsear(t); cacheDias[f]=l; return l; }catch(e){ return null; } }
+  async function resumenMes(){
+    const y=mesVisto.getFullYear(), m=mesVisto.getMonth(); const hoy=new Date(); const ultimo=(y===hoy.getFullYear()&&m===hoy.getMonth())?hoy.getDate():new Date(y,m+1,0).getDate();
+    const dias=[]; for(let d=1; d<=ultimo; d++) dias.push(new Date(y,m,d));
+    const res=[]; for(const d of dias) res.push(await dia(fecha(d)));   // de uno en uno: Make no admite 30 llamadas a la vez
+    const todas=[]; let filas=''; let fallos=0;
+    res.forEach((l,i)=>{ if(l===null){ fallos++; return; } todas.push(...l); if(l.length) filas+='<tr><td>'+DIAS[dias[i].getDay()].slice(0,3)+' '+dias[i].getDate()+'</td><td>'+l.length+' comandas · '+agregar(l).unidades+' platos</td></tr>'; });
+    const r=agregar(todas); const nav='<div class="mesnav"><button class="btn" type="button" id="mesAnt">‹</button><span>'+MESES[m]+' '+y+'</span><button class="btn" type="button" id="mesSig">›</button></div>'+(fallos?'<p class="estado err">'+fallos+' días no se pudieron cargar (Make ocupado); vuelve a abrir.</p>':'');
+    return pintarStats(r,nav)+'<h4>Día a día</h4>'+(filas?'<table class="tabla">'+filas+'</table>':'<p class="estado">Sin comandas este mes.</p>'); }
+  let tabRes='hoy';
+  async function pintarRes(){ const c=$('cuerpoRes'); $('tabHoy').classList.toggle('on',tabRes==='hoy'); $('tabMes').classList.toggle('on',tabRes==='mes');
+    if(tabRes==='hoy'){ c.innerHTML=resumenHoy(); return; } c.innerHTML='<p class="estado">Sumando el mes…</p>'; c.innerHTML=await resumenMes();
+    $('mesAnt').addEventListener('click',()=>{ mesVisto=new Date(mesVisto.getFullYear(),mesVisto.getMonth()-1,1); pintarRes(); });
+    $('mesSig').addEventListener('click',()=>{ mesVisto=new Date(mesVisto.getFullYear(),mesVisto.getMonth()+1,1); pintarRes(); }); }
+  $('bResumen').addEventListener('click',()=>{ formAbierto=true; $('veloRes').hidden=false; pintarRes(); });
+  $('bCerrarRes').addEventListener('click',()=>{ $('veloRes').hidden=true; formAbierto=false; });
+  $('tabHoy').addEventListener('click',()=>{ tabRes='hoy'; pintarRes(); }); $('tabMes').addEventListener('click',()=>{ tabRes='mes'; mesVisto=new Date(); pintarRes(); });
   $('sonido').addEventListener('click',()=>{ sonidoOn=!sonidoOn; $('sonido').textContent=sonidoOn?'🔔 Sonido activado':'🔕 Sonido apagado'; if(sonidoOn) beep(); });
   // toques visibles para grabar la pantalla: abrir con ?toques=1
   if(new URLSearchParams(location.search).get('toques')==='1'){ document.addEventListener('pointerdown',ev=>{ const t=document.createElement('div'); t.className='toque'; t.style.left=ev.clientX+'px'; t.style.top=ev.clientY+'px'; document.body.append(t); setTimeout(()=>t.remove(),600); },{passive:true}); }
