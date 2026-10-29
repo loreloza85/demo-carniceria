@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light only">
 <title>Agenda de la peluquería</title>
 <meta name="theme-color" content="#7b2cbf">
 <link rel="manifest" href="manifest.webmanifest">
@@ -13,21 +14,15 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
 <style>
 /* Agenda de la peluquería · una pantalla, tres pestañas (Hoy / Mes / Buscar), tarjetas grandes para tocar con el dedo */
-:root{
-  --fondo:#fbf6fb; --tarjeta:#ffffff; --tinta:#2a1f33; --tenue:#7b6f86; --linea:#eadff0;
+:root{ color-scheme:light;
+  --fondo:#ffffff; --tarjeta:#ffffff; --tinta:#2a1f33; --tenue:#7b6f86; --linea:#ddd0e6;
   --ciruela:#7b2cbf; --ciruela-suave:#efe3fb; --fresa:#e0409a; --fresa-suave:#fde4f1;
   --menta:#2bb673; --menta-suave:#dff6ea; --miel:#f5a623; --miel-suave:#fff1d6;
   --f-titulo:"Fredoka","Nunito",system-ui,sans-serif; --f-texto:"Nunito","Segoe UI",system-ui,sans-serif;
   color-scheme:light;
 }
-@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
-  --fondo:#1b1522; --tarjeta:#27202f; --tinta:#f4edf8; --tenue:#b3a7bf; --linea:#3b3246;
-  --ciruela:#b57bff; --ciruela-suave:#352748; --fresa:#ff6cb8; --fresa-suave:#44283a;
-  --menta:#4fd391; --menta-suave:#1f3a2d; --miel:#ffbe4d; --miel-suave:#443720; color-scheme:dark; } }
-:root[data-theme="dark"]{
-  --fondo:#1b1522; --tarjeta:#27202f; --tinta:#f4edf8; --tenue:#b3a7bf; --linea:#3b3246;
-  --ciruela:#b57bff; --ciruela-suave:#352748; --fresa:#ff6cb8; --fresa-suave:#44283a;
-  --menta:#4fd391; --menta-suave:#1f3a2d; --miel:#ffbe4d; --miel-suave:#443720; color-scheme:dark; }
+
+
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--fondo);color:var(--tinta);font:17px/1.45 var(--f-texto)}
 body{min-height:100%;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
@@ -49,8 +44,8 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
 .cita .dia{font-size:13px;color:var(--tenue);font-weight:700;margin-top:4px;text-transform:capitalize}
 .t-corte{background:var(--ciruela-suave);color:var(--ciruela)} .t-color{background:var(--fresa-suave);color:var(--fresa)}
 .t-peinado{background:var(--miel-suave);color:#9a5d00} .t-otro{background:var(--menta-suave);color:#17784a}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .t-peinado{color:var(--miel)} :root:not([data-theme="light"]) .t-otro{color:var(--menta)}}
-:root[data-theme="dark"] .t-peinado{color:var(--miel)} :root[data-theme="dark"] .t-otro{color:var(--menta)}
+
+
 .vacio{background:var(--tarjeta);border:1px dashed var(--linea);border-radius:18px;padding:22px;text-align:center;color:var(--tenue);font-weight:700}
 .vacio b{display:block;font:600 22px var(--f-titulo);color:var(--tinta);margin-bottom:4px}
 /* mes */
