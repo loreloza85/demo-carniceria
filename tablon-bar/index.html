@@ -91,7 +91,7 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
 
   async function marcar(p, est, boton){
     const k=clave(p); const antes=estados[k]; estados[k]=est; pintar();
-    try{ const u=new URL(FUENTE); u.searchParams.set('tipo','estado_bar'); u.searchParams.set('hora',p.hora); u.searchParams.set('nombre',p.nombre); u.searchParams.set('estado',est);
+    try{ const u=new URL(FUENTE); u.searchParams.set('tipo','estado_bar'); u.searchParams.set('hora',p.hora); u.searchParams.set('nombre',p.nombre); u.searchParams.set('estado',est); u.searchParams.set('telefono',p.tel||''); u.searchParams.set('modo',p.modo||'');
       const r=await fetch(u,{cache:'no-store'}); const tx=(await r.text()).trim(); if(!r.ok||tx!=='ok') throw new Error(tx); }
     catch(e){ estados[k]=antes; pintar(); $('estado').textContent='No se pudo guardar el estado. Inténtalo otra vez.'; $('estado').className='estado err'; }
   }
