@@ -75,6 +75,7 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
 .tabla{width:100%;border-collapse:collapse;font-size:16px}.tabla td{padding:7px 6px;border-bottom:1px solid #eee}.tabla td:last-child{text-align:right;font-weight:800;white-space:nowrap}
 .bar{height:10px;border-radius:5px;background:#f0b429;display:inline-block;vertical-align:middle;margin-right:6px}
 .mesnav{display:flex;gap:8px;align-items:center;justify-content:center;font-weight:800}
+.rango{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;font-weight:800}.rango input{font:inherit;padding:8px 10px;border:2px solid #eee;border-radius:12px}
 .cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}.cats .btn.on{background:var(--tinta);color:#fff;border-color:var(--tinta)}
 .casillas{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px;max-height:46vh;overflow:auto;padding:2px}
 .casilla{border:2px solid #eee;border-radius:14px;padding:8px 6px;text-align:center;cursor:pointer;user-select:none;background:#fff;position:relative;min-height:96px;display:flex;flex-direction:column;justify-content:center;gap:2px}
@@ -121,7 +122,7 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
 <button class="sonido" id="sonido" type="button">🔔 Activar sonido</button>
 <div class="velo" id="veloRes" hidden>
   <div class="resumen" id="panelRes">
-    <h3><span>📊 Resumen</span><span class="tabs"><button class="btn on" type="button" id="tabHoy">Hoy</button><button class="btn" type="button" id="tabMes">Mes</button><button class="btn" type="button" id="bCerrarRes">Cerrar</button></span></h3>
+    <h3><span>📊 Resumen</span><span class="tabs"><button class="btn on" type="button" id="tabHoy">Hoy</button><button class="btn" type="button" id="tabAyer">Ayer</button><button class="btn" type="button" id="tabMes">Mes</button><button class="btn" type="button" id="tabRango">Fechas</button><button class="btn" type="button" id="bCerrarRes">Cerrar</button></span></h3>
     <div id="cuerpoRes">Cargando…</div>
   </div>
 </div>
@@ -276,6 +277,20 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
   const cacheDias={}; let mesVisto=new Date();
   async function dia(f){ const hoy=fecha(new Date()); if(f!==hoy && cacheDias[f]) return cacheDias[f]; const guard=localStorage.getItem('dia_'+f); if(f!==hoy && guard!==null){ cacheDias[f]=parsear(guard); return cacheDias[f]; }
     try{ const t=await pedir('dia_bar',{fecha:f}); if(f<hoy) localStorage.setItem('dia_'+f,t); const l=parsear(t); cacheDias[f]=l; return l; }catch(e){ return null; } }
+  async function resumenRango(desde, hasta, cabecera){
+    const dias=[]; for(let d=new Date(desde); d<=hasta; d.setDate(d.getDate()+1)) dias.push(new Date(d));
+    const res=[]; for(const d of dias) res.push(await dia(fecha(d)));
+    const todas=[]; let filas=''; let fallos=0;
+    res.forEach((l,i)=>{ if(l===null){ fallos++; return; } todas.push(...l); if(l.length) filas+='<tr><td>'+DIAS[dias[i].getDay()].slice(0,3)+' '+dias[i].getDate()+' '+MESES[dias[i].getMonth()].slice(0,3)+'</td><td>'+l.length+' comandas · '+agregar(l).unidades+' platos</td></tr>'; });
+    const r=agregar(todas); const aviso=fallos?'<p class="estado err">'+fallos+' días no se pudieron cargar (Make ocupado); vuelve a abrir.</p>':'';
+    return pintarStats(r,cabecera+aviso)+(dias.length>1?'<h4>Día a día</h4>'+(filas?'<table class="tabla">'+filas+'</table>':'<p class="estado">Sin comandas en esas fechas.</p>'):''); }
+  async function resumenAyer(){ const d=new Date(); d.setDate(d.getDate()-1); return resumenRango(d,d,'<p class="estado">Ayer, '+DIAS[d.getDay()]+' '+d.getDate()+' de '+MESES[d.getMonth()]+'</p>'); }
+  let rangoDesde=null, rangoHasta=null;
+  async function resumenFechas(){ const hoy=fecha(new Date()); const nav='<div class="rango">Del <input type="date" id="rDesde" value="'+(rangoDesde||hoy)+'" max="'+hoy+'"> al <input type="date" id="rHasta" value="'+(rangoHasta||hoy)+'" max="'+hoy+'"> <button class="btn" type="button" id="rVer">Ver</button></div>';
+    if(!rangoDesde) return nav+'<p class="estado">Elige las fechas y toca «Ver».</p>';
+    const a=new Date(rangoDesde+'T00:00'), b=new Date(rangoHasta+'T00:00'); if(a>b) return nav+'<p class="estado err">La primera fecha tiene que ser anterior.</p>';
+    if((b-a)/86400000>62) return nav+'<p class="estado err">Como mucho dos meses de golpe.</p>';
+    return await resumenRango(a,b,nav); }
   async function resumenMes(){
     const y=mesVisto.getFullYear(), m=mesVisto.getMonth(); const hoy=new Date(); const ultimo=(y===hoy.getFullYear()&&m===hoy.getMonth())?hoy.getDate():new Date(y,m+1,0).getDate();
     const dias=[]; for(let d=1; d<=ultimo; d++) dias.push(new Date(y,m,d));
@@ -286,12 +301,17 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
     return pintarStats(r,nav)+'<h4>Día a día</h4>'+(filas?'<table class="tabla">'+filas+'</table>':'<p class="estado">Sin comandas este mes.</p>'); }
   let tabRes='hoy';
   async function pintarRes(){ const c=$('cuerpoRes'); $('tabHoy').classList.toggle('on',tabRes==='hoy'); $('tabMes').classList.toggle('on',tabRes==='mes');
-    if(tabRes==='hoy'){ c.innerHTML=resumenHoy(); return; } c.innerHTML='<p class="estado">Sumando el mes…</p>'; c.innerHTML=await resumenMes();
+    ['tabAyer','tabRango'].forEach(id=>$(id).classList.toggle('on',tabRes===id.slice(3).toLowerCase()));
+    if(tabRes==='hoy'){ c.innerHTML=resumenHoy(); return; }
+    if(tabRes==='ayer'){ c.innerHTML='<p class="estado">Cargando ayer…</p>'; c.innerHTML=await resumenAyer(); return; }
+    if(tabRes==='rango'){ c.innerHTML='<p class="estado">Sumando…</p>'; c.innerHTML=await resumenFechas();
+      $('rVer').addEventListener('click',()=>{ rangoDesde=$('rDesde').value; rangoHasta=$('rHasta').value; pintarRes(); }); return; }
+    c.innerHTML='<p class="estado">Sumando el mes…</p>'; c.innerHTML=await resumenMes();
     $('mesAnt').addEventListener('click',()=>{ mesVisto=new Date(mesVisto.getFullYear(),mesVisto.getMonth()-1,1); pintarRes(); });
     $('mesSig').addEventListener('click',()=>{ mesVisto=new Date(mesVisto.getFullYear(),mesVisto.getMonth()+1,1); pintarRes(); }); }
   $('bResumen').addEventListener('click',()=>{ formAbierto=true; $('veloRes').hidden=false; pintarRes(); });
   $('bCerrarRes').addEventListener('click',()=>{ $('veloRes').hidden=true; formAbierto=false; });
-  $('tabHoy').addEventListener('click',()=>{ tabRes='hoy'; pintarRes(); }); $('tabMes').addEventListener('click',()=>{ tabRes='mes'; mesVisto=new Date(); pintarRes(); });
+  $('tabHoy').addEventListener('click',()=>{ tabRes='hoy'; pintarRes(); }); $('tabAyer').addEventListener('click',()=>{ tabRes='ayer'; pintarRes(); }); $('tabRango').addEventListener('click',()=>{ tabRes='rango'; pintarRes(); }); $('tabMes').addEventListener('click',()=>{ tabRes='mes'; mesVisto=new Date(); pintarRes(); });
   $('sonido').addEventListener('click',()=>{ sonidoOn=!sonidoOn; $('sonido').textContent=sonidoOn?'🔔 Sonido activado':'🔕 Sonido apagado'; if(sonidoOn) beep(); });
   // toques visibles para grabar la pantalla: abrir con ?toques=1
   if(new URLSearchParams(location.search).get('toques')==='1'){ document.addEventListener('pointerdown',ev=>{ const t=document.createElement('div'); t.className='toque'; t.style.left=ev.clientX+'px'; t.style.top=ev.clientY+'px'; document.body.append(t); setTimeout(()=>t.remove(),600); },{passive:true}); }
