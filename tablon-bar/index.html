@@ -75,6 +75,14 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
 .tabla{width:100%;border-collapse:collapse;font-size:16px}.tabla td{padding:7px 6px;border-bottom:1px solid #eee}.tabla td:last-child{text-align:right;font-weight:800;white-space:nowrap}
 .bar{height:10px;border-radius:5px;background:#f0b429;display:inline-block;vertical-align:middle;margin-right:6px}
 .mesnav{display:flex;gap:8px;align-items:center;justify-content:center;font-weight:800}
+.cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}.cats .btn.on{background:var(--tinta);color:#fff;border-color:var(--tinta)}
+.casillas{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px;max-height:46vh;overflow:auto;padding:2px}
+.casilla{border:2px solid #eee;border-radius:14px;padding:8px 6px;text-align:center;cursor:pointer;user-select:none;background:#fff;position:relative;min-height:96px;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.casilla .ico{font-size:34px;line-height:1}.casilla .nom{font-weight:800;font-size:13px;line-height:1.15}.casilla .pre{font-size:12px;color:var(--tenue);font-weight:800}
+.casilla.on{border-color:var(--tinta);background:#fff7ea}.casilla .n{position:absolute;top:-8px;right:-8px;background:var(--tinta);color:#fff;border-radius:999px;min-width:26px;height:26px;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center}
+.elegido{display:flex;flex-wrap:wrap;gap:6px;min-height:30px}.elegido span{background:#fff7ea;border:1px solid #f0b429;border-radius:999px;padding:4px 10px;font-weight:800;font-size:13px}
+.elegido span b{margin-left:6px;cursor:pointer;color:#a33}
+.form{width:min(760px,100%)}
 .velo{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
 .velo[hidden]{display:none}
 .form{background:#fff;border-radius:20px;padding:18px;width:min(520px,100%);display:grid;gap:12px}
@@ -121,7 +129,11 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
   <form class="form" id="fMesa" novalidate>
     <h3>Comanda de mesa</h3>
     <label>Mesa <div class="mesas" id="mesas"></div><input name="mesa" inputmode="numeric" placeholder="o escríbela" style="margin-top:6px"></label>
-    <label>Qué piden <textarea name="pedido" placeholder="2 bravas, 1 de calamares, 2 cañas"></textarea></label>
+    <label>Qué piden (toca las casillas; cada toque suma una)</label>
+    <div class="cats" id="cats"></div>
+    <div class="casillas" id="casillas"></div>
+    <div class="elegido" id="elegido"></div>
+    <label>O escríbelo / añade a mano <textarea name="pedido" placeholder="2 bravas, 1 de calamares, 2 cañas" rows="2"></textarea></label>
     <label>Notas (sin cebolla, alergia…) <input name="notas"></label>
     <div class="msg"></div>
     <div class="acciones"><button class="btn grande" type="button" id="bCancelar">Cancelar</button><button class="btn grande listo" type="submit">Apuntar</button></div>
@@ -223,11 +235,22 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
   });
   // comanda de mesa
   const f=$('fMesa'); const mesas=$('mesas'); for(let i=1;i<=12;i++){ const b=document.createElement('button'); b.type='button'; b.className='btn'; b.textContent=i; b.addEventListener('click',()=>{ f.mesa.value=i; mesas.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); }); mesas.append(b); }
-  $('bMesa').addEventListener('click',()=>{ formAbierto=true; f.reset(); mesas.querySelectorAll('button').forEach(x=>x.classList.remove('on')); f.querySelector('.msg').textContent=''; $('velo').hidden=false; f.pedido.focus(); });
+  // carta en casillas (misma carta que Alba)
+  const CARTA={'Hamburguesas':[['🍔','Hamburguesa clásica','8,50'],['🍔','Hamburguesa completa','9,50'],['🍗','Hamburguesa de pollo','8,50']],
+    'Raciones':[['🥘','Ración de croquetas','7'],['🥘','Media de croquetas','4'],['🍟','Patatas bravas','5,50'],['🦑','Calamares a la andaluza','9'],['🥗','Ensaladilla rusa','5,50'],['🍗','Alitas','7,50'],['🧀','Nachos con queso','6,50']],
+    'Bocadillos':[['🥖','Bocadillo de lomo con queso','5,50'],['🥖','Bocadillo de tortilla','4,50'],['🥖','Bocadillo de calamares','6']],
+    'Bebidas y postres':[['🥤','Refresco','2'],['🍺','Cerveza','2'],['💧','Agua','1,50'],['☕','Café','1,30'],['🍰','Tarta de queso','4,50']]};
+  let catAct='Hamburguesas'; const cuenta={};
+  function pintarCasillas(){ const cc=$('cats'); cc.replaceChildren(); Object.keys(CARTA).forEach(c=>{ const b=document.createElement('button'); b.type='button'; b.className='btn'+(c===catAct?' on':''); b.textContent=c; b.addEventListener('click',()=>{ catAct=c; pintarCasillas(); }); cc.append(b); });
+    const g=$('casillas'); g.replaceChildren(); CARTA[catAct].forEach(([ico,nom,pre])=>{ const d=document.createElement('div'); d.className='casilla'+(cuenta[nom]?' on':''); d.innerHTML='<div class="ico"></div><div class="nom"></div><div class="pre"></div>'; d.querySelector('.ico').textContent=ico; d.querySelector('.nom').textContent=nom; d.querySelector('.pre').textContent=pre+' €';
+      if(cuenta[nom]){ const n=document.createElement('div'); n.className='n'; n.textContent=cuenta[nom]; d.append(n); } d.addEventListener('click',()=>{ cuenta[nom]=(cuenta[nom]||0)+1; pintarCasillas(); }); g.append(d); });
+    const e=$('elegido'); e.replaceChildren(); Object.entries(cuenta).forEach(([nom,n])=>{ if(!n) return; const sp=document.createElement('span'); sp.textContent=n+' × '+nom; const b=document.createElement('b'); b.textContent='−'; b.title='quitar una'; b.addEventListener('click',ev=>{ ev.stopPropagation(); cuenta[nom]=Math.max(0,n-1); if(!cuenta[nom]) delete cuenta[nom]; pintarCasillas(); }); sp.append(b); e.append(sp); }); }
+  function textoCasillas(){ return Object.entries(cuenta).filter(([,n])=>n).map(([nom,n])=>n+' '+nom.toLowerCase()).join(', '); }
+  $('bMesa').addEventListener('click',()=>{ formAbierto=true; f.reset(); Object.keys(cuenta).forEach(k=>delete cuenta[k]); catAct='Hamburguesas'; pintarCasillas(); mesas.querySelectorAll('button').forEach(x=>x.classList.remove('on')); f.querySelector('.msg').textContent=''; $('velo').hidden=false; });
   $('bCancelar').addEventListener('click',()=>{ $('velo').hidden=true; formAbierto=false; });
   f.addEventListener('submit', async ev=>{
-    ev.preventDefault(); const mesa=f.mesa.value.trim(), pedido=f.pedido.value.trim(), notas=f.notas.value.trim(); const msg=f.querySelector('.msg');
-    if(!mesa){ msg.textContent='Elige la mesa.'; return; } if(!pedido){ msg.textContent='Escribe qué piden.'; return; }
+    ev.preventDefault(); const mesa=f.mesa.value.trim(), notas=f.notas.value.trim(); const msg=f.querySelector('.msg'); const pedido=[textoCasillas(), f.pedido.value.trim()].filter(Boolean).join(', ');
+    if(!mesa){ msg.textContent='Elige la mesa.'; return; } if(!pedido){ msg.textContent='Toca lo que piden o escríbelo.'; return; }
     msg.textContent='Apuntando…'; try{ const u=url('mesa_bar'); u.searchParams.set('mesa',mesa); u.searchParams.set('pedido',pedido); u.searchParams.set('notas',notas);
       const r=await fetch(u,{cache:'no-store'}); if((await r.text()).trim()!=='ok') throw new Error(); $('velo').hidden=true; formAbierto=false; cargar(); }
     catch(e){ msg.textContent='No se pudo apuntar. Inténtalo otra vez.'; }
