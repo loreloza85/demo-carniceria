@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-/* Tablón de pedidos del bar · una pantalla para la barra o la cocina: los pedidos de hoy en orden, con su hora aproximada */
+/* Comandas del bar · pizarra para la tablet de cocina o barra: cada comanda en su cuadro, en orden, con su hora */
 :root{ color-scheme:light;
   --fondo:#ffffff; --tarjeta:#ffffff; --tinta:#23201c; --tenue:#7a7066; --linea:#e2d9cf;
   --tomate:#d9432f; --tomate-suave:#fdeae7; --mostaza:#e7a400; --mostaza-suave:#fff4d6;
@@ -21,14 +21,22 @@ html,body{margin:0;background:var(--fondo);color:var(--tinta);font:17px/1.45 var
 .cab p{margin:4px 0 0;opacity:.92;font-weight:700}
 .cab .reloj{font:600 30px/1 var(--f-titulo);font-variant-numeric:tabular-nums}
 main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
-.resumen{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px}
+.barra{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
 .pill{border-radius:999px;padding:8px 14px;font-weight:800;font-size:15px;background:var(--mostaza-suave);color:#7a5600}
 .pill.ok{background:var(--oliva-suave);color:#1d6b3b}
-.col h2{font:600 20px var(--f-titulo);margin:0 0 8px;display:flex;align-items:center;gap:8px}
+.btn{border:2px solid var(--linea);background:#fff;color:var(--tinta);border-radius:12px;font:800 14px var(--f-texto);padding:8px 10px;cursor:pointer;min-height:42px}
+.btn.grande{font-size:16px;padding:10px 16px;min-height:48px}
+.btn.atope{border-color:var(--tomate);color:var(--tomate)}
+.btn.atope.on{background:var(--tomate);color:#fff;animation:pulso 1.6s ease-in-out infinite}
+@keyframes pulso{0%,100%{box-shadow:0 0 0 0 rgba(217,67,47,.4)}50%{box-shadow:0 0 0 10px rgba(217,67,47,0)}}
+.btn.mesa{border-color:var(--azul);color:var(--azul);background:var(--azul-suave)}
+.aviso-tope{background:var(--tomate-suave);border:2px solid var(--tomate);color:#8a1f12;border-radius:14px;padding:10px 14px;font-weight:800;margin:0 0 14px}
+.col h2{font:600 20px var(--f-titulo);margin:14px 0 8px;display:flex;align-items:center;gap:8px}
 .col h2 .n{background:var(--tinta);color:#fff;border-radius:999px;font:800 13px/1 var(--f-texto);padding:5px 9px}
 .lista{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
 @media (min-width:900px){.lista{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}}
-.pedido{background:var(--tarjeta);border:3px solid var(--linea);border-radius:18px;padding:16px 14px 14px;display:flex;flex-direction:column;gap:8px;min-height:250px}
+.pedido{position:relative;background:var(--tarjeta);border:3px solid var(--linea);border-radius:18px;padding:16px 14px 14px;display:flex;flex-direction:column;gap:8px;min-height:250px}
+.pedido .num{position:absolute;top:-12px;left:12px;background:var(--tinta);color:#fff;border-radius:999px;font:700 13px/1 var(--f-texto);padding:5px 9px}
 .pedido .fila{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
 .pedido .quien{font-weight:800;font-size:19px}
 .pedido .tel{color:var(--tenue);font-weight:700;font-size:14px}
@@ -37,26 +45,42 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
 .pedido .que{font-size:18px;font-weight:800;line-height:1.3;flex:1;overflow-wrap:anywhere}
 .pedido .modo{display:inline-block;border-radius:999px;padding:3px 10px;font-weight:800;font-size:13px;background:var(--azul-suave);color:var(--azul)}
 .pedido .modo.dom{background:var(--mostaza-suave);color:#7a5600}
+.pedido .modo.mesa{background:#efe9ff;color:#5b3fb8}
+.pedido .modo.prog{background:#eee;color:#444}
 .pedido .dir{color:var(--tenue);font-weight:700;font-size:14px}
 .pedido .notas{color:#7a5600;font-weight:700;font-size:14px}
 .pedido .est{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
-.btn{border:2px solid var(--linea);background:#fff;color:var(--tinta);border-radius:12px;font:800 14px var(--f-texto);padding:8px 10px;cursor:pointer;min-height:42px}
+.pedido .sello{font-weight:800;font-size:13px;padding:8px 2px;flex-basis:100%}
 .btn.marcha{background:var(--mostaza-suave);border-color:var(--mostaza);color:#7a5600}
 .btn.listo{background:var(--oliva-suave);border-color:var(--oliva);color:#1d6b3b}
-.pedido .sello{font-weight:800;font-size:13px;padding:8px 2px;flex-basis:100%}
 .btn.fin{background:var(--azul-suave);border-color:var(--azul);color:var(--azul)}
 .pedido.en_marcha{border-color:var(--mostaza)}
 .pedido.listo{border-color:var(--oliva);background:var(--oliva-suave)}
 .pedido.entregado{opacity:.5;border-style:dashed}
-.pedido{position:relative}
-.pedido .num{position:absolute;top:-12px;left:12px;background:var(--tinta);color:#fff;border-radius:999px;font:700 13px/1 var(--f-texto);padding:5px 9px}
+.pedido.mas-tarde{border-style:dashed;opacity:.85}
 .pedido.nuevo{animation:late 1s ease-in-out 3}
 @keyframes late{0%,100%{box-shadow:0 0 0 0 rgba(217,67,47,0)}50%{box-shadow:0 0 0 8px rgba(217,67,47,.35)}}
-.vacio{border:2px dashed var(--linea);border-radius:18px;padding:26px;text-align:center;color:var(--tenue);font-weight:700}
+.vacio{border:2px dashed var(--linea);border-radius:18px;padding:26px;text-align:center;color:var(--tenue);font-weight:700;grid-column:1/-1}
 .vacio b{display:block;font:600 22px var(--f-titulo);color:var(--tinta);margin-bottom:4px}
 .estado{font-size:13px;color:var(--tenue);font-weight:700;text-align:center;margin:18px 0 0}
 .estado.err{color:#b4231f}
-.sonido{position:fixed;right:14px;bottom:14px;border-radius:999px;padding:10px 16px;font-weight:800;background:var(--tinta);color:#fff;border:0;font-size:14px}
+.sonido{position:fixed;right:14px;bottom:14px;border-radius:999px;padding:10px 16px;font-weight:800;background:var(--tinta);color:#fff;border:0;font-size:14px;z-index:4}
+/* formulario de comanda de mesa */
+.velo{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.velo[hidden]{display:none}
+.form{background:#fff;border-radius:20px;padding:18px;width:min(520px,100%);display:grid;gap:12px}
+.form h3{font:600 24px var(--f-titulo);margin:0}
+.form label{display:grid;gap:4px;font-weight:800;font-size:14px;color:var(--tenue)}
+.form input,.form textarea{font:700 18px var(--f-texto);padding:12px;border:2px solid var(--linea);border-radius:12px;color:var(--tinta);background:#fff;width:100%}
+.form textarea{min-height:90px;resize:vertical}
+.form .acciones{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.form .msg{font-weight:800;color:#b4231f;min-height:1.2em}
+.mesas{display:flex;gap:6px;flex-wrap:wrap}
+.mesas button{min-width:48px}
+.mesas button.on{background:var(--tinta);color:#fff;border-color:var(--tinta)}
+/* toques visibles (para grabar la pantalla): abrir con ?toques=1 */
+.toque{position:fixed;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(217,67,47,.45);border:3px solid rgba(217,67,47,.9);pointer-events:none;z-index:99;animation:toque .5s ease-out forwards}
+@keyframes toque{from{transform:scale(.5);opacity:1}to{transform:scale(1.6);opacity:0}}
 </style>
 </head>
 <body>
@@ -65,85 +89,135 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
   <div class="reloj" id="reloj">--:--</div>
 </header>
 <main>
-  <div class="resumen"><span class="pill" id="pPend">0 comandas por hacer</span><span class="pill ok" id="pListos">0 listas</span></div>
+  <div class="barra">
+    <span class="pill" id="pPend">0 comandas por hacer</span><span class="pill ok" id="pListos">0 listas</span>
+    <span style="flex:1"></span>
+    <button class="btn grande mesa" id="bMesa" type="button">＋ Comanda de mesa</button>
+    <button class="btn grande atope" id="bTope" type="button">🔥 Cocina a tope</button>
+  </div>
+  <div class="aviso-tope" id="avisoTope" hidden>🔥 Cocina a tope: Alba está dando 15 minutos más en todos los pedidos nuevos. Cuando se despeje, vuelve a tocar el botón.</div>
   <section class="col"><h2>Comandas de hoy, en orden <span class="n" id="nTodos">0</span></h2><div class="lista" id="lTodos"></div></section>
+  <section class="col" id="secTarde" hidden><h2>Más tarde (pedidos para una hora) <span class="n" id="nTarde">0</span></h2><div class="lista" id="lTarde"></div></section>
   <p class="estado" id="estado">Cargando…</p>
 </main>
 <button class="sonido" id="sonido" type="button">🔔 Activar sonido</button>
+<div class="velo" id="velo" hidden>
+  <form class="form" id="fMesa" novalidate>
+    <h3>Comanda de mesa</h3>
+    <label>Mesa <div class="mesas" id="mesas"></div><input name="mesa" inputmode="numeric" placeholder="o escríbela" style="margin-top:6px"></label>
+    <label>Qué piden <textarea name="pedido" placeholder="2 bravas, 1 de calamares, 2 cañas"></textarea></label>
+    <label>Notas (sin cebolla, alergia…) <input name="notas"></label>
+    <div class="msg"></div>
+    <div class="acciones"><button class="btn grande" type="button" id="bCancelar">Cancelar</button><button class="btn grande listo" type="submit">Apuntar</button></div>
+  </form>
+</div>
 <script>
   const FUENTE = 'https://hook.eu1.make.com/dy04ycyacn2qj7uk191n4bvoswf75k73?tipo=tablon';
-  const ESTADOS = FUENTE.replace('tipo=tablon','tipo=estados_bar');
+  const url = tipo => { const u=new URL(FUENTE); u.searchParams.set('tipo',tipo); return u; };
   const DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
   const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const ANTELACION = 25; // minutos antes de su hora en que un pedido «para una hora» pasa a la pizarra
   const $ = id => document.getElementById(id);
-  let pedidos = [], estados = {}, vistos = new Set(JSON.parse(localStorage.getItem('pedidos_vistos')||'[]')), sonidoOn = false;
+  let pedidos = [], estados = {}, atope = false, sonidoOn = false, formAbierto = false;
+  let vistos = new Set(JSON.parse(localStorage.getItem('pedidos_vistos')||'[]'));
 
-  function reloj(){ const d=new Date(); $('reloj').textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
-    $('fecha').textContent=DIAS[d.getDay()]+' '+d.getDate()+' de '+MESES[d.getMonth()]; }
+  function hhmm(d){ return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+  function minutos(h){ const [a,b]=h.split(':').map(Number); return a*60+b; }
+  function reloj(){ const d=new Date(); $('reloj').textContent=hhmm(d); $('fecha').textContent=DIAS[d.getDay()]+' '+d.getDate()+' de '+MESES[d.getMonth()]; }
   function clave(p){ return p.hora+'|'+p.nombre; }
-  // Línea: HH:MM|nombre|telefono|modo|direccion|pedido|hora_aprox|notas|pendiente
+  // Línea: HH:MM|nombre|telefono|modo|direccion|pedido|hora_aprox|notas|pendiente|programado
   function parsear(t){ const out=[]; t.split(/\r?\n/).forEach(l=>{ const p=l.trim().split('|'); if(p.length>=7 && /^\d{1,2}:\d{2}$/.test(p[0]))
-      out.push({hora:p[0].padStart(5,'0'),nombre:p[1],tel:p[2],modo:p[3],dir:p[4],que:p[5],aprox:p[6],notas:p[7]||''}); }); return out; }
+      out.push({hora:p[0].padStart(5,'0'),nombre:p[1],tel:p[2],modo:p[3],dir:p[4],que:p[5],aprox:(p[6]||'').padStart(5,'0'),notas:p[7]||'',prog:p[9]==='1'}); }); return out; }
   function parsearEstados(t){ const m={}; t.split(/\r?\n/).forEach(l=>{ const p=l.trim().split('|'); if(p.length>=3) m[p[0].padStart(5,'0')+'|'+p[1]]=p[2]; }); return m; }
 
   function beep(){ if(!sonidoOn) return; try{ const ctx=new (window.AudioContext||window.webkitAudioContext)(); const o=ctx.createOscillator(); const g=ctx.createGain();
     o.connect(g); g.connect(ctx.destination); o.frequency.value=880; g.gain.value=.25; o.start(); setTimeout(()=>{o.frequency.value=660},180); setTimeout(()=>{o.stop(); ctx.close()},420); }catch(e){} }
 
-  async function marcar(p, est, boton){
+  async function marcar(p, est){
     const k=clave(p); const antes=estados[k]; estados[k]=est; pintar();
-    try{ const u=new URL(FUENTE); u.searchParams.set('tipo','estado_bar'); u.searchParams.set('hora',p.hora); u.searchParams.set('nombre',p.nombre); u.searchParams.set('estado',est); u.searchParams.set('telefono',p.tel||''); u.searchParams.set('modo',p.modo||'');
+    try{ const u=url('estado_bar'); u.searchParams.set('hora',p.hora); u.searchParams.set('nombre',p.nombre); u.searchParams.set('estado',est); u.searchParams.set('telefono',p.tel||''); u.searchParams.set('modo',p.modo||'');
       const r=await fetch(u,{cache:'no-store'}); const tx=(await r.text()).trim(); if(!r.ok||tx!=='ok') throw new Error(tx); }
-    catch(e){ estados[k]=antes; pintar(); $('estado').textContent='No se pudo guardar el estado. Inténtalo otra vez.'; $('estado').className='estado err'; }
+    catch(e){ estados[k]=antes; pintar(); aviso('No se pudo guardar el estado. Inténtalo otra vez.',true); }
   }
-  function boton(txt, cls, p, est){ const b=document.createElement('button'); b.type='button'; b.className='btn '+cls; b.textContent=txt; b.addEventListener('click',()=>marcar(p,est,b)); return b; }
+  function boton(txt, cls, p, est){ const b=document.createElement('button'); b.type='button'; b.className='btn '+cls; b.textContent=txt; b.addEventListener('click',()=>marcar(p,est)); return b; }
 
-  function tarjeta(p){
+  function tarjeta(p, masTarde){
     const e=estados[clave(p)]||'pendiente';
-    const d=document.createElement('article'); d.className='pedido '+e; if(!vistos.has(clave(p))) d.classList.add('nuevo');
+    const d=document.createElement('article'); d.className='pedido '+e+(masTarde?' mas-tarde':''); if(!vistos.has(clave(p))) d.classList.add('nuevo');
     const num=document.createElement('div'); num.className='num'; num.textContent='#'+(p.orden||''); d.append(num);
     const f1=document.createElement('div'); f1.className='fila';
-    const q=document.createElement('div'); q.innerHTML='<div class="quien"></div><div class="tel"></div>'; q.querySelector('.quien').textContent=p.nombre; q.querySelector('.tel').textContent=(p.tel?'📞 '+p.tel+' · ':'')+'pedido a las '+p.hora;
-    const a=document.createElement('div'); a.className='aprox'; a.textContent=p.aprox; const s=document.createElement('small'); s.textContent=p.modo==='domicilio'?'entregar sobre las':'recoger sobre las'; a.prepend(s);
+    const q=document.createElement('div'); q.innerHTML='<div class="quien"></div><div class="tel"></div>'; q.querySelector('.quien').textContent=p.nombre;
+    q.querySelector('.tel').textContent=(p.tel?'📞 '+p.tel+' · ':'')+(p.modo==='mesa'?'apuntada a las ':'pedido a las ')+p.hora;
+    const a=document.createElement('div'); a.className='aprox'; a.textContent=p.aprox; const s=document.createElement('small');
+    s.textContent=p.modo==='domicilio'?'entregar sobre las':(p.modo==='mesa'?'servir sobre las':'recoger sobre las'); a.prepend(s);
     f1.append(q,a); d.append(f1);
     const que=document.createElement('div'); que.className='que'; que.textContent=p.que; d.append(que);
-    const f2=document.createElement('div'); f2.className='fila'; const m=document.createElement('span'); m.className='modo'+(p.modo==='domicilio'?' dom':''); m.textContent=p.modo==='domicilio'?'🛵 A domicilio':'🥡 Para recoger'; f2.append(m);
+    const f2=document.createElement('div'); f2.className='fila';
+    const m=document.createElement('span'); m.className='modo'+(p.modo==='domicilio'?' dom':p.modo==='mesa'?' mesa':''); m.textContent=p.modo==='domicilio'?'🛵 A domicilio':p.modo==='mesa'?'🍽 Mesa':'🥡 Para recoger'; f2.append(m);
+    if(p.prog){ const pr=document.createElement('span'); pr.className='modo prog'; pr.textContent='🕒 Para las '+p.aprox; f2.append(pr); }
     if(p.dir){ const dr=document.createElement('span'); dr.className='dir'; dr.textContent='📍 '+p.dir; f2.append(dr); } d.append(f2);
     if(p.notas){ const n=document.createElement('div'); n.className='notas'; n.textContent='📝 '+p.notas; d.append(n); }
     const z=document.createElement('div'); z.className='est';
     const sello=document.createElement('span'); sello.className='sello'; sello.textContent={pendiente:'⏳ Pendiente',en_marcha:'🍳 En marcha',listo:'✅ Listo',entregado:'✔ Entregado'}[e]; z.append(sello);
     if(e==='pendiente'){ z.append(boton('🍳 En marcha','marcha',p,'en_marcha'), boton('✓ Listo','listo',p,'listo')); }
     else if(e==='en_marcha'){ z.append(boton('✓ Listo','listo',p,'listo'), boton('Deshacer','',p,'pendiente')); }
-    else if(e==='listo'){ z.append(boton(p.modo==='domicilio'?'🛵 Ha salido':'🙋 Recogido','fin',p,'entregado'), boton('Deshacer','',p,'pendiente')); }
+    else if(e==='listo'){ z.append(boton(p.modo==='domicilio'?'🛵 Ha salido':p.modo==='mesa'?'🍽 Servida':'🙋 Recogido','fin',p,'entregado'), boton('Deshacer','',p,'pendiente')); }
     else { z.append(boton('Deshacer','',p,'listo')); }
     d.append(z); return d;
   }
-  function pintarLista(cont, lista, vacioT, vacioS){ cont.replaceChildren(); if(!lista.length){ const v=document.createElement('div'); v.className='vacio'; v.innerHTML='<b></b><span></span>'; v.querySelector('b').textContent=vacioT; v.querySelector('span').textContent=vacioS; cont.append(v); return; } lista.forEach(p=>cont.append(tarjeta(p))); }
+  function pintarLista(cont, lista, masTarde, vacioT, vacioS){ cont.replaceChildren(); if(!lista.length){ const v=document.createElement('div'); v.className='vacio'; v.innerHTML='<b></b><span></span>'; v.querySelector('b').textContent=vacioT; v.querySelector('span').textContent=vacioS; cont.append(v); return; } lista.forEach(p=>cont.append(tarjeta(p,masTarde))); }
   function pintar(){
-    const est=p=>estados[clave(p)]||'pendiente';
-    const pend=pedidos.filter(p=>['pendiente','en_marcha'].includes(est(p))).sort((a,b)=>a.hora.localeCompare(b.hora));
-    const listos=pedidos.filter(p=>est(p)==='listo'); const fin=pedidos.filter(p=>est(p)==='entregado');
+    const est=p=>estados[clave(p)]||'pendiente'; const ahora=minutos(hhmm(new Date()));
     pedidos.slice().sort((a,b)=>a.hora.localeCompare(b.hora)).forEach((p,i)=>p.orden=i+1);
-    const orden=[...pend, ...listos.sort((a,b)=>a.hora.localeCompare(b.hora)), ...fin.sort((a,b)=>a.hora.localeCompare(b.hora))];
-    pintarLista($('lTodos'),orden,'Nada pendiente','Cuando Alba coja una comanda, aparece aquí en su cuadro, con su hora.');
-    $('nTodos').textContent=pedidos.length;
-    $('pPend').textContent=pend.length+(pend.length===1?' comanda por hacer':' comandas por hacer'); $('pListos').textContent=listos.length+(listos.length===1?' lista':' listas');
+    const esTarde=p=>p.prog && est(p)==='pendiente' && minutos(p.aprox)-ahora>ANTELACION;
+    const tarde=pedidos.filter(esTarde).sort((a,b)=>a.aprox.localeCompare(b.aprox));
+    const resto=pedidos.filter(p=>!esTarde(p));
+    const pend=resto.filter(p=>['pendiente','en_marcha'].includes(est(p))).sort((a,b)=>(a.prog?a.aprox:a.hora).localeCompare(b.prog?b.aprox:b.hora));
+    const listos=resto.filter(p=>est(p)==='listo').sort((a,b)=>a.hora.localeCompare(b.hora)); const fin=resto.filter(p=>est(p)==='entregado').sort((a,b)=>a.hora.localeCompare(b.hora));
+    pintarLista($('lTodos'),[...pend,...listos,...fin],false,'Nada pendiente','Cuando Alba coja una comanda, aparece aquí en su cuadro, con su hora.');
+    $('secTarde').hidden=!tarde.length; pintarLista($('lTarde'),tarde,true,'','');
+    $('nTodos').textContent=resto.length; $('nTarde').textContent=tarde.length;
+    $('pPend').textContent=pend.length+(pend.length===1?' comanda por hacer':' comandas por hacer');
+    $('pListos').textContent=listos.length+(listos.length===1?' lista':' listas');
+    $('bTope').classList.toggle('on',atope); $('bTope').textContent=atope?'🔥 Cocina a tope · tocar para quitar':'🔥 Cocina a tope'; $('avisoTope').hidden=!atope;
   }
+  function aviso(t,err){ $('estado').textContent=t; $('estado').className='estado'+(err?' err':''); }
   async function cargar(){
+    if(formAbierto) return;
     try{
-      const [r1,r2]=await Promise.all([fetch(FUENTE,{cache:'no-store'}),fetch(ESTADOS,{cache:'no-store'})]);
-      if(!r1.ok) throw new Error('tablón '+r1.status);
-      const t1=await r1.text(); const t2=r2.ok?await r2.text():'';
-      if(/^Accepted/i.test(t1.trim())) throw new Error('Make no ha respondido');
-      pedidos=parsear(t1); estados=parsearEstados(t2);
+      const [r1,r2,r3]=await Promise.all([fetch(url('tablon'),{cache:'no-store'}),fetch(url('estados_bar'),{cache:'no-store'}),fetch(url('ajustes_bar'),{cache:'no-store'})]);
+      if(!r1.ok) throw new Error('pizarra '+r1.status);
+      const t1=await r1.text(); const t2=r2.ok?await r2.text():''; const t3=r3.ok?(await r3.text()).trim():'0';
+      if(/^Accepted/i.test(t1.trim())) throw new Error('Make está ocupado');
+      pedidos=parsear(t1); estados=parsearEstados(t2); if(!/^Accepted/i.test(t3)) atope=(t3==='1');
       const nuevos=pedidos.filter(p=>!vistos.has(clave(p)));
       pintar();
-      if(nuevos.length && vistos.size){ beep(); }
+      if(nuevos.length && vistos.size) beep();
       nuevos.forEach(p=>vistos.add(clave(p))); if(!vistos.size && pedidos.length) pedidos.forEach(p=>vistos.add(clave(p)));
       localStorage.setItem('pedidos_vistos',JSON.stringify([...vistos].slice(-300)));
-      $('estado').textContent='Actualizado a las '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})+' · se refresca solo cada 30 s'; $('estado').className='estado';
-    }catch(e){ $('estado').textContent='No se pudo cargar el tablón ('+e.message+'). Reintento en 30 s.'; $('estado').className='estado err'; }
+      aviso('Actualizado a las '+hhmm(new Date())+' · se refresca solo cada 30 s');
+    }catch(e){ aviso('No se pudo cargar ('+e.message+'). Reintento en 30 s.',true); }
   }
+  // cocina a tope
+  $('bTope').addEventListener('click', async ()=>{
+    const nuevo=!atope; atope=nuevo; pintar();
+    try{ const u=url('atope_bar'); u.searchParams.set('valor',nuevo?'1':'0'); const r=await fetch(u,{cache:'no-store'}); if((await r.text()).trim()!=='ok') throw new Error(); }
+    catch(e){ atope=!nuevo; pintar(); aviso('No se pudo cambiar «cocina a tope».',true); }
+  });
+  // comanda de mesa
+  const f=$('fMesa'); const mesas=$('mesas'); for(let i=1;i<=12;i++){ const b=document.createElement('button'); b.type='button'; b.className='btn'; b.textContent=i; b.addEventListener('click',()=>{ f.mesa.value=i; mesas.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); }); mesas.append(b); }
+  $('bMesa').addEventListener('click',()=>{ formAbierto=true; f.reset(); mesas.querySelectorAll('button').forEach(x=>x.classList.remove('on')); f.querySelector('.msg').textContent=''; $('velo').hidden=false; f.pedido.focus(); });
+  $('bCancelar').addEventListener('click',()=>{ $('velo').hidden=true; formAbierto=false; });
+  f.addEventListener('submit', async ev=>{
+    ev.preventDefault(); const mesa=f.mesa.value.trim(), pedido=f.pedido.value.trim(), notas=f.notas.value.trim(); const msg=f.querySelector('.msg');
+    if(!mesa){ msg.textContent='Elige la mesa.'; return; } if(!pedido){ msg.textContent='Escribe qué piden.'; return; }
+    msg.textContent='Apuntando…'; try{ const u=url('mesa_bar'); u.searchParams.set('mesa',mesa); u.searchParams.set('pedido',pedido); u.searchParams.set('notas',notas);
+      const r=await fetch(u,{cache:'no-store'}); if((await r.text()).trim()!=='ok') throw new Error(); $('velo').hidden=true; formAbierto=false; cargar(); }
+    catch(e){ msg.textContent='No se pudo apuntar. Inténtalo otra vez.'; }
+  });
   $('sonido').addEventListener('click',()=>{ sonidoOn=!sonidoOn; $('sonido').textContent=sonidoOn?'🔔 Sonido activado':'🔕 Sonido apagado'; if(sonidoOn) beep(); });
+  // toques visibles para grabar la pantalla: abrir con ?toques=1
+  if(new URLSearchParams(location.search).get('toques')==='1'){ document.addEventListener('pointerdown',ev=>{ const t=document.createElement('div'); t.className='toque'; t.style.left=ev.clientX+'px'; t.style.top=ev.clientY+'px'; document.body.append(t); setTimeout(()=>t.remove(),600); },{passive:true}); }
   reloj(); setInterval(reloj,15000); cargar(); setInterval(cargar,30000);
 </script>
 </body>
