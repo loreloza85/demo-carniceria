@@ -112,6 +112,7 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
 .form .msg{font-weight:800;font-size:14px;color:var(--tenue);margin:0}
 .form .msg.err{color:#b4231f}
 @media (prefers-reduced-motion:no-preference){.dia-c,.chip,.btn{transition:transform .08s} .dia-c:active,.chip:active,.btn:active{transform:scale(.96)}}
+.toque{position:fixed;width:70px;height:70px;margin:-35px 0 0 -35px;border-radius:50%;border:5px solid #e8491a;background:rgba(232,73,26,.25);pointer-events:none;z-index:99;animation:toque .6s ease-out forwards}@keyframes toque{from{transform:scale(.4);opacity:1}to{transform:scale(1.6);opacity:0}}
 </style>
 </head>
 <body>
@@ -374,6 +375,7 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
   cargar(false); cargarEstados(); setInterval(()=>{ cargar(true); cargarEstados(); },60000);
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden) cargar(true); });
 })();
+  if(new URLSearchParams(location.search).get('toques')==='1'){ document.addEventListener('pointerdown',ev=>{ const t=document.createElement('div'); t.className='toque'; t.style.left=ev.clientX+'px'; t.style.top=ev.clientY+'px'; document.body.append(t); setTimeout(()=>t.remove(),600); },{passive:true}); }
 </script>
 </body>
 </html>
