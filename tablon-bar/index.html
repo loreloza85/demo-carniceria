@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light only">
-<title>Tablón de pedidos</title>
+<title>Comandas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -20,33 +20,36 @@ html,body{margin:0;background:var(--fondo);color:var(--tinta);font:17px/1.45 var
 .cab h1{font:600 26px/1.1 var(--f-titulo);margin:0}
 .cab p{margin:4px 0 0;opacity:.92;font-weight:700}
 .cab .reloj{font:600 30px/1 var(--f-titulo);font-variant-numeric:tabular-nums}
-main{padding:14px 16px 40px;max-width:760px;margin:0 auto}
+main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
 .resumen{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px}
 .pill{border-radius:999px;padding:8px 14px;font-weight:800;font-size:15px;background:var(--mostaza-suave);color:#7a5600}
 .pill.ok{background:var(--oliva-suave);color:#1d6b3b}
 .col h2{font:600 20px var(--f-titulo);margin:0 0 8px;display:flex;align-items:center;gap:8px}
 .col h2 .n{background:var(--tinta);color:#fff;border-radius:999px;font:800 13px/1 var(--f-texto);padding:5px 9px}
-.lista{display:grid;gap:10px}
-.pedido{background:var(--tarjeta);border:2px solid var(--linea);border-radius:18px;padding:12px 14px;display:grid;gap:8px}
+.lista{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+@media (min-width:900px){.lista{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}}
+.pedido{background:var(--tarjeta);border:3px solid var(--linea);border-radius:18px;padding:14px;display:grid;gap:8px;grid-template-rows:auto auto 1fr auto auto;aspect-ratio:1/1;min-height:230px;align-content:start}
 .pedido .fila{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
 .pedido .quien{font-weight:800;font-size:19px}
 .pedido .tel{color:var(--tenue);font-weight:700;font-size:14px}
-.pedido .aprox{font:600 24px/1 var(--f-titulo);color:var(--tomate);font-variant-numeric:tabular-nums}
+.pedido .aprox{font:600 30px/1 var(--f-titulo);color:var(--tomate);font-variant-numeric:tabular-nums}
 .pedido .aprox small{display:block;font:700 12px var(--f-texto);color:var(--tenue);margin-top:3px;text-align:right}
-.pedido .que{font-size:17px;font-weight:700;line-height:1.35}
+.pedido .que{font-size:18px;font-weight:800;line-height:1.3;overflow:auto}
 .pedido .modo{display:inline-block;border-radius:999px;padding:3px 10px;font-weight:800;font-size:13px;background:var(--azul-suave);color:var(--azul)}
 .pedido .modo.dom{background:var(--mostaza-suave);color:#7a5600}
 .pedido .dir{color:var(--tenue);font-weight:700;font-size:14px}
 .pedido .notas{color:#7a5600;font-weight:700;font-size:14px}
-.pedido .est{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
-.btn{border:2px solid var(--linea);background:#fff;color:var(--tinta);border-radius:12px;font:800 15px var(--f-texto);padding:9px 14px;cursor:pointer;min-height:44px}
+.pedido .est{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;align-self:end}
+.btn{border:2px solid var(--linea);background:#fff;color:var(--tinta);border-radius:12px;font:800 14px var(--f-texto);padding:8px 10px;cursor:pointer;min-height:42px}
 .btn.marcha{background:var(--mostaza-suave);border-color:var(--mostaza);color:#7a5600}
 .btn.listo{background:var(--oliva-suave);border-color:var(--oliva);color:#1d6b3b}
-.pedido .sello{font-weight:800;font-size:14px;padding:9px 4px;flex:1;min-width:110px}
+.pedido .sello{font-weight:800;font-size:13px;padding:8px 2px;flex-basis:100%}
 .btn.fin{background:var(--azul-suave);border-color:var(--azul);color:var(--azul)}
 .pedido.en_marcha{border-color:var(--mostaza)}
 .pedido.listo{border-color:var(--oliva);background:var(--oliva-suave)}
 .pedido.entregado{opacity:.5;border-style:dashed}
+.pedido{position:relative}
+.pedido .num{position:absolute;top:-12px;left:12px;background:var(--tinta);color:#fff;border-radius:999px;font:700 13px/1 var(--f-texto);padding:5px 9px}
 .pedido.nuevo{animation:late 1s ease-in-out 3}
 @keyframes late{0%,100%{box-shadow:0 0 0 0 rgba(217,67,47,0)}50%{box-shadow:0 0 0 8px rgba(217,67,47,.35)}}
 .vacio{border:2px dashed var(--linea);border-radius:18px;padding:26px;text-align:center;color:var(--tenue);font-weight:700}
@@ -58,12 +61,12 @@ main{padding:14px 16px 40px;max-width:760px;margin:0 auto}
 </head>
 <body>
 <header class="cab">
-  <div><h1>Tablón de pedidos</h1><p id="fecha"></p></div>
+  <div><h1>Comandas</h1><p id="fecha"></p></div>
   <div class="reloj" id="reloj">--:--</div>
 </header>
 <main>
-  <div class="resumen"><span class="pill" id="pPend">0 por hacer</span><span class="pill ok" id="pListos">0 listos</span></div>
-  <section class="col"><h2>Pedidos de hoy, en orden <span class="n" id="nTodos">0</span></h2><div class="lista" id="lTodos"></div></section>
+  <div class="resumen"><span class="pill" id="pPend">0 comandas por hacer</span><span class="pill ok" id="pListos">0 listas</span></div>
+  <section class="col"><h2>Comandas de hoy, en orden <span class="n" id="nTodos">0</span></h2><div class="lista" id="lTodos"></div></section>
   <p class="estado" id="estado">Cargando…</p>
 </main>
 <button class="sonido" id="sonido" type="button">🔔 Activar sonido</button>
@@ -97,6 +100,7 @@ main{padding:14px 16px 40px;max-width:760px;margin:0 auto}
   function tarjeta(p){
     const e=estados[clave(p)]||'pendiente';
     const d=document.createElement('article'); d.className='pedido '+e; if(!vistos.has(clave(p))) d.classList.add('nuevo');
+    const num=document.createElement('div'); num.className='num'; num.textContent='#'+(p.orden||''); d.append(num);
     const f1=document.createElement('div'); f1.className='fila';
     const q=document.createElement('div'); q.innerHTML='<div class="quien"></div><div class="tel"></div>'; q.querySelector('.quien').textContent=p.nombre; q.querySelector('.tel').textContent=(p.tel?'📞 '+p.tel+' · ':'')+'pedido a las '+p.hora;
     const a=document.createElement('div'); a.className='aprox'; a.textContent=p.aprox; const s=document.createElement('small'); s.textContent=p.modo==='domicilio'?'entregar sobre las':'recoger sobre las'; a.prepend(s);
@@ -118,10 +122,11 @@ main{padding:14px 16px 40px;max-width:760px;margin:0 auto}
     const est=p=>estados[clave(p)]||'pendiente';
     const pend=pedidos.filter(p=>['pendiente','en_marcha'].includes(est(p))).sort((a,b)=>a.aprox.localeCompare(b.aprox));
     const listos=pedidos.filter(p=>est(p)==='listo'); const fin=pedidos.filter(p=>est(p)==='entregado');
+    pedidos.slice().sort((a,b)=>a.hora.localeCompare(b.hora)).forEach((p,i)=>p.orden=i+1);
     const orden=[...pend, ...listos.sort((a,b)=>a.aprox.localeCompare(b.aprox)), ...fin.sort((a,b)=>a.aprox.localeCompare(b.aprox))];
-    pintarLista($('lTodos'),orden,'Nada pendiente','Cuando Alba coja un pedido, aparece aquí con su hora.');
+    pintarLista($('lTodos'),orden,'Nada pendiente','Cuando Alba coja una comanda, aparece aquí en su cuadro, con su hora.');
     $('nTodos').textContent=pedidos.length;
-    $('pPend').textContent=pend.length+' por hacer'; $('pListos').textContent=listos.length+' listos';
+    $('pPend').textContent=pend.length+(pend.length===1?' comanda por hacer':' comandas por hacer'); $('pListos').textContent=listos.length+(listos.length===1?' lista':' listas');
   }
   async function cargar(){
     try{
