@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Peluquería Raquel</title>
+<title>Agenda de la peluquería</title>
 <meta name="theme-color" content="#7b2cbf">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icono-180.png">
@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="Peluquería">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
 <style>
-/* Agenda de Raquel · una pantalla, tres pestañas (Hoy / Mes / Buscar), tarjetas grandes para tocar con el dedo */
+/* Agenda de la peluquería · una pantalla, tres pestañas (Hoy / Mes / Buscar), tarjetas grandes para tocar con el dedo */
 :root{
   --fondo:#fbf6fb; --tarjeta:#ffffff; --tinta:#2a1f33; --tenue:#7b6f86; --linea:#eadff0;
   --ciruela:#7b2cbf; --ciruela-suave:#efe3fb; --fresa:#e0409a; --fresa-suave:#fde4f1;
@@ -122,7 +122,7 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
 </head>
 <body>
 <header class="cab">
-  <h1>Peluquería Raquel</h1>
+  <h1>Agenda de la peluquería</h1>
   <p><span class="fecha" id="hoyTexto"></span> · <span id="resumenHoy">cargando…</span></p>
 </header>
 
@@ -195,7 +195,7 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
     texto.split(/\r?\n/).forEach(l=>{ const m=l.trim().match(re); if(m) out.push({fecha:m[1],ini:m[2].padStart(5,'0'),fin:m[3].padStart(5,'0'),nombre:m[4].trim(),servicio:m[5].trim()}); });
     out.sort((a,b)=> (a.fecha+a.ini).localeCompare(b.fecha+b.ini)); return out;
   }
-  // Estado de cada cita (Raquel lo marca en la tablet): llegada (verde), no_vino (rojo), terminada (gris). Se guarda en el servidor.
+  // Estado de cada cita (la peluquera lo marca en la tablet): llegada (verde), no_vino (rojo), terminada (gris). Se guarda en el servidor.
   const ESTADOS = FUENTE.replace('tipo=agenda','tipo=estados');
   let estados = {};
   const TXT={llegada:'Ha llegado',no_vino:'No ha venido',terminada:'Terminada ✓'};
@@ -264,7 +264,7 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
     const b=document.createElement('button'); b.type='button'; b.className='btn lleno'; b.textContent='＋ Apuntar una cita a mano'; z.append(b);
     b.addEventListener('click',()=>{ b.hidden=true; z.append(formulario(diaSel, ()=>{ b.hidden=false; })); });
   }
-  // Raquel apunta una cita a mano (clienta que viene al local o llama cuando Alba no está): va a la misma agenda que Alba
+  // La peluquera apunta una cita a mano (clienta que viene al local o llama cuando Alba no está): va a la misma agenda que Alba
   function formulario(fecha, cerrar){
     const f=document.createElement('form'); f.className='form'; f.noValidate=true;
     const horas=[]; for(let h=9;h<=20;h++){ for(const m of ['00','15','30','45']){ if(h===20&&m!=='00') continue; horas.push(String(h).padStart(2,'0')+':'+m); } }
@@ -347,7 +347,7 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
   }
   // Avisos de Alba (llamadas que no acaban en cita): franja amarilla arriba + sonido; «Visto» lo quita en esta tablet
   const AVISOS = FUENTE.replace('tipo=agenda','tipo=avisos');
-  const MOTIVO={persona:'Quiere hablar con Raquel',cambio:'Quiere cambiar su cita',anular:'Quiere anular su cita',informacion:'Pide información',información:'Pide información',cita:'Cita por cerrar'};
+  const MOTIVO={persona:'Quiere hablar con la peluquera',cambio:'Quiere cambiar su cita',anular:'Quiere anular su cita',informacion:'Pide información',información:'Pide información',cita:'Cita por cerrar'};
   let vistos=new Set(); try{ vistos=new Set(JSON.parse(localStorage.getItem('avisos_vistos')||'[]')); }catch(e){}
   let sonados=new Set();
   function sonar(){ try{ const a=new (window.AudioContext||window.webkitAudioContext)(); const t=a.currentTime;
