@@ -128,7 +128,9 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
 .graf{background:var(--tarjeta);border:1px solid var(--linea);border-radius:18px;padding:14px;min-width:0}
 .graf h3{font:600 20px/1.2 var(--f-titulo);margin:0 0 8px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .graf h3 small{font:700 12px var(--f-texto);color:var(--tenue)}
-.graf canvas{max-width:100%;height:190px}
+.graf .cv{position:relative;height:170px;width:100%}
+.graf .cv.redonda{height:200px}
+.graf canvas{max-width:100%}
 .dos{display:grid;grid-template-columns:1fr;gap:12px}
 @media (min-width:640px){.dos{grid-template-columns:1fr 1fr}}
 .cobros{display:grid;gap:8px}
@@ -190,12 +192,12 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
       <div class="kpi c4"><span class="n">5</span><span class="l">no han venido</span><span class="d sube">▼ 3 menos, con recordatorio</span></div>
     </div>
     <div class="dos">
-      <div class="graf"><h3>Tratamientos más pedidos <small>citas del mes</small></h3><canvas id="gServ"></canvas></div>
-      <div class="graf"><h3>Citas por semana <small>hechas · previstas</small></h3><canvas id="gSem"></canvas></div>
+      <div class="graf"><h3>Tratamientos más pedidos <small>citas del mes</small></h3><div class="cv"><canvas id="gServ"></canvas></div></div>
+      <div class="graf"><h3>Citas por semana <small>hechas · previstas</small></h3><div class="cv"><canvas id="gSem"></canvas></div></div>
     </div>
     <div class="dos">
-      <div class="graf"><h3>Horas punta <small>de lunes a viernes</small></h3><canvas id="gHoras"></canvas></div>
-      <div class="graf"><h3>Clientas <small>nuevas · repiten · hace +3 meses</small></h3><canvas id="gCli"></canvas></div>
+      <div class="graf"><h3>Horas punta <small>de lunes a viernes</small></h3><div class="cv"><canvas id="gHoras"></canvas></div></div>
+      <div class="graf"><h3>Clientas <small>nuevas · repiten · hace +3 meses</small></h3><div class="cv redonda"><canvas id="gCli"></canvas></div></div>
     </div>
     <div class="graf">
       <h3>Cobros <small>señales y pagos por enlace</small></h3>
