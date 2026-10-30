@@ -131,6 +131,15 @@ h2 { font-size: clamp(28px, 7vw, 34px); }
 .dato a { color: var(--rosa); font-weight: 600; text-decoration: none; }
 .num { font-variant-numeric: tabular-nums; user-select: all; }
 .pie { color: var(--tenue); font-size: 13px; text-align: center; }
+.redes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.red { display: flex; align-items: center; gap: 10px; padding: 12px; background: #FFFFFF; border: 1px solid var(--linea); border-radius: 16px; text-decoration: none; min-width: 0; box-shadow: 0 8px 24px rgba(120, 80, 90, .06); }
+.red svg { flex: none; width: 26px; height: 26px; stroke: var(--rosa); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.red span { display: flex; flex-direction: column; min-width: 0; }
+.red b { font-size: 14px; font-weight: 600; }
+.red small { font-size: 12px; color: var(--tenue); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.redes-mini { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.redes-mini a { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--linea); background: #FFFFFF; display: grid; place-items: center; }
+.redes-mini svg { width: 22px; height: 22px; stroke: var(--rosa); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 @media (prefers-reduced-motion: reduce) { .vista { animation: none; } .btn, .acc summary .mas { transition: none; } .vistas { scroll-behavior: auto; } }
 </style>
 </head>
@@ -181,6 +190,13 @@ h2 { font-size: clamp(28px, 7vw, 34px); }
       <div class="resena"><span class="estrellas">★★★★★</span><q>Hacía un frío que te pelas y puso una mantita eléctrica en la camilla. Estuve mejor que en casa.</q><div class="q"><span>Débora T.</span><span>diciembre 2025</span></div></div>
       <div class="resena"><span class="estrellas">★★★★★</span><q>Llevo años haciéndome todos los tratamientos con Almu y nunca defrauda.</q><div class="q"><span>Diana I.</span><span>enero 2026</span></div></div>
     </div>
+  </div>
+  <div class="redes-mini" aria-label="Redes">
+    <a href="https://www.instagram.com/almudenavalcas.pmu/" title="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+    <a href="https://www.facebook.com/almudena.valderas.3" title="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H7v4h3v6h4v-6h3l1-4h-4V8Z"/></svg></a>
+    <a href="https://wa.me/34670359627" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M4 20l1.3-3.8A8 8 0 1 1 8.2 19L4 20Z"/><path d="M9.5 9.5c0 3 2 5 5 5l1-1.5-2-1-1 1a4 4 0 0 1-1.5-1.5l1-1-1-2-1.5 1Z"/></svg></a>
+    <a href="https://www.almudenavalcas.es/" title="Web"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></a>
+    <a href="https://www.google.com/maps/search/?api=1&query=Almudena+ValCas+Est%C3%A9tica+Torrej%C3%B3n+de+Ardoz" title="Google Maps"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></a>
   </div>
 </section>
 
@@ -256,11 +272,21 @@ h2 { font-size: clamp(28px, 7vw, 34px); }
   <div class="sec"><div class="eyebrow">Dónde estamos</div><h2>Con cita previa, en Torrejón</h2></div>
   <div>
     <div class="dato"><small>Dirección</small><b>Calle Virgen de la Paloma, 15 (local) · 28850 Torrejón de Ardoz</b><a href="https://www.google.com/maps/search/?api=1&query=Calle+Virgen+de+la+Paloma+15+Torrej%C3%B3n+de+Ardoz">Cómo llegar →</a></div>
-    <div class="dato"><small>WhatsApp y teléfono</small><b class="num">670 359 627</b><span style="color:var(--tenue);font-size:14px">Si no encuentras hueco en la agenda, escribe y te buscamos uno.</span></div>
-    <div class="dato"><small>Instagram</small><a href="https://www.instagram.com/almudenavalcas.pmu/">@almudenavalcas.pmu →</a></div>
+    <div class="dato"><small>Horario</small><b>Lunes a viernes, 10:00 a 19:00</b><span style="color:var(--tenue);font-size:14px">Sábados y domingos cerrado. Siempre con cita previa.</span></div>
+    <div class="dato"><small>WhatsApp y teléfono</small><b class="num">670 359 627</b><a href="https://wa.me/34670359627">Escribir por WhatsApp →</a></div>
+    <div class="dato"><small>Correo</small><a href="mailto:almudenavalcas@gmail.com" class="num" style="color:var(--tinta);font-weight:500">almudenavalcas@gmail.com</a></div>
     <div class="dato"><small>Reservas</small><a href="https://connect.shore.com/bookings/almudena-valcas-estetica-y-micropigmentacion/services?locale=es">Agenda online, 24 horas →</a></div>
   </div>
-  <a class="btn oro ancho" href="https://www.google.com/maps/search/?api=1&query=Calle+Virgen+de+la+Paloma+15+Torrej%C3%B3n+de+Ardoz">Abrir en Maps</a>
+  <div class="sec"><div class="eyebrow">Sígueme</div>
+    <div class="redes">
+      <a class="red" href="https://www.instagram.com/almudenavalcas.pmu/"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg><span><b>Instagram</b><small>@almudenavalcas.pmu</small></span></a>
+      <a class="red" href="https://www.instagram.com/almudenavalcas/"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg><span><b>Instagram del centro</b><small>@almudenavalcas</small></span></a>
+      <a class="red" href="https://www.facebook.com/almudena.valderas.3"><svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H7v4h3v6h4v-6h3l1-4h-4V8Z"/></svg><span><b>Facebook</b><small>Almudena Valderas</small></span></a>
+      <a class="red" href="https://www.almudenavalcas.es/"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><span><b>Web</b><small>almudenavalcas.es</small></span></a>
+      <a class="red" href="https://www.google.com/maps/search/?api=1&query=Almudena+ValCas+Est%C3%A9tica+Torrej%C3%B3n+de+Ardoz"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg><span><b>Google</b><small>Ficha y opiniones</small></span></a>
+      <a class="red" href="https://connect.shore.com/bookings/almudena-valcas-estetica-y-micropigmentacion/services?locale=es"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span><b>Reservas</b><small>Agenda online</small></span></a>
+    </div>
+  </div>
   <p class="pie">Almudena ValCas · Estética y micropigmentación</p>
 </section>
 

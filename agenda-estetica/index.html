@@ -166,7 +166,7 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
   const FUENTE = 'https://hook.eu1.make.com/dy04ycyacn2qj7uk191n4bvoswf75k73?tipo=agenda';
   const DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
   const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-  const CERRADO = [0]; // solo el domingo
+  const CERRADO = [0,6]; // sábado y domingo (horario de la web: lunes a viernes 10-19)
   let citas = [];
   let mesVista = new Date(); mesVista.setDate(1);
   let diaSel = hoyISO();
