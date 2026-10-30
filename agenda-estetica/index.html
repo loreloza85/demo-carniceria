@@ -113,6 +113,35 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
 .form .msg.err{color:#b4231f}
 @media (prefers-reduced-motion:no-preference){.dia-c,.chip,.btn{transition:transform .08s} .dia-c:active,.chip:active,.btn:active{transform:scale(.96)}}
 .toque{position:fixed;width:70px;height:70px;margin:-35px 0 0 -35px;border-radius:50%;border:5px solid #e8491a;background:rgba(232,73,26,.25);pointer-events:none;z-index:99;animation:toque .6s ease-out forwards}@keyframes toque{from{transform:scale(.4);opacity:1}to{transform:scale(1.6);opacity:0}}
+
+/* Resumen (30/10): números del mes, gráficas y cobros, con la paleta de la agenda */
+.res{display:grid;gap:12px}
+.res .ejemplo{font-size:12px;color:var(--tenue);font-weight:700;text-align:center}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (min-width:640px){.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.kpi{background:var(--tarjeta);border:1px solid var(--linea);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi .n{font:600 34px/1 var(--f-titulo);font-variant-numeric:tabular-nums}
+.kpi .l{font-size:13px;color:var(--tenue);font-weight:700}
+.kpi .d{font-size:12px;font-weight:800;border-radius:999px;padding:2px 8px;width:fit-content;margin-top:4px}
+.kpi.c1 .n{color:var(--ciruela)} .kpi.c2 .n{color:#2f7d5b} .kpi.c3 .n{color:#8a6a3a} .kpi.c4 .n{color:#c0392b}
+.sube{background:var(--menta-suave);color:#2f7d5b} .baja{background:#fde4e4;color:#c0392b} .igual{background:var(--miel-suave);color:#8a6a3a}
+.graf{background:var(--tarjeta);border:1px solid var(--linea);border-radius:18px;padding:14px;min-width:0}
+.graf h3{font:600 20px/1.2 var(--f-titulo);margin:0 0 8px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.graf h3 small{font:700 12px var(--f-texto);color:var(--tenue)}
+.graf canvas{max-width:100%;height:190px}
+.dos{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:640px){.dos{grid-template-columns:1fr 1fr}}
+.cobros{display:grid;gap:8px}
+.cobro{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--linea);border-radius:14px;min-width:0}
+.cobro b{font-weight:800} .cobro small{display:block;color:var(--tenue);font-size:12px}
+.cobro .imp{font:600 20px var(--f-titulo);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cobro.ok{background:var(--menta-suave);border-color:transparent} .cobro.pend{background:var(--miel-suave);border-color:transparent}
+.cobro .btn{font-size:13px;padding:6px 10px;min-height:36px}
+.opis{display:flex;align-items:center;gap:14px}
+.opis .n{font:600 44px/1 var(--f-titulo);color:var(--ciruela)}
+.opis .e{color:#d4b48c;letter-spacing:2px;font-size:18px}
+.opis small{display:block;color:var(--tenue);font-size:13px;font-weight:700}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ciruela);color:#fff;padding:10px 16px;border-radius:999px;font-weight:800;font-size:14px;z-index:20;box-shadow:0 10px 30px rgba(0,0,0,.2)}
 </style>
 </head>
 <body>
@@ -151,6 +180,37 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
     <div class="lista" id="listaBusca"></div>
   </section>
 
+
+  <section class="vista res" id="v-resumen" hidden>
+    <h2>Este mes <span class="n" id="resMes"></span></h2>
+    <div class="kpis">
+      <div class="kpi c1"><span class="n">126</span><span class="l">citas</span><span class="d sube">▲ 12 % vs. el mes pasado</span></div>
+      <div class="kpi c2"><span class="n">7.840 €</span><span class="l">ingresos previstos</span><span class="d sube">▲ 9 %</span></div>
+      <div class="kpi c3"><span class="n">31</span><span class="l">clientas nuevas</span><span class="d igual">= igual</span></div>
+      <div class="kpi c4"><span class="n">5</span><span class="l">no han venido</span><span class="d sube">▼ 3 menos, con recordatorio</span></div>
+    </div>
+    <div class="dos">
+      <div class="graf"><h3>Tratamientos más pedidos <small>citas del mes</small></h3><canvas id="gServ"></canvas></div>
+      <div class="graf"><h3>Citas por semana <small>hechas · previstas</small></h3><canvas id="gSem"></canvas></div>
+    </div>
+    <div class="dos">
+      <div class="graf"><h3>Horas punta <small>de lunes a viernes</small></h3><canvas id="gHoras"></canvas></div>
+      <div class="graf"><h3>Clientas <small>nuevas · repiten · hace +3 meses</small></h3><canvas id="gCli"></canvas></div>
+    </div>
+    <div class="graf">
+      <h3>Cobros <small>señales y pagos por enlace</small></h3>
+      <div class="cobros">
+        <div class="cobro ok"><div><b>Señales cobradas este mes</b><small>8 micropigmentaciones · 50 € cada una, por enlace de pago</small></div><span class="imp">400 €</span></div>
+        <div class="cobro pend"><div><b>Pendientes de cobrar</b><small>Marina · cejas hiperrealistas · viernes 17:00</small></div><button class="btn" type="button" data-cobro="Marina">Enviar enlace</button></div>
+        <div class="cobro pend"><div><b>Pendientes de cobrar</b><small>Carmen · labios · lunes 11:00</small></div><button class="btn" type="button" data-cobro="Carmen">Enviar enlace</button></div>
+        <div class="cobro"><div><b>Cobrado en el centro</b><small>Tarjeta, Bizum y efectivo (lo apunta Almudena al marcar «ha venido»)</small></div><span class="imp">6.120 €</span></div>
+      </div>
+    </div>
+    <div class="graf"><h3>Opiniones <small>Shore + Google</small></h3>
+      <div class="opis"><span class="n">4,9</span><div><span class="e">★★★★★</span><small>486 opiniones en Shore · 12 nuevas este mes en Google</small></div></div>
+    </div>
+    <p class="ejemplo">Datos de ejemplo de un mes. Con la agenda en marcha, se calculan solos con las citas, los estados y los precios.</p>
+  </section>
   <p class="estado" id="estado"></p>
 </main>
 
@@ -158,6 +218,7 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
   <button class="on" data-v="hoy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Hoy</button>
   <button data-v="mes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Mes</button>
   <button data-v="buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Buscar</button>
+  <button data-v="resumen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Resumen</button>
 </nav>
 
 <script>
@@ -320,7 +381,8 @@ function arrancarAgenda(FUENTE){
   $('mesSig').addEventListener('click',()=>{ mesVista.setMonth(mesVista.getMonth()+1); pintarMes(); });
   document.querySelectorAll('.pest button').forEach(b=>b.addEventListener('click',()=>{
     document.querySelectorAll('.pest button').forEach(x=>x.classList.toggle('on',x===b));
-    ['hoy','mes','buscar'].forEach(v=>{ $('v-'+v).hidden = v!==b.dataset.v; });
+    ['hoy','mes','buscar','resumen'].forEach(v=>{ $('v-'+v).hidden = v!==b.dataset.v; });
+    if(b.dataset.v==='resumen') pintarResumen();
     if(b.dataset.v==='buscar') setTimeout(()=>$('q').focus(),50);
     try{ localStorage.setItem('agenda_vista',b.dataset.v); }catch(e){}
   }));
@@ -401,6 +463,30 @@ function arrancarAgenda(FUENTE){
 })();
 
   if(new URLSearchParams(location.search).get('toques')==='1'){ document.addEventListener('pointerdown',ev=>{ const t=document.createElement('div'); t.className='toque'; t.style.left=ev.clientX+'px'; t.style.top=ev.clientY+'px'; document.body.append(t); setTimeout(()=>t.remove(),600); },{passive:true}); }
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(function(){
+  'use strict';
+  var hecho=false;
+  function color(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+  window.pintarResumen=function(){
+    var m=document.getElementById('resMes'); if(m) m.textContent=new Date().toLocaleDateString('es-ES',{month:'long'});
+    if(hecho||!window.Chart) return; hecho=true;
+    var ciruela=color('--ciruela')||'#b57a7e', fresa=color('--fresa')||'#c98a8e', miel=color('--miel')||'#d4b48c', menta=color('--menta')||'#6faf8e', tenue=color('--tenue')||'#8e7e85', linea=color('--linea')||'#efe4e3';
+    Chart.defaults.font.family='"Nunito","Segoe UI",system-ui,sans-serif'; Chart.defaults.font.weight='700'; Chart.defaults.color=tenue;
+    var base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:linea},border:{display:false},ticks:{precision:0}}}};
+    new Chart(document.getElementById('gServ'),{type:'bar',data:{labels:['Láser','Mirada y manos','Micropigm.','Faciales','Cera','Corporal'],datasets:[{data:[38,27,19,16,15,11],backgroundColor:[ciruela,fresa,'#d9a3a6',miel,menta,'#e6c7c9'],borderRadius:8}]},options:Object.assign({},base,{indexAxis:'y',scales:{x:{grid:{color:linea},border:{display:false},ticks:{precision:0}},y:{grid:{display:false}}}})});
+    new Chart(document.getElementById('gSem'),{type:'bar',data:{labels:['Sem 1','Sem 2','Sem 3','Sem 4'],datasets:[{label:'Hechas',data:[29,33,31,0],backgroundColor:ciruela,borderRadius:8},{label:'Previstas',data:[0,0,4,29],backgroundColor:'#e6c7c9',borderRadius:8}]},options:Object.assign({},base,{plugins:{legend:{display:true,position:'bottom'}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid:{color:linea},border:{display:false},ticks:{precision:0}}}})});
+    new Chart(document.getElementById('gHoras'),{type:'bar',data:{labels:['10','11','12','13','16','17','18'],datasets:[{data:[14,22,19,9,16,24,22],backgroundColor:function(c){var v=c.raw;return v>=20?ciruela:v>=14?fresa:'#e6c7c9';},borderRadius:8}]},options:base});
+    new Chart(document.getElementById('gCli'),{type:'doughnut',data:{labels:['Nuevas','Repiten','Hace +3 meses'],datasets:[{data:[31,78,17],backgroundColor:[fresa,ciruela,miel],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:true,position:'bottom'}}}});
+  };
+  document.querySelectorAll('[data-cobro]').forEach(function(b){ b.addEventListener('click',function(){
+    var t=document.createElement('div'); t.className='toast'; t.textContent='Enlace de pago enviado a '+b.dataset.cobro+' por WhatsApp'; document.body.appendChild(t); setTimeout(function(){ t.remove(); },2200);
+    b.textContent='Enviado'; b.disabled=true; }); });
+  try{ if(localStorage.getItem('agenda_vista')==='resumen'){ var bt=document.querySelector('.pest button[data-v=resumen]'); if(bt) setTimeout(function(){ bt.click(); },300); } }catch(e){}
+})();
 </script>
 </body>
 </html>
