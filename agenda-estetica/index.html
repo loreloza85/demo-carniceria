@@ -78,7 +78,7 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
 .ayuda{color:var(--tenue);font-weight:700;font-size:14px;margin:0 0 10px}
 /* pestañas abajo */
 .pest{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--tarjeta);border-top:1px solid var(--linea);padding:6px max(10px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px));z-index:5}
-.pest button{flex:1;border:0;background:transparent;color:var(--tenue);font:800 13px var(--f-texto);padding:6px 4px 4px;border-radius:14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:56px}
+.pest button{flex:1;border:0;background:transparent;color:var(--tenue);font:800 11px var(--f-texto);padding:6px 1px 4px;border-radius:14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:56px}
 .pest button svg{width:26px;height:26px}
 .pest button.on{color:var(--ciruela);background:var(--ciruela-suave)}
 .estado{font-size:13px;color:var(--tenue);font-weight:700;text-align:center;margin:14px 0 0}
@@ -144,6 +144,35 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
 .opis .e{color:#d4b48c;letter-spacing:2px;font-size:18px}
 .opis small{display:block;color:var(--tenue);font-size:13px;font-weight:700}
 .toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ciruela);color:#fff;padding:10px 16px;border-radius:999px;font-weight:800;font-size:14px;z-index:20;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+
+/* Clientas (historial) y bloques del Resumen */
+.bloque{display:flex;align-items:center;gap:10px;margin:10px 0 2px}
+.bloque b{font:600 22px/1.1 var(--f-titulo)} .bloque small{color:var(--tenue);font-weight:700;font-size:12px}
+.bloque::after{content:"";flex:1;height:1px;background:var(--linea)}
+.cli{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;background:var(--tarjeta);border:1px solid var(--linea);border-radius:18px;padding:12px 14px;min-width:0;cursor:pointer}
+.cli .av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:600 20px var(--f-titulo);color:#fff;background:var(--ciruela)}
+.cli .nom{font-weight:800;font-size:17px} .cli .sub{font-size:13px;color:var(--tenue);font-weight:700}
+.cli .tag{font-size:12px;font-weight:800;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.tag.nueva{background:var(--fresa-suave);color:var(--fresa)} .tag.habitual{background:var(--menta-suave);color:#2f7d5b} .tag.lejos{background:var(--miel-suave);color:#8a6a3a}
+.hist{grid-column:1/-1;display:none;flex-direction:column;gap:6px;border-top:1px solid var(--linea);padding-top:10px;margin-top:4px}
+.cli.abierta .hist{display:flex}
+.hist .h{display:grid;grid-template-columns:100px 1fr;gap:10px;font-size:14px} .hist .h b{font-variant-numeric:tabular-nums;color:var(--ciruela)}
+.hist .acc{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px} .hist .acc .btn{font-size:13px;padding:6px 10px;min-height:36px}
+.mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mini div{background:var(--tarjeta);border:1px solid var(--linea);border-radius:14px;padding:10px;text-align:center;min-width:0}
+.mini .n{font:600 26px/1 var(--f-titulo);color:var(--ciruela);font-variant-numeric:tabular-nums} .mini small{display:block;color:var(--tenue);font-weight:700;font-size:12px;margin-top:3px}
+.eq{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--linea);border-radius:14px}
+.eq .av{width:44px;height:44px;border-radius:50%;object-fit:cover}
+.acc-estilo .lista{display:flex;flex-direction:column;gap:10px}
+.acc-estilo .acc{background:var(--tarjeta);border:1px solid var(--linea);border-radius:18px;overflow:hidden}
+.acc-estilo .acc summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:var(--ciruela-suave)}
+.acc-estilo .acc summary::-webkit-details-marker{display:none}
+.acc-estilo .acc summary b{font:600 22px var(--f-titulo)} .acc-estilo .acc summary small{display:block;color:var(--tenue);font-size:12px;font-weight:700}
+.acc-estilo .acc summary .mas{width:28px;height:28px;border-radius:50%;border:1px solid var(--miel);display:grid;place-items:center;color:var(--miel);flex:none;transition:transform .2s}
+.acc-estilo .acc[open] summary .mas{transform:rotate(45deg)}
+.acc-estilo table{width:100%;border-collapse:collapse;font-size:14px} .acc-estilo td{padding:9px 16px;border-top:1px solid var(--linea);vertical-align:top}
+.acc-estilo td small{display:block;color:var(--tenue);font-size:12px} .acc-estilo td:last-child{text-align:right;white-space:nowrap;font-weight:800;font-variant-numeric:tabular-nums}
+.acc-estilo .res{display:inline-block;margin-left:8px;padding:4px 10px;border-radius:999px;background:var(--fresa-suave);color:var(--fresa);font:800 12px var(--f-texto);border:0;cursor:pointer}
 </style>
 </head>
 <body>
@@ -183,38 +212,207 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
   </section>
 
 
+
+  <section class="vista" id="v-clientas" hidden>
+    <div class="busca">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="qCli" type="search" placeholder="Buscar clienta…" autocomplete="off">
+    </div>
+    <div class="mini" id="cliMini"></div>
+    <h2 style="margin-top:14px">Clientas <span class="n" id="nCli">0</span></h2>
+    <div class="lista" id="listaCli"></div>
+  </section>
+
+  <section class="vista" id="v-tratamientos" hidden>
+    <h2>Tratamientos <span class="n">96</span></h2>
+    <p class="ayuda" style="margin:0 0 10px">Los mismos que ve la clienta en la web y en el WhatsApp, con el mismo precio. Toca «Pedir cita» y se apunta en tu agenda, sin pasar por ninguna otra página.</p>
+    <div class="acc-estilo">  <div class="lista">
+    <details class="acc" id="cat-micro"><summary><div><b>Micropigmentación</b><small>Primera sesión, retoque incluido · 15</small></div><span class="mas">+</span></summary>
+      <table>
+      <tr><td>Micropigmentación de cejas hiperrealistas 1.ª sesión<small>La tecnica mas novedosa y menos agresiva para la piel. con un efecto mas realista y mas na… · 2 h</small></td><td>360 €<button class="res" type="button" data-cita="Micropigmentación de cejas hiperrealistas 1.ª sesión" data-dura="120">Pedir cita</button></td></tr>
+      <tr><td>Micropigmentación efecto sombra 1.ª sesión<small>la micropigmentacion es ideal para quienes desean un look mas definido sin la necesidad de… · 2 h</small></td><td>360 €<button class="res" type="button" data-cita="Micropigmentación efecto sombra 1.ª sesión" data-dura="120">Pedir cita</button></td></tr>
+      <tr><td>Micropigmentación labio 1.ª sesión<small>en este tratamiento se realza el color del labio con un efecto acuarela por toda la mucosa… · 1 h</small></td><td>360 €<button class="res" type="button" data-cita="Micropigmentación labio 1.ª sesión" data-dura="60">Pedir cita</button></td></tr>
+      <tr><td>Microblading cejas 1.ª sesión<small>la micropigmentacion es ideal para quienes desean un look mas definido sin la necesidad de… · 1 h</small></td><td>299 €<button class="res" type="button" data-cita="Microblading cejas 1.ª sesión" data-dura="60">Pedir cita</button></td></tr>
+      <tr><td>Micropigmentación 2.ª sesión<small>Servicio valido únicamente después de la primera sesión de cualquiera de las técnicas de M… · 2 h</small></td><td>consultar<button class="res" type="button" data-cita="Micropigmentación 2.ª sesión" data-dura="120">Pedir cita</button></td></tr>
+      <tr><td>Microblading 2.ª sesión<small>este tratamiento es unicamente valido si te has realizado el microblading con un maximo de… · 1 h</small></td><td>60 €<button class="res" type="button" data-cita="Microblading 2.ª sesión" data-dura="60">Pedir cita</button></td></tr>
+      <tr><td>Micropigmentación eyeliner solo línea de abajo<small>ideal para quien busca definición entre pestañas en la linea de abajo, sutil y elegante · 1 h 30 min</small></td><td>150 €<button class="res" type="button" data-cita="Micropigmentación eyeliner solo línea de abajo" data-dura="90">Pedir cita</button></td></tr>
+      <tr><td>Micropigmentación de ojos efecto tribal 1.ª sesión<small>maquillaje permanente en ojos, efecto tribal, crea un bonito efecto sofisticado y vistoso · 1 h</small></td><td>330 €<button class="res" type="button" data-cita="Micropigmentación de ojos efecto tribal 1.ª sesión" data-dura="60">Pedir cita</button></td></tr>
+      <tr><td>Micropigmentación de ojos difuminado 1.ª sesión<small>Sofisticado y elegante con este tratamiento puedes conseguir un efecto sombreado como un m… · 3 h</small></td><td>369 €<button class="res" type="button" data-cita="Micropigmentación de ojos difuminado 1.ª sesión" data-dura="180">Pedir cita</button></td></tr>
+      <tr><td>Micropigmentación eyeliner invisible 1.ª sesión<small>muy discreto y sin salir de la linea de las pestañas, para dar un toque de maquillaje que … · 2 h</small></td><td>289 €<button class="res" type="button" data-cita="Micropigmentación eyeliner invisible 1.ª sesión" data-dura="120">Pedir cita</button></td></tr>
+      <tr><td>Mantenimiento anual micropigmentación<small>se comprende entre los 6 y 12 primeros meses a partir de la primera sesion. siempre que ha… · 1 h 35 min</small></td><td>consultar<button class="res" type="button" data-cita="Mantenimiento anual micropigmentación" data-dura="95">Pedir cita</button></td></tr>
+      <tr><td>Mantenimiento 12-18 meses<small>se comprende el repaso pasados los 12 meses y maximo 18, siempre y cuando se pueda ver el … · 1 h</small></td><td>230 €<button class="res" type="button" data-cita="Mantenimiento 12-18 meses" data-dura="60">Pedir cita</button></td></tr>
+      <tr><td>Mantenimiento anual microblading<small>Este repaso corresponde cuando despues de un año de la primera sesion el tratamiento pierd… · 1 h</small></td><td>190 €<button class="res" type="button" data-cita="Mantenimiento anual microblading" data-dura="60">Pedir cita</button></td></tr>
+      <tr><td>Capilar 2cm<small>para ausencia de pelo o redensificacion de zonas en capilar, disimula y corrige de forma t… · 30 min</small></td><td>80 €<button class="res" type="button" data-cita="Capilar 2cm" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Eliminación de micropigmentación<small>Eliminamos tus cejas antiguas!! · 30 min</small></td><td>70 €<button class="res" type="button" data-cita="Eliminación de micropigmentación" data-dura="30">Pedir cita</button></td></tr>
+      </table>
+    </details>
+    <details class="acc" id="cat-laser"><summary><div><b>Depilación láser</b><small>Por sesión · packs y bonos anuales · 25</small></div><span class="mas">+</span></summary>
+      <table>
+      <tr><td>Bono anual M<small>Piel suave todo el año, sesiones ilimitadas  · 30 min</small></td><td>700 €<button class="res" type="button" data-cita="Bono anual M" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Bono anual S<small>Suave todo el año, dos zonas pequeñas de sesiones ilimitadas durante un año · 30 min</small></td><td>500 €<button class="res" type="button" data-cita="Bono anual S" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Bono anual XL<small>Piel suave todo el año · 30 min</small></td><td>950 €<button class="res" type="button" data-cita="Bono anual XL" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser antebrazos<small>30 min</small></td><td>50 €<button class="res" type="button" data-cita="Depilación láser antebrazos" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser axilas<small>30 min</small></td><td>29 €<button class="res" type="button" data-cita="Depilación láser axilas" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser brazos<small>30 min</small></td><td>60 €<button class="res" type="button" data-cita="Depilación láser brazos" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser espalda<small>30 min</small></td><td>80 €<button class="res" type="button" data-cita="Depilación láser espalda" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser facial (por zonas)<small>15 min</small></td><td>20 €<button class="res" type="button" data-cita="Depilación láser facial (por zonas)" data-dura="15">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser glúteos<small>30 min</small></td><td>50 €<button class="res" type="button" data-cita="Depilación láser glúteos" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser hombros<small>30 min</small></td><td>40 €<button class="res" type="button" data-cita="Depilación láser hombros" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser ingles básicas<small>30 min</small></td><td>49 €<button class="res" type="button" data-cita="Depilación láser ingles básicas" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser ingles completas<small>30 min</small></td><td>consultar<button class="res" type="button" data-cita="Depilación láser ingles completas" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser linea alba<small>30 min</small></td><td>20 €<button class="res" type="button" data-cita="Depilación láser linea alba" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser lumbar<small>30 min</small></td><td>35 €<button class="res" type="button" data-cita="Depilación láser lumbar" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser medias piernas<small>30 min</small></td><td>60 €<button class="res" type="button" data-cita="Depilación láser medias piernas" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser muslos<small>30 min</small></td><td>60 €<button class="res" type="button" data-cita="Depilación láser muslos" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser nuca<small>30 min</small></td><td>25 €<button class="res" type="button" data-cita="Depilación láser nuca" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser pack ingles básicas + axilas<small>30 min</small></td><td>59 €<button class="res" type="button" data-cita="Depilación láser pack ingles básicas + axilas" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser pack medias piernas + axilas<small>30 min</small></td><td>70 €<button class="res" type="button" data-cita="Depilación láser pack medias piernas + axilas" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser pack piernas enteras + ingles básicas<small>30 min</small></td><td>120 €<button class="res" type="button" data-cita="Depilación láser pack piernas enteras + ingles básicas" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser pack piernas enteras + ingles completas<small>30 min</small></td><td>129 €<button class="res" type="button" data-cita="Depilación láser pack piernas enteras + ingles completas" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser pack tórax + abdomen + espalda<small>30 min</small></td><td>130 €<button class="res" type="button" data-cita="Depilación láser pack tórax + abdomen + espalda" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser perianal<small>15 min</small></td><td>20 €<button class="res" type="button" data-cita="Depilación láser perianal" data-dura="15">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser piernas completas<small>30 min</small></td><td>100 €<button class="res" type="button" data-cita="Depilación láser piernas completas" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación láser tórax y abdomen<small>30 min</small></td><td>80 €<button class="res" type="button" data-cita="Depilación láser tórax y abdomen" data-dura="30">Pedir cita</button></td></tr>
+      </table>
+    </details>
+    <details class="acc" id="cat-mirada"><summary><div><b>Mirada y manos</b><small>Pestañas, cejas, uñas · 13</small></div><span class="mas">+</span></summary>
+      <table>
+      <tr><td>Esmaltado permanente en pies<small>45 min</small></td><td>24 €<button class="res" type="button" data-cita="Esmaltado permanente en pies" data-dura="45">Pedir cita</button></td></tr>
+      <tr><td>Retirar gel o acrilico sin manicura<small>45 min</small></td><td>17 €<button class="res" type="button" data-cita="Retirar gel o acrilico sin manicura" data-dura="45">Pedir cita</button></td></tr>
+      <tr><td>Retirar esmaltado permanente sin manicura<small>30 min</small></td><td>7 €<button class="res" type="button" data-cita="Retirar esmaltado permanente sin manicura" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Decoración de uñas<small>PRECIO POR UÑA · 5 min</small></td><td>2 €<button class="res" type="button" data-cita="Decoración de uñas" data-dura="5">Pedir cita</button></td></tr>
+      <tr><td>Lifting de pestañas + tinte<small>ELEVA TUS PESTAÑAS AL LIMITE CON EL LIFTING DE PESTAÑAS, CONSISTE EN RIZARLAS Y TEÑIRLAS P… · 1 h 15 min</small></td><td>49 €<button class="res" type="button" data-cita="Lifting de pestañas + tinte" data-dura="75">Pedir cita</button></td></tr>
+      <tr><td>Tinte de pestañas<small>20 min</small></td><td>19 €<button class="res" type="button" data-cita="Tinte de pestañas" data-dura="20">Pedir cita</button></td></tr>
+      <tr><td>Esmaltado permanente<small>45 min</small></td><td>22 €<button class="res" type="button" data-cita="Esmaltado permanente" data-dura="45">Pedir cita</button></td></tr>
+      <tr><td>Diseño de cejas con henna<small>diseña tus cejas segun tus facciones y consigue la mirada de infarto! · 45 min</small></td><td>29 €<button class="res" type="button" data-cita="Diseño de cejas con henna" data-dura="45">Pedir cita</button></td></tr>
+      <tr><td>Diseño de cejas con depilación<small>Diseño de cejas con depilacion y terminamos con un maquillaje de cejas para lucir el diseñ… · 15 min</small></td><td>19 €<button class="res" type="button" data-cita="Diseño de cejas con depilación" data-dura="15">Pedir cita</button></td></tr>
+      <tr><td>Depilación eléctrica desde<small>LA UNICA DEPILACION DEFINITIVA · 30 min</small></td><td>4 €<button class="res" type="button" data-cita="Depilación eléctrica desde" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Laminado de cejas<small>ES UN TRATAMIENTO INDICADO PARA CONSEGUIR LA PERFECCION A LA HORA DE MAQUILLAR Y MANTENER … · 1 h</small></td><td>49 €<button class="res" type="button" data-cita="Laminado de cejas" data-dura="60">Pedir cita</button></td></tr>
+      <tr><td>Lifting de pestañas + tinte + laminado de cejas<small>MIRADA DE ESCANDALO CON LOS DOS SERVICIOS ESTRELLA! INCLUYE EL DISEÑO DE LA CEJA TERMINADA… · 1 h 30 min</small></td><td>70 €<button class="res" type="button" data-cita="Lifting de pestañas + tinte + laminado de cejas" data-dura="90">Pedir cita</button></td></tr>
+      <tr><td>Esmaltado Revolution<small>ESMALTADO DE ULTIMA GENERACION PARA ENDURECER Y ALARGAR! · 45 min</small></td><td>25 €<button class="res" type="button" data-cita="Esmaltado Revolution" data-dura="45">Pedir cita</button></td></tr>
+      </table>
+    </details>
+    <details class="acc" id="cat-facial"><summary><div><b>Tratamientos faciales</b><small>Limpiezas, láser, BB Glow · 13</small></div><span class="mas">+</span></summary>
+      <table>
+      <tr><td>Limpieza Hydravital facial<small>Limpieza máxima de la piel, oxigena e hidrata, trata imperfecciones. No invasivo ni doloro… · 1 h</small></td><td>59 €<button class="res" type="button" data-cita="Limpieza Hydravital facial" data-dura="60">Pedir cita</button></td></tr>
+      <tr><td>Eliminación de imperfecciones<small>eliminamos cualquier imperfección con energía de plasma de forma puntual · 30 min</small></td><td>80 €<button class="res" type="button" data-cita="Eliminación de imperfecciones" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Ultra hidratación y nutrición<small>tratamiento personalizado con dermapen · 1 h</small></td><td>99 €<button class="res" type="button" data-cita="Ultra hidratación y nutrición" data-dura="60">Pedir cita</button></td></tr>
+      <tr><td>Eliminación de imperfecciones facial completa<small>eliminación de imperfecciónes  facial, cuello y escote con energía de plasma · 1 h</small></td><td>120 €<button class="res" type="button" data-cita="Eliminación de imperfecciones facial completa" data-dura="60">Pedir cita</button></td></tr>
+      <tr><td>Re hidratación de labios con Hyaluron Pen<small>TRATAMIENTO CON ACIDO HIALURONICO PARA DAR UN APORTE DE HIDRATACION Y UN EXTRA DE VOLUMEN · 45 min</small></td><td>149 €<button class="res" type="button" data-cita="Re hidratación de labios con Hyaluron Pen" data-dura="45">Pedir cita</button></td></tr>
+      <tr><td>Tratamiento BB Glow<small>Es un tratamiento facial rejuvenecedor y que proporciona un efecto inmediato de luminosida… · 1 h</small></td><td>90 €<button class="res" type="button" data-cita="Tratamiento BB Glow" data-dura="60">Pedir cita</button></td></tr>
+      <tr><td>Revisión 15 dias Hyaluron Pen<small>SOLO SE RESERVA EN EL CASO DE HABER HECHO LA PRIMERA SESION A LOS 15 DIAS · 30 min</small></td><td>50 €<button class="res" type="button" data-cita="Revisión 15 dias Hyaluron Pen" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Bono 6 sesiones BB Glow<small>Es un tratamiento facial rejuvenecedor y que proporciona un efecto inmediato de luminosida… · 1 h</small></td><td>510 €<button class="res" type="button" data-cita="Bono 6 sesiones BB Glow" data-dura="60">Pedir cita</button></td></tr>
+      <tr><td>Ácido hialurónico en labios<small>tratamiento ultra hidratante de labios realizado con dermapen · 1 h</small></td><td>100 €<button class="res" type="button" data-cita="Ácido hialurónico en labios" data-dura="60">Pedir cita</button></td></tr>
+      <tr><td>Rejuvenecimiento facial con láser 1 sesión<small>Ideal para probar y sentir la diferencia · 45 min</small></td><td>consultar<button class="res" type="button" data-cita="Rejuvenecimiento facial con láser 1 sesión" data-dura="45">Pedir cita</button></td></tr>
+      <tr><td>Rejuvenecimiento facial con láser 2 sesiones<small>empieza tu transformacionales y potencia resultadosrejuvenecimiento y regeneración de la p… · 45 min</small></td><td>229 €<button class="res" type="button" data-cita="Rejuvenecimiento facial con láser 2 sesiones" data-dura="45">Pedir cita</button></td></tr>
+      <tr><td>Rejuvenecimiento facial con láser 4 sesiones<small>EL PLAN PERFECTO PARA CAMBIOS VISIBLES Y DURADEROS · 45 min</small></td><td>399 €<button class="res" type="button" data-cita="Rejuvenecimiento facial con láser 4 sesiones" data-dura="45">Pedir cita</button></td></tr>
+      <tr><td>Rejuvenecimiento facial con láser precio jornada<small>rejuvenecimiento y regeneración de la piel desde el interior de tu piel  · 45 min</small></td><td>299 €<button class="res" type="button" data-cita="Rejuvenecimiento facial con láser precio jornada" data-dura="45">Pedir cita</button></td></tr>
+      </table>
+    </details>
+    <details class="acc" id="cat-corporal"><summary><div><b>Corporal</b><small>Presoterapia, masajes, bonos · 14</small></div><span class="mas">+</span></summary>
+      <table>
+      <tr><td>Express Fat Burner<small>RESULTADOS VISIBLES DESDE LA PRIMERA SESION: · 1 h 30 min</small></td><td>69 €<button class="res" type="button" data-cita="Express Fat Burner" data-dura="90">Pedir cita</button></td></tr>
+      <tr><td>Bono 12 sesiones Express Fat Burner<small>BONO DE 6 SESIONES + 6 SESIONES DE PRESOTERAPIA  · 1 h 30 min</small></td><td>414 €<button class="res" type="button" data-cita="Bono 12 sesiones Express Fat Burner" data-dura="90">Pedir cita</button></td></tr>
+      <tr><td>Masaje corporal<small>45 min</small></td><td>49 €<button class="res" type="button" data-cita="Masaje corporal" data-dura="45">Pedir cita</button></td></tr>
+      <tr><td>Masaje localizado<small>30 min</small></td><td>29 €<button class="res" type="button" data-cita="Masaje localizado" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Presoterapia<small>45 min</small></td><td>25 €<button class="res" type="button" data-cita="Presoterapia" data-dura="45">Pedir cita</button></td></tr>
+      <tr><td>Presoterapia + saco sauna (sesion suelta)<small>elimina toxinas, reductor, anticelulitico, modela, mejora el flujo sanguineo, drenante
+ · 1 h</small></td><td>49 €<a class="res" href="https://connect.shore.com/bookings/almudena-valcas-estetica-y-micropigmentacion/direct/781c8600-a9d0-49a6-b405-f6c8e0e86ed8?locale=es">Reservar</a></td></tr>
+      <tr><td>Presoterapia + vendas frias (sesion suelta)<small>descongestivo, relajante sanguineo, reafirmante, activacion de la circulacion, drenaje lin… · 1 h</small></td><td>49 €<button class="res" type="button" data-cita="Presoterapia + vendas frias (sesion suelta)" data-dura="60">Pedir cita</button></td></tr>
+      <tr><td>Bono presoterapia<small>Bono 10 sesiones de presoterapia · 30 min</small></td><td>199 €<button class="res" type="button" data-cita="Bono presoterapia" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Tratamiento descongestivo para piernas cansadas<small>ADIOS A LAS VARICES, A LAS PIERNAS CANSADAS Y A LA CELULITIS!! · 1 h 30 min</small></td><td>69 €<button class="res" type="button" data-cita="Tratamiento descongestivo para piernas cansadas" data-dura="90">Pedir cita</button></td></tr>
+      <tr><td>Bono 10 sesiones preso+vendas<small>bono de 10 sesiones de presoterapia con vendas frías · 1 h</small></td><td>299 €<button class="res" type="button" data-cita="Bono 10 sesiones preso+vendas" data-dura="60">Pedir cita</button></td></tr>
+      <tr><td>Bono 10 sesiones Bellaction<small>Es el único equipo para tratamientos corporales capaz de reducir una media de 2 tallas sin… · 1 h 30 min</small></td><td>599 €<button class="res" type="button" data-cita="Bono 10 sesiones Bellaction" data-dura="90">Pedir cita</button></td></tr>
+      <tr><td>Bellaction sesión suelta<small>1 h 30 min</small></td><td>89 €<button class="res" type="button" data-cita="Bellaction sesión suelta" data-dura="90">Pedir cita</button></td></tr>
+      <tr><td>Bono reductor y reafirmante<small>Bono de 10 sesiones de Cavitación o radiofrecuencia · 30 min</small></td><td>650 €<button class="res" type="button" data-cita="Bono reductor y reafirmante" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Bono combinado promo<small>1 h 15 min</small></td><td>330 €<button class="res" type="button" data-cita="Bono combinado promo" data-dura="75">Pedir cita</button></td></tr>
+      </table>
+    </details>
+    <details class="acc" id="cat-cera"><summary><div><b>Depilación con cera</b><small>Por zonas · 16</small></div><span class="mas">+</span></summary>
+      <table>
+      <tr><td>Axilas<small>15 min</small></td><td>12 €<button class="res" type="button" data-cita="Axilas" data-dura="15">Pedir cita</button></td></tr>
+      <tr><td>Brazos<small>15 min</small></td><td>15 €<button class="res" type="button" data-cita="Brazos" data-dura="15">Pedir cita</button></td></tr>
+      <tr><td>Depilación cejas y labio<small>15 min</small></td><td>19 €<button class="res" type="button" data-cita="Depilación cejas y labio" data-dura="15">Pedir cita</button></td></tr>
+      <tr><td>Depilación cera abdomen<small>30 min</small></td><td>19 €<button class="res" type="button" data-cita="Depilación cera abdomen" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación cera espalda<small>30 min</small></td><td>19 €<button class="res" type="button" data-cita="Depilación cera espalda" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación cera tórax<small>30 min</small></td><td>19 €<button class="res" type="button" data-cita="Depilación cera tórax" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación de cejas con cera y/o pinza<small>15 min</small></td><td>12 €<button class="res" type="button" data-cita="Depilación de cejas con cera y/o pinza" data-dura="15">Pedir cita</button></td></tr>
+      <tr><td>Depilación glúteos<small>30 min</small></td><td>18 €<button class="res" type="button" data-cita="Depilación glúteos" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Depilación mentón<small>30 min</small></td><td>7 €<button class="res" type="button" data-cita="Depilación mentón" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Ingles básicas<small>15 min</small></td><td>12 €<button class="res" type="button" data-cita="Ingles básicas" data-dura="15">Pedir cita</button></td></tr>
+      <tr><td>Ingles cavado profundo<small>15 min</small></td><td>15 €<button class="res" type="button" data-cita="Ingles cavado profundo" data-dura="15">Pedir cita</button></td></tr>
+      <tr><td>Ingles integrales<small>30 min</small></td><td>21 €<button class="res" type="button" data-cita="Ingles integrales" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Labio<small>15 min</small></td><td>7 €<button class="res" type="button" data-cita="Labio" data-dura="15">Pedir cita</button></td></tr>
+      <tr><td>Medias piernas<small>30 min</small></td><td>18 €<button class="res" type="button" data-cita="Medias piernas" data-dura="30">Pedir cita</button></td></tr>
+      <tr><td>Perianal<small>15 min</small></td><td>10 €<button class="res" type="button" data-cita="Perianal" data-dura="15">Pedir cita</button></td></tr>
+      <tr><td>Piernas enteras<small>30 min</small></td><td>26 €<button class="res" type="button" data-cita="Piernas enteras" data-dura="30">Pedir cita</button></td></tr>
+      </table>
+    </details>
+  </div></div>
+  </section>
   <section class="vista res" id="v-resumen" hidden>
     <h2>Este mes <span class="n" id="resMes"></span></h2>
+
+    <div class="bloque"><b>Ventas</b><small>análisis del mes</small></div>
     <div class="kpis">
       <div class="kpi c1"><span class="n">126</span><span class="l">citas</span><span class="d sube">▲ 12 % vs. el mes pasado</span></div>
-      <div class="kpi c2"><span class="n">7.840 €</span><span class="l">ingresos previstos</span><span class="d sube">▲ 9 %</span></div>
-      <div class="kpi c3"><span class="n">31</span><span class="l">clientas nuevas</span><span class="d igual">= igual</span></div>
+      <div class="kpi c2"><span class="n">7.840 €</span><span class="l">facturado</span><span class="d sube">▲ 9 %</span></div>
+      <div class="kpi c3"><span class="n">62 €</span><span class="l">ticket medio</span><span class="d igual">= igual</span></div>
       <div class="kpi c4"><span class="n">5</span><span class="l">no han venido</span><span class="d sube">▼ 3 menos, con recordatorio</span></div>
     </div>
     <div class="dos">
       <div class="graf"><h3>Tratamientos más pedidos <small>citas del mes</small></h3><div class="cv"><canvas id="gServ"></canvas></div></div>
-      <div class="graf"><h3>Citas por semana <small>hechas · previstas</small></h3><div class="cv"><canvas id="gSem"></canvas></div></div>
+      <div class="graf"><h3>Facturación por semana <small>hecha · prevista</small></h3><div class="cv"><canvas id="gSem"></canvas></div></div>
     </div>
+    <div class="graf"><h3>Horas punta <small>de lunes a viernes · para abrir o cerrar huecos</small></h3><div class="cv"><canvas id="gHoras"></canvas></div></div>
+
+    <div class="bloque"><b>Clientas</b><small>estadísticas</small></div>
     <div class="dos">
-      <div class="graf"><h3>Horas punta <small>de lunes a viernes</small></h3><div class="cv"><canvas id="gHoras"></canvas></div></div>
-      <div class="graf"><h3>Clientas <small>nuevas · repiten · hace +3 meses</small></h3><div class="cv redonda"><canvas id="gCli"></canvas></div></div>
-    </div>
-    <div class="graf">
-      <h3>Cobros <small>señales y pagos por enlace</small></h3>
-      <div class="cobros">
-        <div class="cobro ok"><div><b>Señales cobradas este mes</b><small>8 micropigmentaciones · 50 € cada una, por enlace de pago</small></div><span class="imp">400 €</span></div>
-        <div class="cobro pend"><div><b>Pendientes de cobrar</b><small>Marina · cejas hiperrealistas · viernes 17:00</small></div><button class="btn" type="button" data-cobro="Marina">Enviar enlace</button></div>
-        <div class="cobro pend"><div><b>Pendientes de cobrar</b><small>Carmen · labios · lunes 11:00</small></div><button class="btn" type="button" data-cobro="Carmen">Enviar enlace</button></div>
-        <div class="cobro"><div><b>Cobrado en el centro</b><small>Tarjeta, Bizum y efectivo (lo apunta Almudena al marcar «ha venido»)</small></div><span class="imp">6.120 €</span></div>
+      <div class="graf"><h3>Quiénes vienen <small>nuevas · repiten · hace +3 meses</small></h3><div class="cv redonda"><canvas id="gCli"></canvas></div></div>
+      <div class="graf"><h3>En números <small>este mes</small></h3>
+        <div class="mini"><div><span class="n">31</span><small>nuevas</small></div><div><span class="n">78</span><small>repiten</small></div><div><span class="n">17</span><small>hace +3 meses</small></div></div>
+        <div class="mini" style="margin-top:8px"><div><span class="n">2,4</span><small>citas por clienta</small></div><div><span class="n">41 d</small><small>entre visitas</small></div><div><span class="n">148 €</span><small>gasto medio al año</small></div></div>
+        <p class="ayuda" style="margin:10px 0 0">A las 17 que hace más de 3 meses que no vienen, Alba les escribe con un toque.</p>
       </div>
     </div>
-    <div class="graf"><h3>Opiniones <small>Shore + Google</small></h3>
-      <div class="opis"><span class="n">4,9</span><div><span class="e">★★★★★</span><small>486 opiniones en Shore · 12 nuevas este mes en Google</small></div></div>
+
+    <div class="bloque"><b>Recordatorios</b><small>se mandan solos el día antes</small></div>
+    <div class="graf">
+      <div class="mini"><div><span class="n">6</span><small>enviados hoy</small></div><div><span class="n">5</span><small>«sí, voy»</small></div><div><span class="n">1</span><small>«cambiar»</small></div></div>
+      <p class="ayuda" style="margin:10px 0 0">Cada clienta recibe por WhatsApp su cita confirmada y, el día antes, un recordatorio con dos botones. Si pide cambiar, Alba le ofrece otro hueco. Resultado: de 8 plantones al mes a 5.</p>
     </div>
-    <div class="graf"><h3>Lo que te ahorras <small>frente a una agenda de fuera</small></h3><div class="cobros">
-        <div class="cobro ok"><div><b>Sin comisión por reserva</b><small>Una micropigmentación de 360 € se cobra entera. Nadie se lleva un porcentaje.</small></div><span class="imp">0 %</span></div>
-        <div class="cobro ok"><div><b>Sin cuota de agenda externa</b><small>Esta agenda va dentro de tu web y de tu WhatsApp; no es un programa de otra empresa.</small></div><span class="imp">0 €</span></div>
-      </div></div>
+
+    <div class="bloque"><b>Cobros</b><small>pasarela de pago, sin comisión por reserva</small></div>
+    <div class="graf">
+      <div class="cobros">
+        <div class="cobro ok"><div><b>Señales cobradas este mes</b><small>8 micropigmentaciones · 50 € cada una, por enlace de pago</small></div><span class="imp">400 €</span></div>
+        <div class="cobro pend"><div><b>Pendiente de señal</b><small>Marina · cejas hiperrealistas · viernes 17:00</small></div><button class="btn" type="button" data-cobro="Marina">Enviar enlace</button></div>
+        <div class="cobro pend"><div><b>Pendiente de señal</b><small>Carmen · labios · lunes 11:00</small></div><button class="btn" type="button" data-cobro="Carmen">Enviar enlace</button></div>
+        <div class="cobro"><div><b>Cobrado en el centro</b><small>Tarjeta, Bizum y efectivo (se apunta al marcar «ha venido»)</small></div><span class="imp">6.120 €</span></div>
+        <div class="cobro ok"><div><b>Sin porcentaje por reserva</b><small>Una micropigmentación de 360 € se cobra entera. El enlace de pago cuesta lo que cobra el banco, no un porcentaje de la cita.</small></div><span class="imp">0 %</span></div>
+      </div>
+    </div>
+
+    <div class="bloque"><b>Opiniones</b><small>feedback de las clientas</small></div>
+    <div class="graf">
+      <div class="opis"><span class="n">4,9</span><div><span class="e">★★★★★</span><small>486 opiniones en Shore · 12 nuevas este mes en Google</small></div></div>
+      <div class="mini" style="margin-top:10px"><div><span class="n">40</span><small>peticiones enviadas</small></div><div><span class="n">12</span><small>opiniones nuevas</small></div><div><span class="n">30 %</span><small>responden</small></div></div>
+      <p class="ayuda" style="margin:10px 0 0">Dos horas después de cada cita, Alba manda un «¿qué tal ha ido?» con el enlace a Google. Las malas te llegan a ti primero, no a Google.</p>
+    </div>
+
+    <div class="bloque"><b>Equipo</b><small>gestión de personal</small></div>
+    <div class="graf">
+      <div class="cobros">
+        <div class="eq"><img class="av" src="logo.jpg" alt=""><div><b>Almudena</b><small style="display:block;color:var(--tenue);font-size:12px;font-weight:700">Lunes a viernes 10:00-19:00 · 126 citas este mes · todas las cabinas</small></div><span class="tag habitual">activa</span></div>
+        <div class="eq" style="border-style:dashed"><div class="av" style="display:grid;place-items:center;background:var(--ciruela-suave);color:var(--ciruela);font-weight:900">+</div><div><b>Añadir profesional</b><small style="display:block;color:var(--tenue);font-size:12px;font-weight:700">Con su horario y sus tratamientos; Alba da las citas a quien toque.</small></div><button class="btn" type="button" data-eq="1">Añadir</button></div>
+      </div>
+    </div>
+
+    <div class="bloque"><b>Lo que te ahorras</b><small>frente a una agenda de fuera</small></div>
+    <div class="graf"><div class="cobros">
+      <div class="cobro ok"><div><b>Sin comisión por reserva</b><small>Nadie se lleva un porcentaje de cada cita.</small></div><span class="imp">0 %</span></div>
+      <div class="cobro ok"><div><b>Sin cuota de agenda externa</b><small>Esta agenda va dentro de tu web y de tu WhatsApp; no es un programa de otra empresa.</small></div><span class="imp">0 €</span></div>
+    </div></div>
     <p class="ejemplo">Datos de ejemplo de un mes. Con la agenda en marcha, se calculan solos con las citas, los estados y los precios.</p>
   </section>
   <p class="estado" id="estado"></p>
@@ -224,6 +422,8 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
   <button class="on" data-v="hoy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Hoy</button>
   <button data-v="mes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Mes</button>
   <button data-v="buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Buscar</button>
+  <button data-v="tratamientos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Tratam.</button>
+  <button data-v="clientas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 20c0-4 3-6 7-6s7 2 7 6"/><circle cx="17" cy="9" r="3"/><path d="M22 19c0-3-2-5-5-5"/></svg>Clientas</button>
   <button data-v="resumen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Resumen</button>
 </nav>
 
@@ -343,6 +543,7 @@ function arrancarAgenda(FUENTE){
     [...servicios(), ...propios, ...FIJOS].forEach(sv=>{ const k=sv.toLowerCase().trim(); if(k && !vistosS.has(k)){ vistosS.add(k); lista.push(k); } });
     const ss=f.querySelector('[name=servicio_sel]'); lista.forEach(sv=>{ const o=document.createElement('option'); o.value=sv; o.textContent=cap(sv); ss.append(o); });
     const oo=document.createElement('option'); oo.value='__otro'; oo.textContent='Otro… (escribirlo)'; ss.append(oo);
+    if(window.servicioPrefijado){ const sp=window.servicioPrefijado; const k=sp.nombre.toLowerCase().trim(); if(![...ss.options].some(o=>o.value===k)){ const o=document.createElement('option'); o.value=k; o.textContent=cap(k); ss.prepend(o); } ss.value=k; const ds=f.querySelector('[name=dura]'); const ops=[...ds.options].map(o=>Number(o.value)); const mejor=ops.reduce((p,c)=>Math.abs(c-sp.dura)<Math.abs(p-sp.dura)?c:p,ops[0]); ds.value=String(mejor); window.servicioPrefijado=null; setTimeout(()=>f.nombre.focus(),80); }
     const otroLab=f.querySelector('#otroLab'); ss.addEventListener('change',()=>{ otroLab.hidden = ss.value!=='__otro'; if(!otroLab.hidden) setTimeout(()=>f.servicio.focus(),50); });
     const msg=f.querySelector('.msg');
     f.querySelector('[data-x]').addEventListener('click',()=>{ f.remove(); cerrar(); });
@@ -387,12 +588,38 @@ function arrancarAgenda(FUENTE){
   $('mesSig').addEventListener('click',()=>{ mesVista.setMonth(mesVista.getMonth()+1); pintarMes(); });
   document.querySelectorAll('.pest button').forEach(b=>b.addEventListener('click',()=>{
     document.querySelectorAll('.pest button').forEach(x=>x.classList.toggle('on',x===b));
-    ['hoy','mes','buscar','resumen'].forEach(v=>{ $('v-'+v).hidden = v!==b.dataset.v; });
+    ['hoy','mes','buscar','tratamientos','clientas','resumen'].forEach(v=>{ $('v-'+v).hidden = v!==b.dataset.v; });
+    if(b.dataset.v==='clientas') pintarClientas();
     if(b.dataset.v==='resumen') pintarResumen();
     if(b.dataset.v==='buscar') setTimeout(()=>$('q').focus(),50);
     try{ localStorage.setItem('agenda_vista',b.dataset.v); }catch(e){}
   }));
-  function pintarTodo(){ pintarHoy(); pintarMes(); pintarChips(); buscar(); }
+
+  // Clientas: historial sacado de las citas (nombre → citas, última, próxima, tratamientos)
+  function pintarClientas(){
+    const hoyS=hoyISO(); const q=norm(($('qCli').value||'').trim());
+    const map={}; citas.forEach(c=>{ const k=c.nombre.trim(); (map[k]=map[k]||[]).push(c); });
+    const arr=Object.keys(map).map(k=>{ const l=map[k].slice().sort((a,b)=>a.fecha.localeCompare(b.fecha)||a.ini.localeCompare(b.ini)); const pas=l.filter(c=>c.fecha<hoyS), fut=l.filter(c=>c.fecha>=hoyS);
+      const ult=pas.length?pas[pas.length-1]:null, prox=fut.length?fut[0]:null; const dias=ult?Math.round((new Date(hoyS)-new Date(ult.fecha))/864e5):null;
+      const tipo=pas.length<=1?'nueva':(dias!==null&&dias>90?'lejos':'habitual'); return {k,l,pas,fut,ult,prox,dias,tipo}; })
+      .filter(x=>!q||norm(x.k).includes(q))
+      .sort((a,b)=>(b.prox?1:0)-(a.prox?1:0)||b.l.length-a.l.length||a.k.localeCompare(b.k));
+    const tot=Object.keys(map).length, nuevas=arr.filter(x=>x.tipo==='nueva').length, lejos=arr.filter(x=>x.tipo==='lejos').length;
+    $('cliMini').replaceChildren(); [[tot,'clientas'],[nuevas,'nuevas'],[lejos,'hace +3 meses']].forEach(([n,t])=>{ const d=document.createElement('div'); d.innerHTML='<span class="n">'+n+'</span><small>'+t+'</small>'; $('cliMini').append(d); });
+    $('nCli').textContent=arr.length; const cont=$('listaCli'); cont.replaceChildren();
+    if(!arr.length){ cont.innerHTML='<div class="vacio"><b>Sin clientas todavía</b>Cada cita que entra crea su ficha sola.</div>'; return; }
+    arr.forEach(x=>{ const d=document.createElement('div'); d.className='cli'; const serv=[...new Set(x.l.map(c=>c.servicio))].slice(0,3).join(' · ');
+      const sub=(x.l.length+' cita'+(x.l.length>1?'s':''))+(x.ult?' · última '+diaCorto(x.ult.fecha):'')+(x.prox?' · próxima '+diaCorto(x.prox.fecha)+' '+x.prox.ini:'');
+      const tag={nueva:'nueva',habitual:'habitual',lejos:'hace +3 meses'}[x.tipo];
+      d.innerHTML='<div class="av">'+x.k[0].toUpperCase()+'</div><div style="min-width:0"><div class="nom">'+x.k+'</div><div class="sub">'+sub+'</div><div class="sub" style="color:var(--ciruela)">'+serv+'</div></div><span class="tag '+x.tipo+'">'+tag+'</span>'
+        +'<div class="hist">'+x.l.slice().reverse().map(c=>'<div class="h"><b>'+diaCorto(c.fecha)+' '+c.ini+'</b><span>'+c.servicio+(c.fecha<hoyS?'':' <small style="color:var(--tenue)">(próxima)</small>')+'</span></div>').join('')
+        +'<div class="h"><b>Notas</b><span style="color:var(--tenue)">Piel sensible · prueba de alergia hecha · prefiere tardes</span></div>'
+        +'<div class="acc"><button class="btn" type="button">WhatsApp</button><button class="btn" type="button">Apuntar cita</button><button class="btn" type="button">Pedir opinión</button></div></div>';
+      d.addEventListener('click',ev=>{ if(ev.target.closest('.btn')) return; d.classList.toggle('abierta'); }); cont.append(d); });
+  }
+  function diaCorto(f){ const d=new Date(f+'T00:00:00'); return d.getDate()+' '+['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][d.getMonth()]; }
+  $('qCli').addEventListener('input',pintarClientas);
+  function pintarTodo(){ pintarHoy(); pintarMes(); pintarChips(); buscar(); if(!$('v-clientas').hidden) pintarClientas(); }
   async function cargar(silencioso){
     if(!silencioso) $('estado').textContent='Cargando la agenda…';
     try{
@@ -484,10 +711,12 @@ function arrancarAgenda(FUENTE){
     Chart.defaults.font.family='"Nunito","Segoe UI",system-ui,sans-serif'; Chart.defaults.font.weight='700'; Chart.defaults.color=tenue;
     var base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:linea},border:{display:false},ticks:{precision:0}}}};
     new Chart(document.getElementById('gServ'),{type:'bar',data:{labels:['Láser','Mirada y manos','Micropigm.','Faciales','Cera','Corporal'],datasets:[{data:[38,27,19,16,15,11],backgroundColor:[ciruela,fresa,'#d9a3a6',miel,menta,'#e6c7c9'],borderRadius:8}]},options:Object.assign({},base,{indexAxis:'y',scales:{x:{grid:{color:linea},border:{display:false},ticks:{precision:0}},y:{grid:{display:false}}}})});
-    new Chart(document.getElementById('gSem'),{type:'bar',data:{labels:['Sem 1','Sem 2','Sem 3','Sem 4'],datasets:[{label:'Hechas',data:[29,33,31,0],backgroundColor:ciruela,borderRadius:8},{label:'Previstas',data:[0,0,4,29],backgroundColor:'#e6c7c9',borderRadius:8}]},options:Object.assign({},base,{plugins:{legend:{display:true,position:'bottom'}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid:{color:linea},border:{display:false},ticks:{precision:0}}}})});
+    new Chart(document.getElementById('gSem'),{type:'bar',data:{labels:['Sem 1','Sem 2','Sem 3','Sem 4'],datasets:[{label:'Hecha',data:[1810,2060,1930,0],backgroundColor:ciruela,borderRadius:8},{label:'Prevista',data:[0,0,240,1800],backgroundColor:'#e6c7c9',borderRadius:8}]},options:Object.assign({},base,{plugins:{legend:{display:true,position:'bottom'}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid:{color:linea},border:{display:false},ticks:{precision:0}}}})});
     new Chart(document.getElementById('gHoras'),{type:'bar',data:{labels:['10','11','12','13','16','17','18'],datasets:[{data:[14,22,19,9,16,24,22],backgroundColor:function(c){var v=c.raw;return v>=20?ciruela:v>=14?fresa:'#e6c7c9';},borderRadius:8}]},options:base});
     new Chart(document.getElementById('gCli'),{type:'doughnut',data:{labels:['Nuevas','Repiten','Hace +3 meses'],datasets:[{data:[31,78,17],backgroundColor:[fresa,ciruela,miel],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:true,position:'bottom'}}}});
   };
+  document.querySelectorAll('[data-cita]').forEach(function(b){ b.addEventListener('click',function(){ window.servicioPrefijado={nombre:b.dataset.cita,dura:Number(b.dataset.dura)||60}; var bt=document.querySelector('.pest button[data-v=mes]'); if(bt) bt.click(); setTimeout(function(){ var hoy=document.querySelector('.dia-c.hoy'); if(hoy) hoy.click(); },80); setTimeout(function(){ var ab=document.querySelector('#detalleDia .anadir .btn'); if(ab&&!ab.hidden) ab.click(); window.scrollTo({top:document.getElementById('detalleDia').offsetTop-80,behavior:'smooth'}); },260); }); });
+  document.querySelectorAll('[data-eq]').forEach(function(b){ b.addEventListener('click',function(){ var t=document.createElement('div'); t.className='toast'; t.textContent='Se añade al montar la agenda: nombre, horario y tratamientos'; document.body.appendChild(t); setTimeout(function(){ t.remove(); },2400); }); });
   document.querySelectorAll('[data-cobro]').forEach(function(b){ b.addEventListener('click',function(){
     var t=document.createElement('div'); t.className='toast'; t.textContent='Enlace de pago enviado a '+b.dataset.cobro+' por WhatsApp'; document.body.appendChild(t); setTimeout(function(){ t.remove(); },2200);
     b.textContent='Enviado'; b.disabled=true; }); });
