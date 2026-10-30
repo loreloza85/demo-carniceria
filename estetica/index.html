@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#c98a8e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Almudena ValCas">
+<link rel="apple-touch-icon" href="../agenda-estetica/icono-180.png">
+<style>html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}</style>
+<title>Almudena ValCas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500;600&display=swap">
+<style>
+/* App de móvil para Almudena ValCas (demo de ImpulsIA, 30/10/2026). Siempre clara: blanco, nude y oro rosa.
+   Layout: cabecera fija, cuatro vistas (Inicio · Servicios · Gratis · Contacto) con pestañas abajo; en ordenador, dentro de un marco de teléfono. */
+:root {
+  color-scheme: light;
+  --fondo: #FFFFFF; --papel: #FBF7F5; --tinta: #4A3A40; --tenue: #8E7E85; --linea: #EFE4E3;
+  --rosa: #C98A8E; --rosa-suave: #F8ECEC; --oro: #D4B48C; --oro-suave: #FAF3EC;
+  --f-titulo: "Cormorant Garamond", "Times New Roman", Georgia, serif;
+  --f-texto: "Jost", "Segoe UI", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: #F3ECE9; color: var(--tinta); font: 16px/1.5 var(--f-texto); }
+a { color: inherit; }
+img { max-width: 100%; display: block; }
+h1, h2, h3 { font-family: var(--f-titulo); font-weight: 600; line-height: 1.05; margin: 0; text-wrap: balance; }
+h2 { font-size: clamp(28px, 7vw, 34px); }
+.eyebrow { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--oro); font-weight: 600; display: flex; align-items: center; gap: 10px; }
+.eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--oro); }
+
+/* marco de la app */
+.app { height: 100%; display: flex; flex-direction: column; background: var(--fondo); position: relative; overflow: hidden; }
+@media (min-width: 700px) {
+  body { display: grid; place-items: center; padding: 24px; }
+  .app { width: 420px; height: min(860px, calc(100vh - 48px)); border-radius: 44px; border: 10px solid #2B2225; box-shadow: 0 30px 80px rgba(80, 50, 60, .3); }
+  .app::before { content: ""; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 110px; height: 26px; background: #2B2225; border-radius: 0 0 16px 16px; z-index: 20; }
+}
+.cab { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 10px; background: color-mix(in srgb, var(--fondo) 92%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--linea);
+  padding: calc(12px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); }
+@media (min-width: 700px) { .cab { padding-top: 40px; } }
+.marca { display: flex; align-items: center; gap: 10px; font-family: var(--f-titulo); font-size: 20px; font-weight: 600; }
+.marca img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid var(--oro); }
+.vistas { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+.vista { display: none; flex-direction: column; gap: 26px; padding: 20px max(16px, env(safe-area-inset-right, 0px)) 28px max(16px, env(safe-area-inset-left, 0px)); animation: entra .25s ease; }
+.vista.activa { display: flex; }
+@keyframes entra { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.tabs { flex: none; display: grid; grid-template-columns: repeat(4, 1fr); background: #FFFFFF; border-top: 1px solid var(--linea);
+  padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); }
+@media (min-width: 700px) { .tabs { padding-bottom: 18px; } }
+.tab { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 4px; border-radius: 14px; text-decoration: none; font-size: 11px; font-weight: 500; color: var(--tenue); }
+.tab svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.tab.activa { color: var(--rosa); background: var(--rosa-suave); font-weight: 600; }
+.tab:focus-visible, .btn:focus-visible, .acc summary:focus-visible, .tile:focus-visible { outline: 2px solid var(--rosa); outline-offset: 3px; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 20px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 15px; border: 1px solid transparent; transition: transform .15s ease; }
+.btn:active { transform: scale(.97); }
+.btn.rosa { background: linear-gradient(135deg, #D9A3A6, #C98A8E); color: #FFFFFF; box-shadow: 0 6px 18px rgba(201, 138, 142, .28); }
+.btn.oro { background: #FFFFFF; border-color: var(--oro); color: var(--tinta); }
+.btn.peq { padding: 9px 16px; font-size: 14px; }
+.btn.ancho { width: 100%; }
+.sec { display: flex; flex-direction: column; gap: 12px; }
+.sec p.l { margin: 0; color: var(--tenue); font-size: 15px; }
+
+/* inicio */
+.hero-img { position: relative; aspect-ratio: 4 / 4.4; max-width: 100%; border-radius: 180px 180px 22px 22px; overflow: hidden; border: 1px solid var(--linea); }
+.hero-img img { width: 100%; height: 100%; object-fit: cover; }
+.hero-img .sello { position: absolute; left: 12px; bottom: 12px; background: rgba(255, 255, 255, .92); border: 1px solid var(--oro); border-radius: 999px; padding: 5px 11px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.hero h1 { font-size: clamp(42px, 11vw, 54px); font-weight: 500; letter-spacing: -.01em; }
+.hero h1 em { font-style: italic; color: var(--rosa); }
+.hero .sub { margin: 0; color: var(--tenue); font-size: 15px; }
+.nota { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--papel); border: 1px solid var(--linea); border-radius: 14px; width: fit-content; max-width: 100%; }
+.nota .n { font-family: var(--f-titulo); font-size: 34px; font-weight: 600; line-height: 1; color: var(--rosa); font-variant-numeric: tabular-nums; }
+.nota .s { display: flex; flex-direction: column; font-size: 12px; color: var(--tenue); line-height: 1.3; }
+.nota .s b { color: var(--tinta); font-size: 14px; }
+.estrellas { color: var(--oro); letter-spacing: 2px; font-size: 14px; }
+.trabajos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.trabajo { margin: 0; border-radius: 60px 60px 10px 10px; overflow: hidden; aspect-ratio: 3 / 4.6; max-width: 100%; position: relative; border: 1px solid var(--linea); }
+.trabajo img { width: 100%; height: 100%; object-fit: cover; }
+.trabajo span { position: absolute; inset: auto 0 0 0; padding: 18px 4px 6px; font-size: 10px; text-align: center; color: #FFFFFF; background: linear-gradient(transparent, rgba(120, 70, 80, .62)); }
+.tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.tile { display: flex; flex-direction: column; gap: 4px; padding: 16px 14px; background: #FFFFFF; border: 1px solid var(--linea); border-radius: 18px; text-decoration: none; min-width: 0; position: relative; box-shadow: 0 8px 24px rgba(120, 80, 90, .07); }
+.tile b { font-family: var(--f-titulo); font-size: 22px; font-weight: 600; line-height: 1.05; padding-right: 18px; }
+.tile small { color: var(--tenue); font-size: 12px; }
+.tile .desde { margin-top: 4px; font-size: 12px; color: var(--rosa); font-weight: 600; }
+.tile::after { content: "→"; position: absolute; right: 12px; top: 12px; color: var(--oro); }
+.aviso-gratis { display: flex; align-items: center; gap: 12px; padding: 14px; background: linear-gradient(180deg, #FAF3EC, #FDF8F4); border: 1px solid var(--oro); border-radius: 18px; text-decoration: none; }
+.aviso-gratis b { font-family: var(--f-titulo); font-size: 22px; display: block; line-height: 1.05; }
+.aviso-gratis b em { color: var(--rosa); font-style: italic; }
+.aviso-gratis small { color: var(--tenue); font-size: 13px; }
+.aviso-gratis .ico { flex: none; width: 44px; height: 44px; border-radius: 50%; background: #FFFFFF; border: 1px solid var(--oro); display: grid; place-items: center; font-family: var(--f-titulo); font-size: 24px; color: var(--rosa); }
+.resenas { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 4px; margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
+.resena { flex: 0 0 82%; scroll-snap-align: start; background: #FFFFFF; border: 1px solid var(--linea); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; box-shadow: 0 8px 24px rgba(120, 80, 90, .06); }
+.resena q { font-family: var(--f-titulo); font-size: 19px; line-height: 1.25; quotes: "«" "»"; }
+.resena .q { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; color: var(--tenue); }
+
+/* gratis */
+.caja { background: #FFFFFF; border: 1px solid var(--oro); border-radius: 22px; padding: 20px 16px; display: flex; flex-direction: column; gap: 14px; position: relative; }
+.caja::before { content: ""; position: absolute; inset: 6px; border: 1px solid var(--oro); border-radius: 18px; pointer-events: none; opacity: .5; }
+.caja h2 em { font-style: italic; color: var(--rosa); }
+.pruebas { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.pruebas li { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: start; padding: 12px 0; border-top: 1px solid var(--linea); min-width: 0; }
+.pruebas li:first-child { border-top: 0; }
+.pruebas .ico { width: 38px; height: 38px; border-radius: 50%; background: var(--rosa-suave); color: var(--rosa); display: grid; place-items: center; font-family: var(--f-titulo); font-size: 21px; font-weight: 600; }
+.pruebas b { display: block; font-weight: 600; font-size: 15px; }
+.pruebas small { display: block; color: var(--tenue); font-size: 13px; line-height: 1.4; }
+.pruebas .dur { font-size: 12px; color: var(--tenue); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* servicios */
+.acc { background: #FFFFFF; border: 1px solid var(--linea); border-radius: 18px; overflow: hidden; box-shadow: 0 8px 24px rgba(120, 80, 90, .06); }
+.acc summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; }
+.acc summary::-webkit-details-marker { display: none; }
+.acc summary b { font-family: var(--f-titulo); font-size: 22px; font-weight: 600; }
+.acc summary small { color: var(--tenue); display: block; font-size: 12px; }
+.acc summary .mas { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--oro); display: grid; place-items: center; color: var(--oro); flex: none; transition: transform .2s ease; }
+.acc[open] summary .mas { transform: rotate(45deg); }
+.acc table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.acc td { padding: 9px 16px; border-top: 1px solid var(--linea); vertical-align: top; }
+.acc td small { display: block; color: var(--tenue); font-size: 12px; }
+.acc td:last-child { text-align: right; white-space: nowrap; font-weight: 600; font-variant-numeric: tabular-nums; }
+.acc .todos { display: block; padding: 10px 16px 14px; font-size: 13px; color: var(--rosa); font-weight: 600; }
+.lista { display: flex; flex-direction: column; gap: 10px; }
+
+/* contacto */
+.dato { display: flex; flex-direction: column; gap: 3px; padding: 14px 0; border-top: 1px solid var(--linea); }
+.dato:first-child { border-top: 0; }
+.dato small { color: var(--tenue); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+.dato b { font-weight: 500; font-size: 16px; }
+.dato a { color: var(--rosa); font-weight: 600; text-decoration: none; }
+.num { font-variant-numeric: tabular-nums; user-select: all; }
+.pie { color: var(--tenue); font-size: 13px; text-align: center; }
+@media (prefers-reduced-motion: reduce) { .vista { animation: none; } .btn, .acc summary .mas { transition: none; } .vistas { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+
+<div class="app">
+<header class="cab">
+  <div class="marca"><img src="fotos/logo.jpg" alt="Logo AV"> Almudena ValCas</div>
+  <a class="btn rosa peq" href="https://connect.shore.com/bookings/almudena-valcas-estetica-y-micropigmentacion/services?locale=es">Reservar</a>
+</header>
+
+<main class="vistas" id="vistas">
+
+<section class="vista hero activa" id="v-inicio">
+  <div class="hero-img"><img src="fotos/labios.jpg" alt="Micropigmentación de labios"><span class="sello">Trabajo real · labios</span></div>
+  <div class="sec">
+    <div class="eyebrow">Torrejón de Ardoz · Estética y micropigmentación</div>
+    <h1>Tu mirada, <em>bien hecha.</em></h1>
+    <p class="sub">Micropigmentación hiperrealista, depilación láser, pestañas y tratamientos faciales. Una sola profesional, Almudena, que te asesora antes y te acompaña después.</p>
+    <div class="nota"><span class="n">4,9</span><span class="s"><span class="estrellas" aria-label="cinco estrellas">★★★★★</span><b>486 opiniones</b>verificadas de clientas con cita</span></div>
+    <a class="btn rosa ancho" href="https://connect.shore.com/bookings/almudena-valcas-estetica-y-micropigmentacion/services?locale=es">Reservar cita</a>
+  </div>
+  <a class="aviso-gratis" href="#gratis"><span class="ico">✦</span><span><b>Pruébalo <em>gratis</em></b><small>Estudio de la mirada, láser, Bellaction. Sin compromiso.</small></span></a>
+  <div class="sec">
+    <div class="eyebrow">¿Qué buscas?</div>
+    <div class="tiles">
+      <a class="tile" href="#servicios"><b>Micropigmentación</b><small>Cejas, labios y eyeliner.</small><span class="desde">desde 289 €</span></a>
+      <a class="tile" href="#servicios"><b>Depilación láser</b><small>Por zonas o en packs.</small><span class="desde">desde 20 €</span></a>
+      <a class="tile" href="#servicios"><b>Mirada y manos</b><small>Pestañas, cejas, uñas.</small><span class="desde">desde 12 €</span></a>
+      <a class="tile" href="#servicios"><b>Facial y corporal</b><small>Limpiezas, BB Glow, presoterapia.</small><span class="desde">desde 25 €</span></a>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="eyebrow">Trabajos reales</div>
+    <div class="trabajos">
+      <figure class="trabajo"><img src="fotos/cejas_pelo.jpg" alt="Cejas pelo a pelo"><span>Pelo a pelo</span></figure>
+      <figure class="trabajo"><img src="fotos/eyeliner.jpg" alt="Eyeliner difuminado"><span>Eyeliner</span></figure>
+      <figure class="trabajo"><img src="fotos/cejas_sombra.jpg" alt="Cejas efecto sombra"><span>Sombra</span></figure>
+      <figure class="trabajo"><img src="fotos/labios.jpg" alt="Labios"><span>Labios</span></figure>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="eyebrow">486 opiniones</div>
+    <div class="resenas">
+      <div class="resena"><span class="estrellas">★★★★★</span><q>Me asesoró para decidir juntas la mejor alternativa de tratamiento. Todo de 10.</q><div class="q"><span>Susana G.</span><span>agosto 2026</span></div></div>
+      <div class="resena"><span class="estrellas">★★★★★</span><q>Encantada con el lifting de pestañas y sobre todo con el trato y la profesionalidad de Almudena.</q><div class="q"><span>Esther</span><span>julio 2026</span></div></div>
+      <div class="resena"><span class="estrellas">★★★★★</span><q>Hacía un frío que te pelas y puso una mantita eléctrica en la camilla. Estuve mejor que en casa.</q><div class="q"><span>Débora T.</span><span>diciembre 2025</span></div></div>
+      <div class="resena"><span class="estrellas">★★★★★</span><q>Llevo años haciéndome todos los tratamientos con Almu y nunca defrauda.</q><div class="q"><span>Diana I.</span><span>enero 2026</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="vista" id="v-servicios">
+  <div class="sec"><div class="eyebrow">Servicios y precios</div><h2>Lo que hacemos, con su precio</h2><p class="l">Los mismos precios que verás al reservar. La segunda sesión de micropigmentación va incluida en la primera.</p></div>
+  <div class="lista">
+    <details class="acc" open><summary><div><b>Micropigmentación</b><small>Primera sesión, retoque incluido</small></div><span class="mas">+</span></summary>
+      <table>
+        <tr><td>Cejas hiperrealistas<small>La técnica más novedosa y menos agresiva · 2 h</small></td><td>360 €</td></tr>
+        <tr><td>Cejas efecto sombra<small>Efecto maquillado, suave · 2 h</small></td><td>360 €</td></tr>
+        <tr><td>Microblading de cejas<small>Pelo a pelo · 1 h · 2.ª sesión 60 €</small></td><td>299 €</td></tr>
+        <tr><td>Labios<small>Color y contorno naturales · 1 h</small></td><td>360 €</td></tr>
+        <tr><td>Eyeliner invisible<small>Entre las pestañas · 2 h</small></td><td>289 €</td></tr>
+        <tr><td>Ojos difuminado<small>Efecto sombra de ojos · 3 h</small></td><td>369 €</td></tr>
+        <tr><td>Mantenimiento 12-18 meses<small>1 h</small></td><td>230 €</td></tr>
+      </table>
+      <a class="todos" href="https://connect.shore.com/bookings/almudena-valcas-estetica-y-micropigmentacion/services?locale=es">Ver todos y reservar →</a>
+    </details>
+    <details class="acc"><summary><div><b>Depilación láser</b><small>Por sesión · packs y bonos anuales</small></div><span class="mas">+</span></summary>
+      <table>
+        <tr><td>Axilas<small>30 min</small></td><td>29 €</td></tr>
+        <tr><td>Ingles básicas<small>30 min</small></td><td>49 €</td></tr>
+        <tr><td>Pack ingles básicas + axilas<small>30 min</small></td><td>59 €</td></tr>
+        <tr><td>Medias piernas<small>30 min</small></td><td>60 €</td></tr>
+        <tr><td>Pack piernas enteras + ingles completas<small>30 min</small></td><td>129 €</td></tr>
+        <tr><td>Facial por zonas<small>15 min</small></td><td>20 €</td></tr>
+        <tr><td>Bono anual<small>S · M · XL</small></td><td>500 · 700 · 950 €</td></tr>
+      </table>
+      <a class="todos" href="https://connect.shore.com/bookings/almudena-valcas-estetica-y-micropigmentacion/services?locale=es">Ver todas las zonas y reservar →</a>
+    </details>
+    <details class="acc"><summary><div><b>Mirada y manos</b><small>Pestañas, cejas, uñas</small></div><span class="mas">+</span></summary>
+      <table>
+        <tr><td>Lifting de pestañas + tinte<small>1 h 15 min</small></td><td>49 €</td></tr>
+        <tr><td>Laminado de cejas<small>1 h</small></td><td>49 €</td></tr>
+        <tr><td>Lifting + tinte + laminado<small>1 h 30 min</small></td><td>70 €</td></tr>
+        <tr><td>Diseño de cejas con henna<small>45 min</small></td><td>29 €</td></tr>
+        <tr><td>Diseño de cejas con depilación<small>15 min</small></td><td>19 €</td></tr>
+        <tr><td>Esmaltado permanente<small>Manos 45 min · pies 24 €</small></td><td>22 €</td></tr>
+      </table>
+      <a class="todos" href="https://connect.shore.com/bookings/almudena-valcas-estetica-y-micropigmentacion/services?locale=es">Ver todos y reservar →</a>
+    </details>
+    <details class="acc"><summary><div><b>Facial y corporal</b><small>Limpiezas, láser, presoterapia</small></div><span class="mas">+</span></summary>
+      <table>
+        <tr><td>Limpieza Hydravital facial<small>1 h</small></td><td>59 €</td></tr>
+        <tr><td>Tratamiento BB Glow<small>1 h · bono 6 sesiones 510 €</small></td><td>90 €</td></tr>
+        <tr><td>Rejuvenecimiento facial con láser<small>2 sesiones · 4 sesiones 399 €</small></td><td>229 €</td></tr>
+        <tr><td>Rehidratación de labios con Hyaluron Pen<small>45 min</small></td><td>149 €</td></tr>
+        <tr><td>Presoterapia<small>45 min · bono 199 €</small></td><td>25 €</td></tr>
+        <tr><td>Express Fat Burner<small>1 h 30 min · bono 12 sesiones 414 €</small></td><td>69 €</td></tr>
+        <tr><td>Bellaction<small>1 h 30 min · bono 10 sesiones 599 €</small></td><td>89 €</td></tr>
+      </table>
+      <a class="todos" href="https://connect.shore.com/bookings/almudena-valcas-estetica-y-micropigmentacion/services?locale=es">Ver todos y reservar →</a>
+    </details>
+  </div>
+  <a class="btn rosa ancho" href="https://connect.shore.com/bookings/almudena-valcas-estetica-y-micropigmentacion/services?locale=es">Reservar cita</a>
+</section>
+
+<section class="vista" id="v-gratis">
+  <div class="caja">
+    <div class="sec"><div class="eyebrow">Sin compromiso</div><h2>Pruébalo <em>gratis</em></h2><p class="l">Antes de decidir nada, ven a verlo. Estas cuatro citas no cuestan nada y no te comprometen a nada.</p></div>
+    <ul class="pruebas">
+      <li><span class="ico">M</span><div><b>Estudio de la mirada</b><small>Almudena estudia tus facciones y el diseño que mejor te va antes de cualquier micropigmentación. Resuelves todas las dudas del maquillaje semipermanente.</small></div><span class="dur">1 h</span></li>
+      <li><span class="ico">L</span><div><b>Prueba de depilación láser</b><small>Una zona pequeña, para que sientas cómo es y veas el resultado en tu piel.</small></div><span class="dur">30 min</span></li>
+      <li><span class="ico">R</span><div><b>Rejuvenecimiento facial con láser</b><small>Una pasada en una zona del rostro, y hablamos de si te conviene y cuántas sesiones.</small></div><span class="dur">30 min</span></li>
+      <li><span class="ico">B</span><div><b>Prueba de Bellaction</b><small>Reductor y reafirmante. Una sesión corta para notarlo antes de pensar en un bono.</small></div><span class="dur">30 min</span></li>
+    </ul>
+    <a class="btn rosa ancho" href="https://connect.shore.com/bookings/almudena-valcas-estetica-y-micropigmentacion/services?locale=es">Pedir mi prueba gratis</a>
+  </div>
+  <p class="pie">Las pruebas se piden como una cita más, desde «Reservar». Si no encuentras hueco, escribe al WhatsApp.</p>
+</section>
+
+<section class="vista" id="v-contacto">
+  <div class="sec"><div class="eyebrow">Dónde estamos</div><h2>Con cita previa, en Torrejón</h2></div>
+  <div>
+    <div class="dato"><small>Dirección</small><b>Calle Virgen de la Paloma, 15 (local) · 28850 Torrejón de Ardoz</b><a href="https://www.google.com/maps/search/?api=1&query=Calle+Virgen+de+la+Paloma+15+Torrej%C3%B3n+de+Ardoz">Cómo llegar →</a></div>
+    <div class="dato"><small>WhatsApp y teléfono</small><b class="num">670 359 627</b><span style="color:var(--tenue);font-size:14px">Si no encuentras hueco en la agenda, escribe y te buscamos uno.</span></div>
+    <div class="dato"><small>Instagram</small><a href="https://www.instagram.com/almudenavalcas.pmu/">@almudenavalcas.pmu →</a></div>
+    <div class="dato"><small>Reservas</small><a href="https://connect.shore.com/bookings/almudena-valcas-estetica-y-micropigmentacion/services?locale=es">Agenda online, 24 horas →</a></div>
+  </div>
+  <a class="btn oro ancho" href="https://www.google.com/maps/search/?api=1&query=Calle+Virgen+de+la+Paloma+15+Torrej%C3%B3n+de+Ardoz">Abrir en Maps</a>
+  <p class="pie">Almudena ValCas · Estética y micropigmentación</p>
+</section>
+
+</main>
+
+<nav class="tabs" aria-label="Secciones">
+  <a class="tab activa" href="#inicio" data-v="inicio"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>Inicio</a>
+  <a class="tab" href="#servicios" data-v="servicios"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Servicios</a>
+  <a class="tab" href="#gratis" data-v="gratis"><svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7c-2-3-6-3-6-1s4 1 6 1Zm0 0c2-3 6-3 6-1s-4 1-6 1Z"/></svg>Gratis</a>
+  <a class="tab" href="#contacto" data-v="contacto"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Contacto</a>
+</nav>
+</div>
+
+<script>
+(function () {
+  var vistas = ["inicio", "servicios", "gratis", "contacto"];
+  var cont = document.getElementById("vistas");
+  function mostrar() {
+    var h = (location.hash || "#inicio").slice(1);
+    if (vistas.indexOf(h) < 0) h = "inicio";
+    vistas.forEach(function (v) {
+      document.getElementById("v-" + v).classList.toggle("activa", v === h);
+    });
+    document.querySelectorAll(".tab").forEach(function (t) {
+      t.classList.toggle("activa", t.getAttribute("data-v") === h);
+    });
+    cont.scrollTop = 0;
+  }
+  window.addEventListener("hashchange", mostrar);
+  mostrar();
+})();
+</script>
+
+</body>
+</html>
