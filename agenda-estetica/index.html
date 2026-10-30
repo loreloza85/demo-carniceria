@@ -161,9 +161,8 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
 </nav>
 
 <script>
-(function(){
+function arrancarAgenda(FUENTE){
   'use strict';
-  const FUENTE = 'https://hook.eu1.make.com/dy04ycyacn2qj7uk191n4bvoswf75k73?tipo=agenda';
   const DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
   const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   const CERRADO = [0,6]; // sábado y domingo (horario de la web: lunes a viernes 10-19)
@@ -374,7 +373,33 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
   try{ const v=localStorage.getItem('agenda_vista'); if(v){ const b=document.querySelector('.pest button[data-v="'+v+'"]'); if(b) b.click(); } }catch(e){}
   cargar(false); cargarEstados(); setInterval(()=>{ cargar(true); cargarEstados(); },60000);
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden) cargar(true); });
+}
+/* Candado (30/10): la dirección de la agenda va cifrada con el PIN. Sin el PIN, la página no sabe a dónde llamar.
+   Una vez abierta en una tablet, se queda abierta (localStorage); «?salir=1» la vuelve a cerrar. */
+(function(){
+  const CIFRADO = {"salt": "/OAEU99u+Q1xW3WWY/gIFg==", "iv": "2ExxKj3FDzGta1NB", "data": "A9gTwPW1j6YTuQMt5R71CVGB90DjJNR4eaMJVx6aoM2DI72FjEfo2xbSVGruwwIAMWqIAnmhx/whKS57G8vhxHXUyQ+/jwT6KBib46z7b2UwE6CWuXef9wpFh8eqdx4rnI/WHitUi3S7xZImxCOsIhc0kxr74WZ8hFfxUg==", "iter": 250000};
+  const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  async function abrir(pin){
+    const enc = new TextEncoder();
+    const km = await crypto.subtle.importKey('raw', enc.encode(pin), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt:b64(CIFRADO.salt), iterations:CIFRADO.iter, hash:'SHA-256'}, km, {name:'AES-GCM', length:256}, false, ['decrypt']);
+    const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(CIFRADO.iv)}, key, b64(CIFRADO.data));
+    return new TextDecoder().decode(pt);
+  }
+  if(new URLSearchParams(location.search).get('salir')==='1'){ try{ localStorage.removeItem('agenda_fuente'); }catch(e){} history.replaceState(null,'',location.pathname); }
+  let guardada=null; try{ guardada=localStorage.getItem('agenda_fuente'); }catch(e){}
+  if(guardada){ arrancarAgenda(guardada); return; }
+  const ov=document.createElement('div'); ov.id='candado';
+  ov.innerHTML='<div class="caja"><div class="t">Agenda del centro de estética</div><p>Escribe el PIN para abrir la agenda en esta tablet.</p><input id="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="one-time-code" placeholder="PIN"><button id="pinOk">Abrir</button><div id="pinMsg" class="m"></div></div>';
+  const st=document.createElement('style'); st.textContent='#candado{position:fixed;inset:0;background:linear-gradient(135deg,#7b2cbf,#e0409a);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}#candado .caja{background:#fff;border-radius:24px;padding:28px 26px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(40,10,60,.35)}#candado .t{font:700 26px/1.2 var(--f-titulo);color:var(--ciruela);margin-bottom:6px}#candado p{color:var(--tenue);margin:0 0 16px}#candado input{width:100%;font:700 34px/1 var(--f-texto);text-align:center;letter-spacing:.35em;padding:14px;border:2px solid var(--linea);border-radius:16px;margin-bottom:12px}#candado button{width:100%;font:700 20px var(--f-texto);background:var(--ciruela);color:#fff;border:0;border-radius:16px;padding:14px}#candado .m{min-height:22px;color:#c0392b;margin-top:10px;font-weight:700}';
+  document.head.append(st); document.body.append(ov);
+  const inp=ov.querySelector('#pin'), msg=ov.querySelector('#pinMsg');
+  async function intentar(){ const pin=inp.value.trim(); if(!pin) return; msg.textContent='Abriendo…'; msg.style.color='var(--tenue)';
+    try{ const f=await abrir(pin); try{ localStorage.setItem('agenda_fuente',f); }catch(e){} ov.remove(); arrancarAgenda(f); }
+    catch(e){ msg.style.color='#c0392b'; msg.textContent='Ese PIN no es. Prueba otra vez.'; inp.value=''; inp.focus(); } }
+  ov.querySelector('#pinOk').addEventListener('click',intentar); inp.addEventListener('keydown',e=>{ if(e.key==='Enter') intentar(); }); setTimeout(()=>inp.focus(),50);
 })();
+
   if(new URLSearchParams(location.search).get('toques')==='1'){ document.addEventListener('pointerdown',ev=>{ const t=document.createElement('div'); t.className='toque'; t.style.left=ev.clientX+'px'; t.style.top=ev.clientY+'px'; document.body.append(t); setTimeout(()=>t.remove(),600); },{passive:true}); }
 </script>
 </body>
