@@ -174,7 +174,7 @@ h2 .n{background:var(--ciruela);color:#fff;border-radius:999px;font:700 13px/1 v
   <section class="vista" id="v-buscar" hidden>
     <div class="busca">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input id="q" type="search" placeholder="Nombre, servicio o día… (ej. láser Marina)" autocomplete="off" enterkeyhint="search">
+      <input id="q" type="search" placeholder="Nombre, tratamiento o día… (ej. láser Marina)" autocomplete="off" enterkeyhint="search">
       <button class="btn" id="limpiar" type="button" hidden>Borrar</button>
     </div>
     <div class="chips" id="chips"></div>
@@ -298,7 +298,7 @@ function arrancarAgenda(FUENTE){
     const h=hoyISO(), m=sumaDias(h,1);
     const hoy=citas.filter(c=>c.fecha===h), man=citas.filter(c=>c.fecha===m);
     $('nHoy').textContent=hoy.length; $('nManana').textContent=man.length;
-    pintarLista($('listaHoy'),hoy,false,'Hoy no hay citas','Alba sigue cogiendo el teléfono y el WhatsApp.');
+    pintarLista($('listaHoy'),hoy,false,'Hoy no hay citas','Alba sigue contestando el WhatsApp.');
     pintarLista($('listaManana'),man,false,'Mañana, de momento, libre','Las citas que entren aparecen aquí solas.');
     $('resumenHoy').textContent = hoy.length===0 ? 'sin citas' : hoy.length===1 ? '1 cita' : hoy.length+' citas';
   }
@@ -337,7 +337,7 @@ function arrancarAgenda(FUENTE){
       +'<div class="acciones"><button type="button" class="btn" data-x>Cancelar</button><button type="submit" class="btn lleno">Apuntar</button></div>';
     const sel=f.querySelector('[name=hora]'); horas.forEach(h=>{ const o=document.createElement('option'); o.value=h; o.textContent=h; if(h==='10:00') o.selected=true; sel.append(o); });
     // desplegable de servicios: los que ya hay apuntados (más usados primero) + los fijos + «Otro…»; los nuevos se recuerdan en esta tablet
-    const FIJOS=['corte','corte y peinado','tinte','mechas','peinado','recogido','tratamiento','lavar y marcar','corte infantil','corte hombre'];
+    const FIJOS=['Depilación láser axilas','Depilación láser ingles','Depilación láser piernas','Lifting de pestañas + tinte','Laminado de cejas','Diseño de cejas','Micropigmentación de cejas','Micropigmentación labios','Eyeliner','Mantenimiento micropigmentación','Limpieza facial','BB Glow','Presoterapia','Esmaltado permanente','Depilación cera','Estudio de la mirada (gratis)'];
     let propios=[]; try{ propios=JSON.parse(localStorage.getItem('servicios_propios')||'[]'); }catch(e){}
     const vistosS=new Set(); const lista=[];
     [...servicios(), ...propios, ...FIJOS].forEach(sv=>{ const k=sv.toLowerCase().trim(); if(k && !vistosS.has(k)){ vistosS.add(k); lista.push(k); } });
