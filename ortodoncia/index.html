@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#2F3437">
+<meta name="robots" content="noindex, nofollow">
+<title>Macarena Heranz Ortodoncia</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="img/icono-180.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Raleway:wght@400;500;600;700&display=swap">
+<style>
+/* Web mejorada de demo para Macarena Heranz Ortodoncia (ImpulsIA, 31/10/2026). En los platas de su logo, elegante, móvil
+   primero. Cuatro vistas (Inicio · Equipo · Primera visita · Contacto) con pestañas abajo; en ordenador, dentro de un marco de teléfono. */
+:root { color-scheme: light; --fondo: #F4F5F6; --papel: #FFFFFF; --tinta: #2F3437; --tenue: #6B7378; --linea: #DDE1E4;
+  --plata: #8C9499; --plata-osc: #5C6469; --plata-clara: #E9ECEE; --suave: #F7F8F9;
+  --f-titulo: "Cormorant Garamond", Georgia, serif; --f-texto: "Raleway", "Segoe UI", system-ui, sans-serif; }
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: #E6E9EB; color: var(--tinta); font: 16px/1.6 var(--f-texto); font-variant-numeric: lining-nums; }
+a { color: inherit; }
+img { max-width: 100%; display: block; }
+h1, h2, h3 { font-family: var(--f-titulo); font-weight: 600; line-height: 1.08; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(32px, 8.5vw, 42px); }
+h1 em, h2 em { font-style: italic; font-weight: 500; color: var(--plata-osc); }
+h2 { font-size: clamp(27px, 7vw, 33px); }
+p { margin: 0; }
+.eyebrow { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--plata-osc); font-weight: 700; display: flex; align-items: center; gap: 10px; }
+.eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--plata); }
+
+.app { height: 100%; display: flex; flex-direction: column; background: var(--fondo); position: relative; overflow: hidden; }
+@media (min-width: 700px) {
+  body { display: grid; place-items: center; padding: 24px; }
+  .app { width: 420px; height: min(860px, calc(100vh - 48px)); border-radius: 44px; border: 10px solid #2F3437; box-shadow: 0 30px 80px rgba(47, 52, 55, .3); }
+  .app::before { content: ""; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 110px; height: 26px; background: #2F3437; border-radius: 0 0 16px 16px; z-index: 20; }
+}
+.cab { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 10px; background: rgba(255,255,255,.94); backdrop-filter: blur(10px); border-bottom: 1px solid var(--linea);
+  padding: calc(10px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px)); }
+@media (min-width: 700px) { .cab { padding-top: 40px; } }
+.cab .logo { height: 46px; width: auto; }
+.cab .wa { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--tinta); color: #fff; text-decoration: none; }
+.cab .wa svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+.vistas { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+.vista { display: none; flex-direction: column; gap: 26px; padding: 20px max(16px, env(safe-area-inset-right, 0px)) 30px max(16px, env(safe-area-inset-left, 0px)); animation: entra .25s ease; }
+.vista.activa { display: flex; }
+@keyframes entra { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.tabs { flex: none; display: grid; grid-template-columns: repeat(4, 1fr); background: #FFFFFF; border-top: 1px solid var(--linea);
+  padding: 6px max(6px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(6px, env(safe-area-inset-left, 0px)); }
+@media (min-width: 700px) { .tabs { padding-bottom: 18px; } }
+.tab { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; border-radius: 14px; text-decoration: none; font-size: 11px; font-weight: 600; color: var(--tenue); text-align: center; line-height: 1.2; }
+.tab svg { width: 23px; height: 23px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.tab.activa { color: var(--tinta); background: var(--plata-clara); }
+.tab:focus-visible, .btn:focus-visible, summary:focus-visible { outline: 2px solid var(--plata-osc); outline-offset: 3px; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 22px; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; border: 1px solid transparent; transition: transform .15s ease; }
+.btn:active { transform: scale(.97); }
+.btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; flex: none; }
+.btn.osc { background: var(--tinta); color: #fff; box-shadow: 0 10px 24px rgba(47, 52, 55, .22); }
+.btn.plata { background: linear-gradient(135deg, #F1F3F4, #C6CCD0); color: var(--tinta); }
+.btn.borde { background: #fff; border-color: var(--linea); color: var(--tinta); }
+.btn.ancho { width: 100%; }
+.dos-btn { display: grid; gap: 10px; }
+.sec { display: flex; flex-direction: column; gap: 12px; }
+.sec .l { color: var(--tenue); font-size: 15px; }
+.tarjeta { background: var(--papel); border: 1px solid var(--linea); border-radius: 22px; padding: 20px 18px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 12px 30px rgba(47,52,55,.05); }
+
+/* inicio */
+.hero { position: relative; border-radius: 26px; overflow: hidden; aspect-ratio: 4 / 3.3; background: var(--plata-clara); }
+.hero img { width: 100%; height: 100%; object-fit: cover; }
+.hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(47,52,55,.62)); }
+.hero .txt { position: absolute; left: 18px; right: 18px; bottom: 16px; z-index: 1; color: #fff; }
+.hero .txt b { font-family: var(--f-titulo); font-weight: 500; font-style: italic; font-size: 24px; line-height: 1.15; display: block; }
+.hero .txt small { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; opacity: .9; }
+.puntos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.punto { background: #fff; border: 1px solid var(--linea); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.punto b { font-size: 14px; line-height: 1.3; }
+.punto small { color: var(--tenue); font-size: 12.5px; line-height: 1.45; }
+.punto .ic { font-family: var(--f-titulo); font-size: 26px; line-height: 1; color: var(--plata-osc); }
+.servicios { display: flex; flex-wrap: wrap; gap: 8px; }
+.servicios span { background: #fff; border: 1px solid var(--linea); border-radius: 999px; padding: 7px 13px; font-size: 13px; font-weight: 600; }
+.foto { border-radius: 22px; overflow: hidden; aspect-ratio: 16 / 10; }
+.foto img { width: 100%; height: 100%; object-fit: cover; }
+.opiniones { display: flex; flex-direction: column; gap: 12px; }
+.opinion { background: #fff; border: 1px solid var(--linea); border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+.opinion .e { color: var(--plata-osc); letter-spacing: .15em; font-size: 13px; }
+.opinion q { font-family: var(--f-titulo); font-size: 20px; font-style: italic; line-height: 1.3; quotes: "«" "»"; }
+.opinion small { color: var(--tenue); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+
+/* horario */
+.horario { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; font-size: 15px; }
+.horario dt { font-weight: 700; }
+.horario dd { margin: 0; color: var(--tenue); font-variant-numeric: tabular-nums; text-align: right; }
+.horario .hoy { color: var(--tinta); }
+.hoy-pill { align-self: flex-start; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; background: var(--plata-clara); border-radius: 999px; padding: 6px 12px; }
+
+/* equipo */
+.semana { display: grid; grid-template-columns: 1fr repeat(5, 30px); gap: 6px 4px; align-items: center; font-size: 13px; }
+.semana .dh { text-align: center; font-size: 11px; font-weight: 700; color: var(--tenue); letter-spacing: .06em; text-transform: uppercase; }
+.semana .nom { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.semana .d { width: 30px; height: 26px; border-radius: 8px; background: var(--suave); border: 1px solid var(--linea); }
+.semana .d.si { background: var(--tinta); border-color: var(--tinta); }
+.doc { display: grid; grid-template-columns: 96px 1fr; gap: 14px; align-items: start; background: #fff; border: 1px solid var(--linea); border-radius: 22px; padding: 14px; }
+.doc img { width: 96px; height: 120px; object-fit: cover; border-radius: 14px; background: var(--plata-clara); }
+.doc b { font-family: var(--f-titulo); font-size: 22px; font-weight: 600; line-height: 1.1; display: block; }
+.doc small { display: block; color: var(--tenue); font-size: 13px; line-height: 1.45; margin-top: 4px; }
+.dias { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.dias span { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; background: var(--plata-clara); border-radius: 999px; padding: 5px 10px; }
+.doc a { display: inline-block; margin-top: 10px; font-size: 13px; font-weight: 700; color: var(--tinta); }
+
+/* primera visita */
+.pasosv { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.pasosv li { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; }
+.pasosv .n { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-family: var(--f-titulo); font-size: 19px; font-weight: 600; background: linear-gradient(135deg, #E9ECEE, #C6CCD0); }
+.pasosv b { display: block; font-size: 15px; }
+.pasosv small { display: block; color: var(--tenue); font-size: 14px; line-height: 1.55; }
+details { background: #fff; border: 1px solid var(--linea); border-radius: 18px; padding: 0 16px; }
+summary { cursor: pointer; list-style: none; padding: 15px 0; font-weight: 700; font-size: 15px; display: flex; justify-content: space-between; gap: 10px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; font-family: var(--f-titulo); font-size: 24px; line-height: 1; color: var(--plata-osc); }
+details[open] summary::after { content: "–"; }
+details p { color: var(--tenue); font-size: 14.5px; padding-bottom: 16px; }
+.aviso { background: var(--tinta); color: #E6E9EB; border-radius: 20px; padding: 18px; font-size: 14.5px; }
+.aviso b { color: #fff; display: block; margin-bottom: 4px; font-size: 15px; }
+
+/* contacto */
+.datos { display: grid; gap: 10px; }
+.dato { background: #fff; border: 1px solid var(--linea); border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; }
+.dato small { color: var(--tenue); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
+.dato b { font-size: 16px; }
+.dato a { font-size: 14px; font-weight: 700; margin-top: 4px; }
+.pie { text-align: center; color: var(--tenue); font-size: 12px; line-height: 1.6; padding-top: 6px; }
+.pie .marca { font-family: var(--f-titulo); font-size: 18px; color: var(--tinta); }
+</style>
+</head>
+<body>
+<div class="app">
+<header class="cab">
+  <img class="logo" src="img/logo_heranz.png" alt="Macarena Heranz Ortodoncia">
+  <a class="wa" href="https://wa.me/15556590488?text=Hola%2C%20quer%C3%ADa%20pedir%20cita" aria-label="Pedir cita por WhatsApp"><svg viewBox="0 0 24 24"><path d="M4 20l1.3-3.8A8 8 0 1 1 8.2 19L4 20Z"/><path d="M9.5 9.5c0 3 2 5 5 5l1-1.5-2-1-1 1a4 4 0 0 1-1.5-1.5l1-1-1-2-1.5 1Z"/></svg></a>
+</header>
+
+<main class="vistas" id="vistas">
+
+<!-- ===================== INICIO ===================== -->
+<section class="vista activa" id="v-inicio">
+  <div class="hero"><img src="img/clinica.jpg" alt="Entrada de la clínica"><div class="txt"><small>Guadalajara</small><b>Clínica dental especializada en ortodoncia y odontopediatría</b></div></div>
+  <div class="sec">
+    <div class="eyebrow">Bienvenidos</div>
+    <h1>Sonrisas sanas, <em>sin miedo</em></h1>
+    <p class="l">Ortodoncia para niños y adultos, odontopediatría, estética dental, cirugía e implantes. Un equipo de cinco especialistas que trata a cada paciente, sobre todo a los más pequeños, con calma y con cariño.</p>
+  </div>
+  <div class="dos-btn">
+    <a class="btn osc ancho" href="https://wa.me/15556590488?text=Hola%2C%20quer%C3%ADa%20pedir%20cita"><svg viewBox="0 0 24 24"><path d="M4 20l1.3-3.8A8 8 0 1 1 8.2 19L4 20Z"/><path d="M9.5 9.5c0 3 2 5 5 5l1-1.5-2-1-1 1a4 4 0 0 1-1.5-1.5l1-1-1-2-1.5 1Z"/></svg>Pedir cita por WhatsApp</a>
+    <a class="btn plata ancho" href="reservar.html"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Pedir cita aquí</a>
+  </div>
+  <div class="tarjeta">
+    <div class="eyebrow">Horario</div>
+    <span class="hoy-pill" id="hoyPill">Hoy</span>
+    <dl class="horario" id="horario"></dl>
+  </div>
+  <div class="puntos">
+    <div class="punto"><span class="ic">I</span><b>Especialistas en niños</b><small>Odontopediatría y ortodoncia infantil desde los primeros años.</small></div>
+    <div class="punto"><span class="ic">II</span><b>Alineadores invisibles</b><small>Invisalign para adolescentes y adultos.</small></div>
+    <div class="punto"><span class="ic">III</span><b>Sedación consciente</b><small>Para los pacientes con más miedo, con anestesista.</small></div>
+    <div class="punto"><span class="ic">IV</span><b>Radiología digital</b><small>Diagnóstico preciso con mínima radiación.</small></div>
+  </div>
+  <div class="sec">
+    <div class="eyebrow">Tratamientos</div>
+    <div class="servicios"><span>Ortodoncia infantil</span><span>Ortodoncia en adultos</span><span>Alineadores</span><span>Odontopediatría</span><span>Prevención</span><span>Estética dental</span><span>Endodoncia</span><span>Cirugía e implantes</span><span>Urgencias</span></div>
+  </div>
+  <div class="foto"><img src="img/doctora_ninos.jpg" alt="La doctora explicando la higiene a unos niños"></div>
+  <div class="sec">
+    <div class="eyebrow">Lo que dicen las familias</div>
+    <div class="opiniones">
+      <div class="opinion"><span class="e">★★★★★</span><q>Te sabe tratar con cariño y paciencia, y te transmite la confianza que te da la tranquilidad que necesitas.</q><small>Una paciente · julio de 2025</small></div>
+      <div class="opinion"><span class="e">★★★★★</span><q>A los que tenemos mucho miedo a los dentistas es un lujo contar con profesionales de este nivel.</q><small>Un paciente · julio de 2025</small></div>
+      <div class="opinion"><span class="e">★★★★★</span><q>Mi hija tenía pánico a los dentistas y desde que las ha conocido todo ese miedo ha desaparecido.</q><small>Una familia · Google</small></div>
+    </div>
+  </div>
+  <p class="pie"><span class="marca">Macarena Heranz Ortodoncia</span><br>P.º Dr. Fernández Iparraguirre, 11 Bajo · 19001 Guadalajara<br>Registro sanitario 1906918 · Consejería de Sanidad de Castilla-La Mancha<br>© 2026</p>
+</section>
+
+<!-- ===================== EQUIPO ===================== -->
+<section class="vista" id="v-equipo">
+  <div class="sec">
+    <div class="eyebrow">Nuestro equipo</div>
+    <h2>Cada doctor, <em>sus días</em></h2>
+    <p class="l">Así sabéis de un vistazo cuándo pasa consulta vuestro especialista. Al pedir cita, solo os ofrecemos sus días.</p>
+    <p class="l" style="font-size:13px;font-style:italic">Días de ejemplo: aquí se ponen los días reales de consulta de cada doctor.</p>
+  </div>
+  <div class="tarjeta"><div class="semana" id="semana"></div></div>
+  <div class="sec" id="docs"></div>
+  <p class="pie">Con ellos, Laura Fernández (atención al paciente y auxiliar) y Teresa del Saz (higienista bucodental).</p>
+</section>
+
+<!-- ===================== PRIMERA VISITA ===================== -->
+<section class="vista" id="v-visita">
+  <div class="sec">
+    <div class="eyebrow">Antes de venir</div>
+    <h2>Vuestra <em>primera visita</em></h2>
+    <p class="l">Lo que conviene saber para llegar tranquilos. Si os queda cualquier duda, escribidnos.</p>
+  </div>
+  <ol class="pasosv">
+    <li><span class="n">1</span><div><b>Pedís la cita</b><small>Por WhatsApp o desde esta web, eligiendo el doctor y uno de sus días. Al confirmarla os indicamos el coste de la primera visita.</small></div></li>
+    <li><span class="n">2</span><div><b>El niño pasa solo al gabinete</b><small>Es por su seguridad y para que gane confianza: sin distracciones se relaja antes y colabora mejor. Al terminar, la doctora os lo explica todo con calma.</small></div></li>
+    <li><span class="n">3</span><div><b>Diagnóstico completo</b><small>Exploración de dientes, encías y articulación y, si hace falta, radiografías digitales de mínima exposición.</small></div></li>
+    <li><span class="n">4</span><div><b>Plan y presupuesto cerrado</b><small>Os damos el plan de tratamiento y un presupuesto cerrado, sin sorpresas.</small></div></li>
+  </ol>
+  <div class="sec">
+    <div class="eyebrow">Qué traer</div>
+    <details><summary>Documentación</summary><p>DNI del adulto que acompaña y, si tenéis, informes o radiografías de otros dentistas.</p></details>
+    <details><summary>Si hay medicación o alergias</summary><p>Traed el nombre de los medicamentos que toma y decidnos cualquier alergia al pedir la cita.</p></details>
+    <details><summary>Llegad cinco minutos antes</summary><p>Para rellenar la ficha con calma y que el niño se familiarice con la sala.</p></details>
+  </div>
+  <div class="aviso"><b>¿Una urgencia?</b>Si se despega un bracket, roza un alambre o hay dolor, escribidnos por WhatsApp o llamad al 949 690 096. Os diremos qué hacer mientras tanto y, si hace falta, os adelantamos la cita.</div>
+  <div class="sec">
+    <div class="eyebrow">Cancelaciones</div>
+    <p class="l">Si no podéis venir, avisad con 48 horas: el hueco pasa a otra familia de la lista de espera. El día antes os enviamos un recordatorio por WhatsApp para confirmar o cambiar la cita con un toque.</p>
+  </div>
+  <a class="btn osc ancho" href="reservar.html">Pedir la primera visita</a>
+</section>
+
+<!-- ===================== CONTACTO ===================== -->
+<section class="vista" id="v-contacto">
+  <div class="sec">
+    <div class="eyebrow">Contacto</div>
+    <h2>Estamos <em>muy cerca</em></h2>
+  </div>
+  <div class="dos-btn">
+    <a class="btn osc ancho" href="https://wa.me/15556590488?text=Hola%2C%20quer%C3%ADa%20pedir%20cita"><svg viewBox="0 0 24 24"><path d="M4 20l1.3-3.8A8 8 0 1 1 8.2 19L4 20Z"/><path d="M9.5 9.5c0 3 2 5 5 5l1-1.5-2-1-1 1a4 4 0 0 1-1.5-1.5l1-1-1-2-1.5 1Z"/></svg>Escribir por WhatsApp</a>
+    <a class="btn borde ancho" href="tel:+34949690096"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>Llamar · 949 690 096</a>
+    <a class="btn borde ancho" href="https://www.google.com/maps/search/?api=1&query=Macarena+Heranz+Ortodoncia+Guadalajara"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Cómo llegar</a>
+  </div>
+  <div class="datos">
+    <div class="dato"><small>Dirección</small><b>P.º Dr. Fernández Iparraguirre, 11 Bajo Ext. Izq.</b><span>19001 Guadalajara</span></div>
+    <div class="dato"><small>Teléfono</small><b>949 690 096</b></div>
+    <div class="dato"><small>Correo</small><b>info@ortodonciadoctoraheranz.com</b></div>
+    <div class="dato"><small>Instagram</small><b>@dramacarenaheranz</b><a href="https://www.instagram.com/dramacarenaheranz/">Ver Instagram →</a></div>
+  </div>
+  <div class="tarjeta"><div class="eyebrow">Horario</div><dl class="horario" id="horario2"></dl></div>
+  <p class="pie"><span class="marca">Macarena Heranz Ortodoncia</span><br>© 2026 · Aviso legal · Privacidad</p>
+</section>
+
+</main>
+
+<nav class="tabs" aria-label="Secciones">
+  <a class="tab activa" href="#inicio" data-v="inicio"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>Inicio</a>
+  <a class="tab" href="#equipo" data-v="equipo"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.5"/><path d="M16 14a5 5 0 0 1 5.5 5"/></svg>Equipo</a>
+  <a class="tab" href="#visita" data-v="visita"><svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-6 6c0 5 3 11 4 11s1-4 2-4 1 4 2 4 4-6 4-11a6 6 0 0 0-6-6Z"/></svg>Primera visita</a>
+  <a class="tab" href="#contacto" data-v="contacto"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Contacto</a>
+</nav>
+</div>
+
+<script src="clinica.js"></script>
+<script>
+(function () {
+  var C = window.CLINICA;
+  var NOM = { lun: "Lunes", mar: "Martes", mie: "Miércoles", jue: "Jueves", vie: "Viernes" };
+  var ORDEN = ["lun", "mar", "mie", "jue", "vie"];
+  // horario único
+  var hoy = ["", "lun", "mar", "mie", "jue", "vie", ""][new Date().getDay()];
+  ["horario", "horario2"].forEach(function (id) {
+    var dl = document.getElementById(id);
+    ORDEN.forEach(function (d) {
+      var t = document.createElement("dt"); t.textContent = NOM[d]; var v = document.createElement("dd");
+      v.textContent = C.horario[d].map(function (r) { return r[0] + " – " + r[1]; }).join(" · ");
+      if (d === hoy) { t.className = "hoy"; v.className = "hoy"; }
+      dl.append(t, v);
+    });
+    var t = document.createElement("dt"); t.textContent = "Sábado y domingo"; var v = document.createElement("dd"); v.textContent = "Cerrado"; dl.append(t, v);
+  });
+  document.getElementById("hoyPill").textContent = hoy ? "Hoy abrimos de " + C.horario[hoy].map(function (r) { return r[0] + " a " + r[1]; }).join(" y ") : "Hoy cerrado · os contestamos por WhatsApp";
+  // semana de consulta y fichas
+  var sem = document.getElementById("semana"); sem.append(document.createElement("span"));
+  ORDEN.forEach(function (d) { var s = document.createElement("span"); s.className = "dh"; s.textContent = NOM[d].slice(0, 3); sem.append(s); });
+  var docs = document.getElementById("docs");
+  C.doctores.forEach(function (doc) {
+    var n = document.createElement("span"); n.className = "nom"; n.textContent = doc.corto; sem.append(n);
+    ORDEN.forEach(function (d) { var c = document.createElement("span"); c.className = "d" + (doc.dias.indexOf(d) >= 0 ? " si" : ""); c.title = doc.dias.indexOf(d) >= 0 ? NOM[d] : ""; sem.append(c); });
+    var f = document.createElement("div"); f.className = "doc";
+    f.innerHTML = '<img src="' + doc.foto + '" alt="' + doc.nombre + '"><div><b></b><small></small><div class="dias"></div><a href="reservar.html?doc=' + doc.id + '">Pedir cita con ' + doc.trato + ' →</a></div>';
+    f.querySelector("b").textContent = doc.nombre; f.querySelector("small").textContent = doc.cargo;
+    doc.dias.forEach(function (d) { var s = document.createElement("span"); s.textContent = NOM[d]; f.querySelector(".dias").append(s); });
+    docs.append(f);
+  });
+  // pestañas
+  var vistas = ["inicio", "equipo", "visita", "contacto"], cont = document.getElementById("vistas");
+  function mostrar() {
+    var h = (location.hash || "#inicio").slice(1); if (vistas.indexOf(h) < 0) h = "inicio";
+    vistas.forEach(function (v) { document.getElementById("v-" + v).classList.toggle("activa", v === h); });
+    document.querySelectorAll(".tab").forEach(function (t) { t.classList.toggle("activa", t.getAttribute("data-v") === h); });
+    cont.scrollTop = 0;
+  }
+  window.addEventListener("hashchange", mostrar); mostrar();
+})();
+</script>
+</body>
+</html>
