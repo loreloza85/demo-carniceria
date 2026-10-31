@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<meta name="robots" content="noindex, nofollow">
+<title>Agenda · Macarena Heranz Ortodoncia</title>
+<meta name="theme-color" content="#2F3437">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icono-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Heranz">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Raleway:wght@400;500;600;700&display=swap">
+<style>
+/* Agenda de la clínica Macarena Heranz Ortodoncia (demo, 31/10/2026): Hoy · Mes · Buscar · Resumen, filtro por doctor con
+   un color por doctor, citas siempre por hora. En los platas de la clínica. Lógica de Make la misma que estética. */
+:root{ color-scheme:light;
+  --fondo:#F4F5F6; --tarjeta:#FFFFFF; --tinta:#2F3437; --tenue:#6B7378; --linea:#DDE1E4; --plata:#8C9499; --plata-osc:#5C6469; --suave:#EEF0F1;
+  --menta:#3E7D62; --menta-suave:#E3F1EA; --miel:#C9A45C; --miel-suave:#F7F0DF; --rojo:#B4231F; --rojo-suave:#FBE7E6;
+  --d1:#4F6D8A; --d1s:#E6EDF4; --d2:#8A5A7A; --d2s:#F3E9F0; --d3:#3E7D62; --d3s:#E3F1EA; --d4:#9A6A2E; --d4s:#F5ECDF; --d5:#6C5F9E; --d5s:#ECE9F6;
+  --f-titulo:"Cormorant Garamond",Georgia,serif; --f-texto:"Raleway","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--fondo);color:var(--tinta);font:17px/1.45 var(--f-texto);font-variant-numeric:lining-nums}
+body{min-height:100%;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+.cab{background:var(--tarjeta);border-bottom:1px solid var(--linea);padding:calc(12px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 14px max(16px,env(safe-area-inset-left,0px));display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.cab img{height:54px;width:auto;display:block}
+.cab .txt{min-width:0}
+.cab h1{font:600 28px/1.05 var(--f-titulo);margin:0}
+.cab p{margin:3px 0 0;color:var(--tenue);font-weight:600}
+.cab .fecha{display:inline-block} .cab .fecha::first-letter{text-transform:uppercase}
+main{max-width:980px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-right,0px)) 16px max(16px,env(safe-area-inset-left,0px))}
+.vista[hidden]{display:none}
+h2{font:600 24px/1.2 var(--f-titulo);margin:8px 0 10px;display:flex;align-items:center;gap:8px}
+h2 .n{background:var(--tinta);color:#fff;border-radius:999px;font:700 13px/1 var(--f-texto);padding:5px 9px}
+.lista{display:grid;gap:10px}
+@media (min-width:640px){.lista{grid-template-columns:1fr 1fr}}
+.cita{display:grid;grid-template-columns:82px 1fr;grid-template-rows:auto auto;gap:12px;background:var(--tarjeta);border:1px solid var(--linea);border-left:6px solid var(--plata);border-radius:16px;padding:12px 14px;align-items:center;min-width:0}
+.cita.con-d1{border-left-color:var(--d1)} .cita.con-d2{border-left-color:var(--d2)} .cita.con-d3{border-left-color:var(--d3)} .cita.con-d4{border-left-color:var(--d4)} .cita.con-d5{border-left-color:var(--d5)}
+.cita .hora{font:700 22px/1 var(--f-texto);color:var(--tinta);font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.01em}
+.cita .hora small{display:block;font:600 12px/1.3 var(--f-texto);color:var(--tenue);margin-top:4px}
+.cita .quien{font-weight:700;font-size:18px;min-width:0;overflow-wrap:anywhere}
+.chips-c{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.cita .que{display:inline-block;padding:3px 10px;border-radius:999px;font-weight:600;font-size:13.5px;background:var(--suave);color:var(--plata-osc)}
+.doc{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-weight:700;font-size:13.5px}
+.doc i,.chip i{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.d1.doc,.chip.d1.on{background:var(--d1s);color:var(--d1)} .d1 i{background:var(--d1)}
+.d2.doc,.chip.d2.on{background:var(--d2s);color:var(--d2)} .d2 i{background:var(--d2)}
+.d3.doc,.chip.d3.on{background:var(--d3s);color:var(--d3)} .d3 i{background:var(--d3)}
+.d4.doc,.chip.d4.on{background:var(--d4s);color:var(--d4)} .d4 i{background:var(--d4)}
+.d5.doc,.chip.d5.on{background:var(--d5s);color:var(--d5)} .d5 i{background:var(--d5)}
+.cita .dia{font-size:13px;color:var(--tenue);font-weight:700;margin-top:4px}
+.vacio{background:var(--tarjeta);border:1px dashed var(--linea);border-radius:16px;padding:22px;text-align:center;color:var(--tenue);font-weight:600}
+.vacio b{display:block;font:600 24px var(--f-titulo);color:var(--tinta);margin-bottom:4px}
+.filtros{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.filtros[hidden]{display:none}
+.chip{border-radius:999px;padding:8px 14px;font:700 14px var(--f-texto);cursor:pointer;background:var(--tarjeta);color:var(--tinta);border:1px solid var(--linea);min-height:42px;display:inline-flex;align-items:center;gap:7px}
+.chip small{font:700 12px var(--f-texto);background:var(--suave);color:var(--tenue);border-radius:999px;padding:2px 7px}
+.chip.on{background:var(--tinta);color:#fff;border-color:var(--tinta)}
+.chip.on small{background:rgba(255,255,255,.22);color:inherit}
+.chip.d1.on,.chip.d2.on,.chip.d3.on,.chip.d4.on,.chip.d5.on{border-color:currentColor}
+.mes-cab{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0 10px}
+.mes-cab h2{margin:0;text-transform:capitalize}
+.btn{border:1px solid var(--linea);background:var(--tarjeta);color:var(--tinta);border-radius:12px;font:700 15px var(--f-texto);padding:8px 14px;cursor:pointer;min-width:44px;min-height:44px}
+.btn:focus-visible,.pest button:focus-visible,input:focus-visible,.chip:focus-visible{outline:3px solid var(--plata);outline-offset:2px}
+.rejilla{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.rejilla .dn{text-align:center;font-weight:700;font-size:12px;color:var(--tenue);text-transform:uppercase;letter-spacing:.06em;padding:4px 0}
+.dia-c{aspect-ratio:1;max-width:100%;border-radius:14px;background:var(--tarjeta);border:1px solid var(--linea);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;font-weight:700;color:var(--tinta);padding:0}
+@media (min-width:900px){.dia-c{aspect-ratio:auto;height:64px}}
+.dia-c.fuera{opacity:.35;cursor:default}
+.dia-c.hoy{border:2px solid var(--plata)}
+.dia-c.sel{background:var(--tinta);color:#fff;border-color:var(--tinta)}
+.dia-c .pts{display:flex;gap:3px;height:6px}
+.dia-c .cnt{font:700 11px/1 var(--f-texto);background:var(--suave);color:var(--plata-osc);border-radius:999px;padding:2px 6px}
+.dia-c.sel .cnt{background:rgba(255,255,255,.25);color:#fff}
+.dia-c.cerrado{background:transparent;border-style:dashed;color:var(--tenue);cursor:default}
+.detalle{margin-top:14px}
+.busca{display:flex;gap:8px;align-items:center;background:var(--tarjeta);border:2px solid var(--linea);border-radius:16px;padding:6px 10px 6px 14px;margin-bottom:12px}
+.busca:focus-within{border-color:var(--plata)}
+.busca svg{flex:none;color:var(--tenue)}
+.busca input{flex:1;min-width:0;border:0;background:transparent;color:var(--tinta);font:600 18px var(--f-texto);padding:10px 4px;outline:0}
+.busca .btn{border:0;background:var(--suave)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.ayuda{color:var(--tenue);font-weight:600;font-size:14px;margin:0 0 10px}
+.pest{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--tarjeta);border-top:1px solid var(--linea);padding:6px max(10px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px));z-index:5}
+.pest button{flex:1;border:0;background:transparent;color:var(--tenue);font:700 12px var(--f-texto);padding:6px 1px 4px;border-radius:14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:56px}
+.pest button svg{width:26px;height:26px}
+.pest button.on{color:var(--tinta);background:var(--suave)}
+.estado{font-size:13px;color:var(--tenue);font-weight:600;text-align:center;margin:14px 0 0}
+.estado.err{color:var(--rojo)}
+.avisos{display:grid;gap:8px;margin:0 0 14px}
+.aviso{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:var(--miel-suave);border:2px solid var(--miel);border-radius:16px;padding:12px 14px}
+.aviso.nuevo{animation:late 1s ease-in-out 3}
+@keyframes late{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+.aviso .t{font-weight:700;font-size:17px}
+.aviso .t small{display:block;font-weight:600;color:var(--tenue);font-size:13px;margin-top:2px}
+.aviso .btn{background:var(--miel);border-color:var(--miel);color:#2b1f00}
+.cita .est{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+.cita .est .btn{padding:8px 12px;font-size:14px;min-height:40px}
+.cita .est .ok{background:var(--menta-suave);border-color:var(--menta);color:#17603f}
+.cita .est .no{background:var(--rojo-suave);border-color:#d9534f;color:#a12622}
+.cita .est .fin{background:var(--suave);border-color:var(--plata);color:var(--plata-osc)}
+.cita .est .sello{font-weight:700;font-size:14px;padding:8px 4px;flex:1}
+.cita.llegada{background:var(--menta-suave)}
+.cita.no_vino{background:var(--rojo-suave)}
+.cita.terminada{opacity:.55;border-style:dashed}
+.cita.terminada .hora{color:var(--tenue)}
+.anadir{margin:12px 0 4px}
+.btn.lleno{background:var(--tinta);color:#fff;border-color:var(--tinta);width:100%;font-size:17px;padding:12px}
+.form{background:var(--tarjeta);border:2px solid var(--plata);border-radius:18px;padding:14px;margin-top:10px;display:grid;gap:10px}
+.form label{display:grid;gap:4px;font-weight:700;font-size:14px;color:var(--tenue)}
+.form input,.form select{border:1px solid var(--linea);border-radius:12px;padding:12px;font:600 18px var(--f-texto);background:var(--fondo);color:var(--tinta);width:100%}
+.form .fila{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form .acciones{display:flex;gap:8px}
+.form .acciones .btn{flex:1}
+.form .msg{font-weight:700;font-size:14px;color:var(--tenue);margin:0}
+.form .msg.err{color:var(--rojo)}
+@media (prefers-reduced-motion:no-preference){.dia-c,.chip,.btn{transition:transform .08s} .dia-c:active,.chip:active,.btn:active{transform:scale(.96)}}
+@media (prefers-reduced-motion:reduce){.aviso.nuevo{animation:none}}
+.toque{position:fixed;width:70px;height:70px;margin:-35px 0 0 -35px;border-radius:50%;border:5px solid #e8491a;background:rgba(232,73,26,.25);pointer-events:none;z-index:99;animation:toque .6s ease-out forwards}@keyframes toque{from{transform:scale(.4);opacity:1}to{transform:scale(1.6);opacity:0}}
+.res{display:grid;gap:12px}
+.res .ejemplo{font-size:12px;color:var(--tenue);font-weight:600;text-align:center}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (min-width:640px){.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.kpi{background:var(--tarjeta);border:1px solid var(--linea);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi .n{font:700 32px/1 var(--f-texto);font-variant-numeric:lining-nums tabular-nums}
+.kpi .l{font-size:13px;color:var(--tenue);font-weight:600}
+.graf{background:var(--tarjeta);border:1px solid var(--linea);border-radius:16px;padding:14px;min-width:0}
+.graf h3{font:600 22px/1.2 var(--f-titulo);margin:0 0 8px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.graf h3 small{font:600 12px var(--f-texto);color:var(--tenue)}
+.graf .cv{position:relative;height:200px;width:100%}
+.graf canvas{max-width:100%}
+.dos{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:640px){.dos{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="cab">
+  <img src="logo.png" alt="Macarena Heranz Ortodoncia">
+  <div class="txt"><h1>Agenda de la clínica</h1>
+  <p><span class="fecha" id="hoyTexto"></span> · <span id="resumenHoy">cargando…</span></p></div>
+</header>
+
+<main>
+  <div class="avisos" id="avisos"></div>
+  <div class="filtros" id="filtros" aria-label="Filtrar por doctor"></div>
+  <section class="vista" id="v-hoy">
+    <h2>Hoy <span class="n" id="nHoy">0</span></h2>
+    <div class="lista" id="listaHoy"></div>
+    <h2 style="margin-top:22px">Mañana <span class="n" id="nManana">0</span></h2>
+    <div class="lista" id="listaManana"></div>
+  </section>
+
+  <section class="vista" id="v-mes" hidden>
+    <div class="mes-cab">
+      <button class="btn" id="mesAnt" aria-label="Mes anterior">‹</button>
+      <h2 id="mesTitulo"></h2>
+      <button class="btn" id="mesSig" aria-label="Mes siguiente">›</button>
+    </div>
+    <div class="rejilla" id="rejilla"></div>
+    <div class="detalle" id="detalleDia"></div>
+  </section>
+
+  <section class="vista" id="v-buscar" hidden>
+    <div class="busca">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Paciente, motivo, doctor o día… (ej. Hugo Heranz)" autocomplete="off" enterkeyhint="search">
+      <button class="btn" id="limpiar" type="button" hidden>Borrar</button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <p class="ayuda" id="ayudaBusca">Escribe arriba o toca un motivo.</p>
+    <div class="lista" id="listaBusca"></div>
+  </section>
+
+  <section class="vista res" id="v-resumen" hidden>
+    <h2>Este mes <span class="n" id="resMes"></span></h2>
+    <div class="kpis">
+      <div class="kpi"><span class="n" id="kMes">0</span><span class="l">citas este mes</span></div>
+      <div class="kpi"><span class="n" id="kSem">0</span><span class="l">citas esta semana</span></div>
+      <div class="kpi"><span class="n" id="kLleg">0</span><span class="l">han venido</span></div>
+      <div class="kpi"><span class="n" id="kNo">0</span><span class="l">no han venido</span></div>
+    </div>
+    <div class="dos">
+      <div class="graf"><h3>Citas por doctor <small>este mes</small></h3><div class="cv"><canvas id="gDoc"></canvas></div></div>
+      <div class="graf"><h3>Por motivo <small>este mes</small></h3><div class="cv"><canvas id="gMot"></canvas></div></div>
+    </div>
+    <div class="graf"><h3>Horas punta <small>de lunes a viernes</small></h3><div class="cv"><canvas id="gHoras"></canvas></div></div>
+    <p class="ejemplo">Se calcula solo con las citas de la agenda y lo que se marca en cada una.</p>
+  </section>
+  <p class="estado" id="estado"></p>
+</main>
+
+<nav class="pest" aria-label="Secciones">
+  <button class="on" data-v="hoy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Hoy</button>
+  <button data-v="mes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Mes</button>
+  <button data-v="buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Buscar</button>
+  <button data-v="resumen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Resumen</button>
+</nav>
+
+<script>
+function arrancarAgenda(FUENTE){
+  'use strict';
+  const DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const CERRADO = [0,6]; // sábado y domingo (la clínica abre de lunes a viernes)
+  let citas = [];
+  let mesVista = new Date(); mesVista.setDate(1);
+  let diaSel = hoyISO();
+
+  const $ = id => document.getElementById(id);
+  function hoyISO(){ const d=new Date(); return iso(d); }
+  function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function deISO(s){ const [a,m,d]=s.split('-').map(Number); return new Date(a,m-1,d); }
+  function sumaDias(s,n){ const d=deISO(s); d.setDate(d.getDate()+n); return iso(d); }
+  function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+  function fechaLarga(s){ const d=deISO(s); return DIAS[d.getDay()]+' '+d.getDate()+' de '+MESES[d.getMonth()]; }
+  // Los cinco doctores (días de consulta de ejemplo en la web). Cada cita lleva el doctor al final del servicio.
+  const DOCS=[{re:/heranz/i,n:'Dra. Heranz',c:'d1'},{re:/estepa/i,n:'Dra. Estepa',c:'d2'},{re:/mar[ií]n/i,n:'Dr. Marín',c:'d3'},{re:/dom[ií]nguez/i,n:'Dra. Domínguez',c:'d4'},{re:/cristians/i,n:'Dra. Cristians',c:'d5'}];
+  function doctor(serv){ return DOCS.find(d=>d.re.test(serv))||null; }
+  function motivo(serv){ let s=serv.replace(/^ortodoncia\s*·\s*/i,'');
+    s=s.replace(/\s*·\s*(dra?\.?\s+)?((macarena|luc[ií]a|pablo|andrea|daniela)\s+)?(heranz|estepa|mar[ií]n|dom[ií]nguez|cristians)\s*$/i,'');
+    return s.trim()||'Consulta'; }
+  let filtroDoc='';
+  function vis(l){ return filtroDoc ? l.filter(c=>c.doc&&c.doc.n===filtroDoc) : l; }
+  function pintarFiltros(){ const z=$('filtros'); if(!z) return; z.replaceChildren();
+    [{n:'',t:'Todos',c:''}].concat(DOCS.map(d=>({n:d.n,t:d.n,c:d.c}))).forEach(o=>{ const b=document.createElement('button'); b.type='button';
+      b.className='chip'+(o.c?' '+o.c:'')+(filtroDoc===o.n?' on':''); b.innerHTML=(o.c?'<i></i>':'')+'<span></span>'; b.querySelector('span').textContent=o.t;
+      const n=o.n?citas.filter(c=>c.doc&&c.doc.n===o.n&&c.fecha>=hoyISO()).length:citas.filter(c=>c.fecha>=hoyISO()).length;
+      const k=document.createElement('small'); k.textContent=n; b.append(k);
+      b.addEventListener('click',()=>{ filtroDoc=o.n; try{ localStorage.setItem('agenda_doc',filtroDoc); }catch(e){} pintarTodo(); }); z.append(b); }); }
+  try{ filtroDoc=localStorage.getItem('agenda_doc')||''; }catch(e){}
+
+  // «AAAA-MM-DD HH:MM-HH:MM Nombre · Servicio»
+  function parsear(texto){
+    const out=[]; const re=/^(\d{4}-\d{2}-\d{2})\s+(\d{1,2}:\d{2})-(\d{1,2}:\d{2})\s+(.+?)\s+·\s+(.+)$/;
+    texto.split(/\r?\n/).forEach(l=>{ const m=l.trim().match(re); if(m) out.push({fecha:m[1],ini:m[2].padStart(5,'0'),fin:m[3].padStart(5,'0'),nombre:m[4].trim(),servicio:m[5].trim()}); });
+    const suyas=out.filter(c=>doctor(c.servicio)||/ortodoncia/i.test(c.servicio)); suyas.forEach(c=>{ c.doc=doctor(c.servicio); c.motivo=motivo(c.servicio); });
+    suyas.sort((a,b)=> (a.fecha+a.ini).localeCompare(b.fecha+b.ini)); return suyas;
+  }
+  // Estado de cada cita (recepción lo marca en la tablet): llegada (verde), no_vino (rojo), terminada (gris). Se guarda en el servidor.
+  const ESTADOS = FUENTE.replace('tipo=agenda','tipo=estados');
+  let estados = {};
+  const TXT={llegada:'Ha llegado',no_vino:'No ha venido',terminada:'Terminada ✓'};
+  function claveE(c){ return c.fecha+' '+c.ini+'|'+c.nombre; }
+  function parsearEstados(t){ const m={}; t.split(/\r?\n/).forEach(l=>{ const p=l.trim().split('|'); if(p.length>=3) m[p[0]+'|'+p[1]]=p[2]; }); return m; }
+  async function cargarEstados(){ try{ const r=await fetch(ESTADOS,{cache:'no-store'}); if(!r.ok) return; const t=await r.text(); if(/^Accepted$/.test(t.trim())) return; estados=parsearEstados(t); try{ localStorage.setItem('estados_cache',t); }catch(e){} pintarTodo(); }catch(e){} }
+  try{ estados=parsearEstados(localStorage.getItem('estados_cache')||''); }catch(e){}
+  async function marcar(c, est, boton){
+    const k=claveE(c); const antes=estados[k]; estados[k]=est; pintarTodo();
+    try{ const u=new URL(FUENTE); u.searchParams.set('tipo','estado'); u.searchParams.set('fecha',c.fecha); u.searchParams.set('ini',c.ini); u.searchParams.set('nombre',c.nombre); u.searchParams.set('estado',est);
+      const r=await fetch(u,{cache:'no-store'}); const tx=(await r.text()).trim(); if(!r.ok||tx!=='ok') throw new Error(tx); }
+    catch(e){ if(antes) estados[k]=antes; else delete estados[k]; pintarTodo(); $('estado').className='estado err'; $('estado').textContent='No se ha podido guardar el cambio; prueba otra vez.'; }
+  }
+  function botonesEstado(c){
+    const e=estados[claveE(c)]||'pendiente'; const z=document.createElement('div'); z.className='est';
+    const b=(txt,cls,est)=>{ const x=document.createElement('button'); x.type='button'; x.className='btn '+cls; x.textContent=txt; x.addEventListener('click',ev=>{ ev.stopPropagation(); marcar(c,est,x); }); return x; };
+    if(e==='pendiente'){ z.append(b('✓ Ha llegado','ok','llegada'), b('✗ No ha venido','no','no_vino')); }
+    else if(e==='llegada'){ const t=document.createElement('span'); t.className='sello'; t.textContent='🟢 Ha llegado'; z.append(t, b('Terminada','fin','terminada'), b('Deshacer','','pendiente')); }
+    else if(e==='no_vino'){ const t=document.createElement('span'); t.className='sello'; t.textContent='🔴 No ha venido'; z.append(t, b('Deshacer','','pendiente')); }
+    else { const t=document.createElement('span'); t.className='sello'; t.textContent='✓ Terminada'; z.append(t, b('Deshacer','','pendiente')); }
+    return z;
+  }
+  function tarjeta(c, conDia){
+    const d=document.createElement('article'); d.className='cita';
+    d.innerHTML='<div class="hora">'+c.ini+'<small>hasta '+c.fin+'</small></div><div><div class="quien"></div><div class="chips-c"><span class="que"></span>'+(c.doc?'<span class="doc '+c.doc.c+'"><i></i></span>':'')+'</div>'+(conDia?'<div class="dia"></div>':'')+'</div>';
+    d.querySelector('.quien').textContent=c.nombre; d.querySelector('.que').textContent=cap(c.motivo||c.servicio);
+    if(c.doc){ d.querySelector('.doc').append(c.doc.n); d.classList.add('con-'+c.doc.c); }
+    if(conDia) d.querySelector('.dia').textContent=fechaLarga(c.fecha);
+    const e=estados[claveE(c)]; if(e && e!=='pendiente') d.classList.add(e);
+    d.append(botonesEstado(c));
+    return d;
+  }
+  function pintarLista(cont, lista, conDia, vacioTitulo, vacioTexto){
+    cont.replaceChildren();
+    if(!lista.length){ const v=document.createElement('div'); v.className='vacio'; v.innerHTML='<b></b><span></span>'; v.querySelector('b').textContent=vacioTitulo; v.querySelector('span').textContent=vacioTexto; cont.append(v); return; }
+    lista.slice().sort((a,b)=>(a.fecha+a.ini).localeCompare(b.fecha+b.ini)).forEach(c=>cont.append(tarjeta(c,conDia)));
+  }
+  function pintarHoy(){
+    const h=hoyISO(), m=sumaDias(h,1);
+    const hoy=vis(citas).filter(c=>c.fecha===h), man=vis(citas).filter(c=>c.fecha===m);
+    $('nHoy').textContent=hoy.length; $('nManana').textContent=man.length;
+    pintarLista($('listaHoy'),hoy,false,filtroDoc?'Hoy no pasa consulta o no tiene citas':'Hoy no hay citas',filtroDoc?'Toca «Todos» para ver toda la clínica.':'Alba sigue atendiendo el WhatsApp.');
+    pintarLista($('listaManana'),man,false,'Mañana, de momento, libre','Las citas que entren aparecen aquí solas.');
+    $('resumenHoy').textContent = hoy.length===0 ? 'sin citas' : hoy.length===1 ? '1 cita' : hoy.length+' citas';
+  }
+  function pintarMes(){
+    const a=mesVista.getFullYear(), m=mesVista.getMonth();
+    $('mesTitulo').textContent=MESES[m]+' '+a;
+    const r=$('rejilla'); r.replaceChildren();
+    ['L','M','X','J','V','S','D'].forEach(t=>{ const e=document.createElement('div'); e.className='dn'; e.textContent=t; r.append(e); });
+    const primero=new Date(a,m,1); let desp=(primero.getDay()+6)%7;
+    for(let i=0;i<desp;i++){ const e=document.createElement('div'); r.append(e); }
+    const nd=new Date(a,m+1,0).getDate(); const h=hoyISO();
+    for(let d=1;d<=nd;d++){
+      const f=iso(new Date(a,m,d)); const n=vis(citas).filter(c=>c.fecha===f).length; const dow=new Date(a,m,d).getDay();
+      const b=document.createElement('button'); b.type='button'; b.className='dia-c'+(f===h?' hoy':'')+(f===diaSel?' sel':'')+(CERRADO.includes(dow)&&!n?' cerrado':'');
+      b.innerHTML='<span>'+d+'</span>'+(n?'<span class="cnt">'+n+'</span>':'<span class="pts"></span>');
+      b.addEventListener('click',()=>{ diaSel=f; pintarMes(); });
+      r.append(b);
+    }
+    const lista=vis(citas).filter(c=>c.fecha===diaSel); const det=$('detalleDia'); det.replaceChildren();
+    const t=document.createElement('h2'); t.textContent=cap(fechaLarga(diaSel)); const nn=document.createElement('span'); nn.className='n'; nn.textContent=lista.length; t.append(nn); det.append(t);
+    const l=document.createElement('div'); l.className='lista'; det.append(l);
+    pintarLista(l,lista,false,'Nada ese día','Toca otro día del calendario.');
+    const z=document.createElement('div'); z.className='anadir'; det.append(z);
+    const b=document.createElement('button'); b.type='button'; b.className='btn lleno'; b.textContent='＋ Apuntar una cita a mano'; z.append(b);
+    b.addEventListener('click',()=>{ b.hidden=true; z.append(formulario(diaSel, ()=>{ b.hidden=false; })); });
+  }
+  // Recepción apunta una cita a mano (paciente que llama o viene a la clínica): va a la misma agenda que Alba
+  function formulario(fecha, cerrar){
+    const f=document.createElement('form'); f.className='form'; f.noValidate=true;
+    const horas=[]; for(let h=9;h<=20;h++){ for(const m of ['00','15','30','45']){ if(h===20&&m!=='00') continue; horas.push(String(h).padStart(2,'0')+':'+m); } }
+    f.innerHTML='<label>Paciente<input name="nombre" placeholder="Ej. Hugo" autocomplete="off" required></label>'
+      +'<div class="fila"><label>Motivo<select name="servicio_sel"></select></label><label>Doctor<select name="doctor"></select></label></div>'
+      +'<label hidden id="otroLab">¿Cuál?<input name="servicio" placeholder="Escribe el servicio" autocomplete="off"></label>'
+      +'<div class="fila"><label>Hora<select name="hora"></select></label><label>Dura<select name="dura"><option value="30" selected>30 min</option><option value="45">45 min</option><option value="60">1 hora</option><option value="90">1 h y media</option><option value="120">2 horas</option><option value="150">2 h y media</option><option value="180">3 horas</option></select></label></div>'
+      +'<p class="msg">Se apunta en '+cap(fechaLarga(fecha))+'.</p>'
+      +'<div class="acciones"><button type="button" class="btn" data-x>Cancelar</button><button type="submit" class="btn lleno">Apuntar</button></div>';
+    const sel=f.querySelector('[name=hora]'); horas.forEach(h=>{ const o=document.createElement('option'); o.value=h; o.textContent=h; if(h==='12:00') o.selected=true; sel.append(o); });
+    const sd=f.querySelector('[name=doctor]'); DOCS.forEach(d=>{ const o=document.createElement('option'); o.value=d.n; o.textContent=d.n; if(d.n===filtroDoc) o.selected=true; sd.append(o); });
+    // desplegable de servicios: los que ya hay apuntados (más usados primero) + los fijos + «Otro…»; los nuevos se recuerdan en esta tablet
+    const FIJOS=['Revisión de ortodoncia','Primera visita infantil','Primera visita de ortodoncia','Urgencia','Limpieza e higiene','Estética o empastes','Otra consulta'];
+    let propios=[]; try{ propios=JSON.parse(localStorage.getItem('servicios_propios')||'[]'); }catch(e){}
+    const vistosS=new Set(); const lista=[];
+    [...FIJOS, ...propios].forEach(sv=>{ const k=sv.toLowerCase().trim(); if(k && !vistosS.has(k)){ vistosS.add(k); lista.push(k); } });
+    const ss=f.querySelector('[name=servicio_sel]'); lista.forEach(sv=>{ const o=document.createElement('option'); o.value=sv; o.textContent=cap(sv); ss.append(o); });
+    const oo=document.createElement('option'); oo.value='__otro'; oo.textContent='Otro… (escribirlo)'; ss.append(oo);
+    if(window.servicioPrefijado){ const sp=window.servicioPrefijado; const k=sp.nombre.toLowerCase().trim(); if(![...ss.options].some(o=>o.value===k)){ const o=document.createElement('option'); o.value=k; o.textContent=cap(k); ss.prepend(o); } ss.value=k; const ds=f.querySelector('[name=dura]'); const ops=[...ds.options].map(o=>Number(o.value)); const mejor=ops.reduce((p,c)=>Math.abs(c-sp.dura)<Math.abs(p-sp.dura)?c:p,ops[0]); ds.value=String(mejor); window.servicioPrefijado=null; setTimeout(()=>f.nombre.focus(),80); }
+    const otroLab=f.querySelector('#otroLab'); ss.addEventListener('change',()=>{ otroLab.hidden = ss.value!=='__otro'; if(!otroLab.hidden) setTimeout(()=>f.servicio.focus(),50); });
+    const msg=f.querySelector('.msg');
+    f.querySelector('[data-x]').addEventListener('click',()=>{ f.remove(); cerrar(); });
+    f.addEventListener('submit',async ev=>{
+      ev.preventDefault();
+      const nombre=f.nombre.value.trim(); const servicio=(f.servicio_sel.value==='__otro'?f.servicio.value:f.servicio_sel.value).trim().toLowerCase();
+      if(f.servicio_sel.value==='__otro' && servicio){ try{ const pr=JSON.parse(localStorage.getItem('servicios_propios')||'[]'); if(!pr.includes(servicio)){ pr.push(servicio); localStorage.setItem('servicios_propios',JSON.stringify(pr.slice(-30))); } }catch(e){} }
+      if(!nombre||!servicio){ msg.className='msg err'; msg.textContent='Falta el paciente o el motivo.'; return; }
+      const docSel=f.doctor.value; const servicioTxt='ortodoncia · '+servicio+' · '+docSel.toLowerCase();
+      const ini=f.hora.value; const [hh,mm]=ini.split(':').map(Number); const t=hh*60+mm+Number(f.dura.value);
+      const fin=String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');
+      const choca=citas.filter(c=>c.fecha===fecha && c.ini<fin && ini<c.fin && c.doc && c.doc.n===docSel);
+      if(choca.length && !f.dataset.forzar){ msg.className='msg err'; msg.textContent='A esa hora ya está '+choca[0].nombre+' ('+choca[0].ini+'-'+choca[0].fin+'). Toca «Apuntar» otra vez si la quieres igual.'; f.dataset.forzar='1'; return; }
+      f.querySelectorAll('button').forEach(x=>x.disabled=true); msg.className='msg'; msg.textContent='Apuntando…';
+      try{
+        const u=new URL(FUENTE); u.searchParams.set('tipo','manual'); u.searchParams.set('nombre',nombre); u.searchParams.set('servicio',servicioTxt); u.searchParams.set('fecha',fecha); u.searchParams.set('hora',ini+'-'+fin);
+        const r=await fetch(u,{cache:'no-store'}); const tx=(await r.text()).trim();
+        if(!r.ok || tx!=='ok') throw new Error(tx||('HTTP '+r.status));
+        citas.push({fecha,ini,fin,nombre,servicio:servicioTxt,doc:doctor(servicioTxt),motivo:servicio}); citas.sort((a,b)=>(a.fecha+a.ini).localeCompare(b.fecha+b.ini));
+        pintarTodo(); setTimeout(()=>cargar(true),2500);
+      }catch(e){
+        f.querySelectorAll('button').forEach(x=>x.disabled=false); msg.className='msg err';
+        msg.textContent = e.message==='Accepted' ? 'La agenda estaba ocupada; prueba otra vez en unos segundos.' : 'No se ha podido apuntar. Comprueba la conexión y vuelve a intentarlo.';
+      }
+    });
+    setTimeout(()=>f.nombre.focus(),50);
+    return f;
+  }
+  function servicios(){ const s=new Map(); citas.forEach(c=>{ const k=(c.motivo||c.servicio).toLowerCase(); s.set(k,(s.get(k)||0)+1); }); return [...s.entries()].sort((x,y)=>y[1]-x[1]).slice(0,8).map(x=>x[0]); }
+  let chipOn='';
+  function pintarChips(){ const c=$('chips'); c.replaceChildren(); servicios().forEach(s=>{ const b=document.createElement('button'); b.type='button'; b.className='chip'+(chipOn===s?' on':''); b.textContent=cap(s); b.addEventListener('click',()=>{ chipOn=chipOn===s?'':s; $('q').value=chipOn; buscar(); }); c.append(b); }); }
+  function norm(s){ return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); }
+  function buscar(){
+    const q=norm($('q').value.trim()); $('limpiar').hidden=!q; if(!q.length){ chipOn=''; pintarChips(); $('ayudaBusca').textContent='Escribe arriba o toca un motivo.'; $('listaBusca').replaceChildren(); return; }
+    const pal=q.split(/\s+/);
+    const res=citas.filter(c=>{ const txt=norm(c.nombre+' '+c.servicio+' '+(c.doc?c.doc.n:'')+' '+fechaLarga(c.fecha)+' '+c.fecha); return pal.every(p=>txt.includes(p)); });
+    const h=hoyISO(); const fut=res.filter(c=>c.fecha>=h), pas=res.filter(c=>c.fecha<h).reverse();
+    $('ayudaBusca').textContent = res.length ? (res.length===1?'1 cita':res.length+' citas')+(fut.length&&pas.length?' · primero las próximas, luego las pasadas':'') : '';
+    pintarChips(); pintarLista($('listaBusca'),fut.concat(pas),true,'No encuentro nada','Prueba con el nombre, el motivo, el doctor o el día.');
+  }
+  $('q').addEventListener('input',buscar); $('limpiar').addEventListener('click',()=>{ $('q').value=''; buscar(); $('q').focus(); });
+  $('mesAnt').addEventListener('click',()=>{ mesVista.setMonth(mesVista.getMonth()-1); pintarMes(); });
+  $('mesSig').addEventListener('click',()=>{ mesVista.setMonth(mesVista.getMonth()+1); pintarMes(); });
+  document.querySelectorAll('.pest button').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.pest button').forEach(x=>x.classList.toggle('on',x===b));
+    ['hoy','mes','buscar','resumen'].forEach(v=>{ $('v-'+v).hidden = v!==b.dataset.v; });
+    $('filtros').hidden = !(b.dataset.v==='hoy'||b.dataset.v==='mes');
+    if(b.dataset.v==='resumen') pintarResumen();
+    if(b.dataset.v==='buscar') setTimeout(()=>$('q').focus(),50);
+    try{ localStorage.setItem('agenda_vista',b.dataset.v); }catch(e){}
+  }));
+
+  function diaCorto(f){ const d=new Date(f+'T00:00:00'); return d.getDate()+' '+['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][d.getMonth()]; }
+  function pintarTodo(){ pintarFiltros(); pintarHoy(); pintarMes(); pintarChips(); buscar(); window.__citas=citas; if(!$('v-resumen').hidden && window.pintarResumen) window.pintarResumen(); }
+  async function cargar(silencioso){
+    if(!silencioso) $('estado').textContent='Cargando la agenda…';
+    try{
+      const r=await fetch(FUENTE,{cache:'no-store'}); if(!r.ok) throw new Error('HTTP '+r.status);
+      const t=await r.text(); if(/^Accepted$/.test(t.trim())) throw new Error('ocupada');
+      citas=parsear(t); try{ localStorage.setItem('agenda_cache',t); }catch(e){}
+      pintarTodo(); $('estado').className='estado'; $('estado').textContent='Actualizado a las '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})+' · se actualiza sola cada minuto';
+    }catch(e){
+      let cache=''; try{ cache=localStorage.getItem('agenda_cache')||''; }catch(x){}
+      if(cache){ citas=parsear(cache); pintarTodo(); }
+      $('estado').className='estado err'; $('estado').textContent = e.message==='ocupada' ? 'La agenda está ocupada un momento; vuelvo a intentarlo…' : 'No llego a la agenda ahora mismo. Comprueba la conexión; lo reintento solo.';
+      if(e.message==='ocupada') setTimeout(()=>cargar(true),4000);
+    }
+  }
+  // Avisos de Alba (llamadas que no acaban en cita): franja amarilla arriba + sonido; «Visto» lo quita en esta tablet
+  const AVISOS = FUENTE.replace('tipo=agenda','tipo=avisos');
+  const MOTIVO={persona:'Quiere hablar con la clínica',cambio:'Quiere cambiar su cita',anular:'Quiere anular su cita',informacion:'Pide información',información:'Pide información',cita:'Cita por cerrar'};
+  let vistos=new Set(); try{ vistos=new Set(JSON.parse(localStorage.getItem('avisos_vistos')||'[]')); }catch(e){}
+  let sonados=new Set();
+  function sonar(){ try{ const a=new (window.AudioContext||window.webkitAudioContext)(); const t=a.currentTime;
+    [[880,0],[1175,.18],[880,.36]].forEach(([f,d])=>{ const o=a.createOscillator(), g=a.createGain(); o.type='sine'; o.frequency.value=f; g.gain.setValueAtTime(0.0001,t+d); g.gain.exponentialRampToValueAtTime(0.5,t+d+.02); g.gain.exponentialRampToValueAtTime(0.0001,t+d+.17); o.connect(g).connect(a.destination); o.start(t+d); o.stop(t+d+.2); }); }catch(e){} }
+  function pintarAvisos(texto){
+    const cont=$('avisos'); cont.replaceChildren(); let nuevos=false;
+    texto.split(/\r?\n/).map(l=>l.trim()).filter(Boolean).reverse().forEach(l=>{
+      const [cuando,nombre,tel,motivo,detalle,nota]=l.split('|'); const id=cuando+'|'+tel+'|'+motivo; if(vistos.has(id)) return;
+      const d=document.createElement('div'); d.className='aviso'+(sonados.has(id)?'':' nuevo');
+      const hora=(cuando||'').slice(11,16), fecha=(cuando||'').slice(0,10); const dia=fecha===hoyISO()?'hoy':fecha?fechaLarga(fecha):'';
+      d.innerHTML='<div class="t"><span class="m"></span><small></small></div><button type="button" class="btn">Visto</button>';
+      d.querySelector('.m').textContent='📞 '+(nombre||'Una familia')+': '+(MOTIVO[(motivo||'').toLowerCase()]||motivo||'aviso');
+      d.querySelector('small').textContent=[dia&&hora?dia+' a las '+hora:'', tel?'tel. '+tel:'', (detalle||'').trim(), nota||''].filter(Boolean).join(' · ');
+      d.querySelector('button').addEventListener('click',()=>{ vistos.add(id); try{ localStorage.setItem('avisos_vistos',JSON.stringify([...vistos].slice(-200))); }catch(e){} d.remove(); });
+      if(!sonados.has(id)){ nuevos=true; sonados.add(id); }
+      cont.append(d);
+    });
+    if(nuevos && cont.dataset.listo) sonar();
+    cont.dataset.listo='1';
+  }
+  async function cargarAvisos(){ try{ const r=await fetch(AVISOS,{cache:'no-store'}); if(!r.ok) return; const t=await r.text(); if(/^Accepted$/.test(t.trim())) return; pintarAvisos(t); }catch(e){} }
+  cargarAvisos(); setInterval(cargarAvisos,60000);
+  // Si se sube una versión nueva de la agenda, la tablet la recarga sola (cada 5 min, nunca con el formulario abierto)
+  let versionVista='';
+  async function comprobarVersion(){ try{ const r=await fetch(location.pathname+'?v='+Date.now(),{method:'HEAD',cache:'no-store'}); const lm=r.headers.get('last-modified')||''; if(!versionVista){ versionVista=lm; return; } if(lm && lm!==versionVista && !document.querySelector('form.form')) location.reload(); }catch(e){} }
+  comprobarVersion(); setInterval(comprobarVersion,300000);
+  document.addEventListener('click',()=>{ try{ new (window.AudioContext||window.webkitAudioContext)().resume(); }catch(e){} },{once:true});
+  $('hoyTexto').textContent=fechaLarga(hoyISO());
+  try{ const v=localStorage.getItem('agenda_vista'); if(v){ const b=document.querySelector('.pest button[data-v="'+v+'"]'); if(b) b.click(); } }catch(e){}
+  cargar(false); cargarEstados(); setInterval(()=>{ cargar(true); cargarEstados(); },60000);
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) cargar(true); });
+}
+/* Candado (30/10): la dirección de la agenda va cifrada con el PIN. Sin el PIN, la página no sabe a dónde llamar.
+   Una vez abierta en una tablet, se queda abierta (localStorage); «?salir=1» la vuelve a cerrar. */
+(function(){
+  const CIFRADO = {"salt": "/OAEU99u+Q1xW3WWY/gIFg==", "iv": "2ExxKj3FDzGta1NB", "data": "A9gTwPW1j6YTuQMt5R71CVGB90DjJNR4eaMJVx6aoM2DI72FjEfo2xbSVGruwwIAMWqIAnmhx/whKS57G8vhxHXUyQ+/jwT6KBib46z7b2UwE6CWuXef9wpFh8eqdx4rnI/WHitUi3S7xZImxCOsIhc0kxr74WZ8hFfxUg==", "iter": 250000};
+  const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  async function abrir(pin){
+    const enc = new TextEncoder();
+    const km = await crypto.subtle.importKey('raw', enc.encode(pin), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt:b64(CIFRADO.salt), iterations:CIFRADO.iter, hash:'SHA-256'}, km, {name:'AES-GCM', length:256}, false, ['decrypt']);
+    const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(CIFRADO.iv)}, key, b64(CIFRADO.data));
+    return new TextDecoder().decode(pt);
+  }
+  if(new URLSearchParams(location.search).get('salir')==='1'){ try{ localStorage.removeItem('agenda_fuente'); }catch(e){} history.replaceState(null,'',location.pathname); }
+  let guardada=null; try{ guardada=localStorage.getItem('agenda_fuente'); }catch(e){}
+  if(guardada){ arrancarAgenda(guardada); return; }
+  const ov=document.createElement('div'); ov.id='candado';
+  ov.innerHTML='<div class="caja"><div class="t">Macarena Heranz Ortodoncia</div><p>Escribe el PIN para abrir la agenda de la clínica en esta tablet.</p><input id="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="one-time-code" placeholder="PIN"><button id="pinOk">Abrir</button><div id="pinMsg" class="m"></div></div>';
+  const st=document.createElement('style'); st.textContent='#candado{position:fixed;inset:0;background:linear-gradient(135deg,#2F3437,#8C9499);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}#candado .caja{background:#fff;border-radius:24px;padding:28px 26px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(20,24,26,.35)}#candado .t{font:600 28px/1.2 var(--f-titulo);color:var(--tinta);margin-bottom:6px}#candado p{color:var(--tenue);margin:0 0 16px}#candado input{width:100%;font:700 34px/1 var(--f-texto);text-align:center;letter-spacing:.35em;padding:14px;border:2px solid var(--linea);border-radius:16px;margin-bottom:12px}#candado button{width:100%;font:700 20px var(--f-texto);background:var(--tinta);color:#fff;border:0;border-radius:16px;padding:14px}#candado .m{min-height:22px;color:#c0392b;margin-top:10px;font-weight:700}';
+  document.head.append(st); document.body.append(ov);
+  const inp=ov.querySelector('#pin'), msg=ov.querySelector('#pinMsg');
+  async function intentar(){ const pin=inp.value.trim(); if(!pin) return; msg.textContent='Abriendo…'; msg.style.color='var(--tenue)';
+    try{ const f=await abrir(pin); try{ localStorage.setItem('agenda_fuente',f); }catch(e){} ov.remove(); arrancarAgenda(f); }
+    catch(e){ msg.style.color='#c0392b'; msg.textContent='Ese PIN no es. Prueba otra vez.'; inp.value=''; inp.focus(); } }
+  ov.querySelector('#pinOk').addEventListener('click',intentar); inp.addEventListener('keydown',e=>{ if(e.key==='Enter') intentar(); }); setTimeout(()=>inp.focus(),50);
+})();
+
+  if(new URLSearchParams(location.search).get('toques')==='1'){ document.addEventListener('pointerdown',ev=>{ const t=document.createElement('div'); t.className='toque'; t.style.left=ev.clientX+'px'; t.style.top=ev.clientY+'px'; document.body.append(t); setTimeout(()=>t.remove(),600); },{passive:true}); }
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(function(){
+  'use strict';
+  var graficas=[];
+  function color(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+  function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  window.pintarResumen=function(){
+    var citas=window.__citas||[]; var hoy=new Date(); var mes=iso(hoy).slice(0,7);
+    var m=document.getElementById('resMes'); if(m) m.textContent=hoy.toLocaleDateString('es-ES',{month:'long'});
+    var delMes=citas.filter(function(c){ return c.fecha.slice(0,7)===mes; });
+    var lunes=new Date(hoy); lunes.setDate(hoy.getDate()-((hoy.getDay()+6)%7)); var dom=new Date(lunes); dom.setDate(lunes.getDate()+6);
+    var sem=citas.filter(function(c){ return c.fecha>=iso(lunes) && c.fecha<=iso(dom); });
+    var est={}; try{ (localStorage.getItem('estados_cache')||'').split(/\r?\n/).forEach(function(l){ var p=l.trim().split('|'); if(p.length>=3) est[p[0]+'|'+p[1]]=p[2]; }); }catch(e){}
+    var lleg=delMes.filter(function(c){ var e=est[c.fecha+' '+c.ini+'|'+c.nombre]; return e==='llegada'||e==='terminada'; }).length;
+    var no=delMes.filter(function(c){ return est[c.fecha+' '+c.ini+'|'+c.nombre]==='no_vino'; }).length;
+    document.getElementById('kMes').textContent=delMes.length; document.getElementById('kSem').textContent=sem.length;
+    document.getElementById('kLleg').textContent=lleg; document.getElementById('kNo').textContent=no;
+    if(!window.Chart) return;
+    graficas.forEach(function(g){ g.destroy(); }); graficas=[];
+    var tenue=color('--tenue'), linea=color('--linea');
+    Chart.defaults.font.family='"Raleway","Segoe UI",system-ui,sans-serif'; Chart.defaults.font.weight='600'; Chart.defaults.color=tenue;
+    var base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:linea},border:{display:false},ticks:{precision:0}}}};
+    var docs=[['Dra. Heranz','--d1'],['Dra. Estepa','--d2'],['Dr. Marín','--d3'],['Dra. Domínguez','--d4'],['Dra. Cristians','--d5']];
+    graficas.push(new Chart(document.getElementById('gDoc'),{type:'bar',data:{labels:docs.map(function(d){return d[0];}),datasets:[{data:docs.map(function(d){ return delMes.filter(function(c){ return c.doc&&c.doc.n===d[0]; }).length; }),backgroundColor:docs.map(function(d){ return color(d[1]); }),borderRadius:8}]},options:base}));
+    var mot={}; delMes.forEach(function(c){ var k=(c.motivo||'consulta'); k=k.charAt(0).toUpperCase()+k.slice(1); mot[k]=(mot[k]||0)+1; });
+    var mk=Object.keys(mot).sort(function(a,b){ return mot[b]-mot[a]; }).slice(0,6);
+    graficas.push(new Chart(document.getElementById('gMot'),{type:'bar',data:{labels:mk,datasets:[{data:mk.map(function(k){ return mot[k]; }),backgroundColor:color('--plata'),borderRadius:8}]},options:Object.assign({},base,{indexAxis:'y',scales:{x:{grid:{color:linea},border:{display:false},ticks:{precision:0}},y:{grid:{display:false}}}})}));
+    var horas=['10','11','12','13','14','15','16','17','18','19','20']; var ph={}; delMes.forEach(function(c){ var h=c.ini.slice(0,2); ph[h]=(ph[h]||0)+1; });
+    graficas.push(new Chart(document.getElementById('gHoras'),{type:'bar',data:{labels:horas.map(function(h){ return h+' h'; }),datasets:[{data:horas.map(function(h){ return ph[h]||0; }),backgroundColor:color('--plata-osc'),borderRadius:8}]},options:base}));
+  };
+  try{ if(localStorage.getItem('agenda_vista')==='resumen'){ var bt=document.querySelector('.pest button[data-v=resumen]'); if(bt) setTimeout(function(){ bt.click(); },300); } }catch(e){}
+})();
+</script>
+</body>
+</html>
