@@ -322,7 +322,10 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
   $('sonido').addEventListener('click',()=>{ sonidoOn=!sonidoOn; $('sonido').textContent=sonidoOn?'🔔 Sonido activado':'🔕 Sonido apagado'; if(sonidoOn) beep(); });
   // toques visibles para grabar la pantalla: abrir con ?toques=1
   if(new URLSearchParams(location.search).get('toques')==='1'){ document.addEventListener('pointerdown',ev=>{ const t=document.createElement('div'); t.className='toque'; t.style.left=ev.clientX+'px'; t.style.top=ev.clientY+'px'; document.body.append(t); setTimeout(()=>t.remove(),600); },{passive:true}); }
-  function arrancar(f){ FUENTE=f; reloj(); setInterval(reloj,15000); cargar(); setInterval(cargar,30000); }
+  function arrancar(f){ FUENTE=f; reloj(); setInterval(reloj,15000); cargar();
+    // 1/11: cada 2 min y solo si la pantalla se está mirando (cada pregunta gasta créditos de Make); al volver, al día
+    setInterval(()=>{ if(!document.hidden) cargar(); },120000);
+    document.addEventListener('visibilitychange',()=>{ if(!document.hidden) cargar(); }); }
   /* Candado (1/11): la dirección de Make va cifrada con el PIN, como en las agendas. Sin el PIN, la página no sabe a
      dónde llamar. Una vez abierta en una tablet, se queda abierta (localStorage); «?salir=1» la vuelve a cerrar. */
   (function(){
