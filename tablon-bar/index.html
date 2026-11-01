@@ -141,7 +141,7 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
   </form>
 </div>
 <script>
-  const FUENTE = 'https://hook.eu1.make.com/dy04ycyacn2qj7uk191n4bvoswf75k73?tipo=tablon';
+  let FUENTE = null; // se descifra con el PIN (candado al final)
   const url = tipo => { const u=new URL(FUENTE); u.searchParams.set('tipo',tipo); return u; };
   const DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
   const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
@@ -322,7 +322,30 @@ main{padding:14px 16px 40px;max-width:1400px;margin:0 auto}
   $('sonido').addEventListener('click',()=>{ sonidoOn=!sonidoOn; $('sonido').textContent=sonidoOn?'🔔 Sonido activado':'🔕 Sonido apagado'; if(sonidoOn) beep(); });
   // toques visibles para grabar la pantalla: abrir con ?toques=1
   if(new URLSearchParams(location.search).get('toques')==='1'){ document.addEventListener('pointerdown',ev=>{ const t=document.createElement('div'); t.className='toque'; t.style.left=ev.clientX+'px'; t.style.top=ev.clientY+'px'; document.body.append(t); setTimeout(()=>t.remove(),600); },{passive:true}); }
-  reloj(); setInterval(reloj,15000); cargar(); setInterval(cargar,30000);
+  function arrancar(f){ FUENTE=f; reloj(); setInterval(reloj,15000); cargar(); setInterval(cargar,30000); }
+  /* Candado (1/11): la dirección de Make va cifrada con el PIN, como en las agendas. Sin el PIN, la página no sabe a
+     dónde llamar. Una vez abierta en una tablet, se queda abierta (localStorage); «?salir=1» la vuelve a cerrar. */
+  (function(){
+    const CIFRADO = {"salt": "VERZcsMTfccntfm/OgHiHg==", "iv": "+/ykJYuEeokewTqC", "data": "NOhvz4gDo8L2VZrUjzoZ48XzdUYeDAogAoqmkF2HbXxhANUPPMxFre+EKhoy1MhIAW5sixFW+i1WCVyBklelYChuAf+t52Wy72xC+Vp3O7TB6S16O09eJCgI0lFKV9qc4Sr62VTzm1C2pEqczyPYxEmqgjcSqB+y0mM7rA==", "iter": 250000};
+    const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+    async function abrir(pin){
+      const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pin), 'PBKDF2', false, ['deriveKey']);
+      const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt:b64(CIFRADO.salt), iterations:CIFRADO.iter, hash:'SHA-256'}, km, {name:'AES-GCM', length:256}, false, ['decrypt']);
+      return new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(CIFRADO.iv)}, key, b64(CIFRADO.data)));
+    }
+    if(new URLSearchParams(location.search).get('salir')==='1'){ try{ localStorage.removeItem('tablon_fuente'); }catch(e){} history.replaceState(null,'',location.pathname); }
+    let guardada=null; try{ guardada=localStorage.getItem('tablon_fuente'); }catch(e){}
+    if(guardada){ arrancar(guardada); return; }
+    const ov=document.createElement('div'); ov.id='candado';
+    ov.innerHTML='<div class="caja"><div class="t">Comandas</div><p>Escribe el PIN para abrir la pizarra en esta tablet.</p><input id="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="one-time-code" placeholder="PIN"><button id="pinOk">Abrir</button><div id="pinMsg" class="m"></div></div>';
+    const st=document.createElement('style'); st.textContent='#candado{position:fixed;inset:0;background:linear-gradient(135deg,#7b2cbf,#e0409a);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}#candado .caja{background:#fff;border-radius:24px;padding:28px 26px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(40,10,60,.35);font-family:inherit}#candado .t{font-weight:800;font-size:24px;color:#3b1d5a;margin-bottom:6px}#candado p{color:#6b5a7a;margin:0 0 16px}#candado input{width:100%;box-sizing:border-box;font-size:28px;text-align:center;letter-spacing:8px;padding:12px;border:2px solid #e3d5f0;border-radius:14px;margin-bottom:12px}#candado button{width:100%;font-size:20px;font-weight:700;padding:14px;border:0;border-radius:14px;color:#fff;background:linear-gradient(135deg,#7b2cbf,#e0409a)}#candado .m{min-height:22px;margin-top:10px;color:#6b5a7a}';
+    document.head.append(st); document.body.append(ov);
+    const inp=ov.querySelector('#pin'), msg=ov.querySelector('#pinMsg');
+    async function intentar(){ const pin=inp.value.trim(); if(!pin) return; msg.textContent='Abriendo…'; msg.style.color='#6b5a7a';
+      try{ const f=await abrir(pin); try{ localStorage.setItem('tablon_fuente',f); }catch(e){} ov.remove(); arrancar(f); }
+      catch(e){ msg.style.color='#c0392b'; msg.textContent='Ese PIN no es. Prueba otra vez.'; inp.value=''; inp.focus(); } }
+    ov.querySelector('#pinOk').addEventListener('click',intentar); inp.addEventListener('keydown',e=>{ if(e.key==='Enter') intentar(); }); setTimeout(()=>inp.focus(),50);
+  })();
 </script>
 </body>
 </html>
